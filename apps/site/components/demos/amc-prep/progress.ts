@@ -74,7 +74,8 @@ export interface AnswerResult {
 export function applyAnswer(p: Progress, q: Question, correct: boolean, confidence: Confidence | null, mode: Mode): AnswerResult {
   const events: string[] = [];
   const base = mode === "challenge" ? 7 : 5;
-  const gained = correct ? base : 0;
+  // Once today's target is met, the x1.5 bonus applies to every further correct answer.
+  const gained = correct ? (p.answeredToday >= DAILY_TARGET ? Math.round(base * 1.5) : base) : 0;
   const stat = p.topics[q.topic] ?? { attempted: 0, correct: 0 };
   const before = accuracy(stat);
   const nextStat = { attempted: stat.attempted + 1, correct: stat.correct + (correct ? 1 : 0) };
@@ -95,7 +96,7 @@ export function applyAnswer(p: Progress, q: Question, correct: boolean, confiden
       events.push(`Streak extended to ${streak} days`);
       if (streak === STREAK_MILESTONE) {
         bonus += 20;
-        events.push("7-day milestone: Consistency Champion badge, +20");
+        events.push(`${STREAK_MILESTONE}-day milestone: Consistency Champion badge, +20`);
       }
     }
     points += bonus;
