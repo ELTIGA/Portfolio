@@ -188,7 +188,12 @@ export function RoutesScreen({ store }: { store: Store }) {
                             className={cx(
                               "rounded-lg border bg-white p-2 motion-safe:transition-shadow",
                               dragging?.id === s.id ? "opacity-50" : "",
-                              dragging?.vid === v.id && overIdx === i && dragging.id !== s.id ? "border-(--v-primary) shadow-[0_-3px_0_var(--v-primary)]" : "border-(--v-line)",
+                              dragging?.vid === v.id && overIdx === i && dragging.id !== s.id
+                                ? // The stop lands at this index: above it when moving up, below it when moving down.
+                                  stops.findIndex((x) => x.id === dragging.id) < i
+                                  ? "border-(--v-primary) shadow-[0_3px_0_var(--v-primary)]"
+                                  : "border-(--v-primary) shadow-[0_-3px_0_var(--v-primary)]"
+                                : "border-(--v-line)",
                             )}
                           >
                             <div className="flex items-center gap-2">
