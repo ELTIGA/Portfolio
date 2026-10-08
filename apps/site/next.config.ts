@@ -2,10 +2,12 @@ import type { NextConfig } from "next";
 
 // The desktop experience is iframed same-origin by the 3D shell, so framing is
 // limited to 'self'. 'unsafe-inline' for scripts is required by Next's inline
-// bootstrap until a nonce-based CSP is added.
+// bootstrap until a nonce-based CSP is added. React needs 'unsafe-eval' in
+// development only (debug stack reconstruction); production never gets it.
+const dev = process.env.NODE_ENV === "development";
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",

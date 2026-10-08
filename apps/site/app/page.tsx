@@ -30,7 +30,7 @@ const linkClass = "text-sm text-muted underline-offset-4 hover:text-fg hover:und
 export default function Home() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }} />
       <Intro3D />
       <a href="#top" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-ink">Skip to content</a>
       <header className="sticky top-0 z-20 border-b border-line bg-bg/85 backdrop-blur">
@@ -190,7 +190,7 @@ export default function Home() {
           <ul className="mt-4 grid gap-4 sm:grid-cols-2">
             {profile.events.map((e) => (
               <li key={e.name} className="overflow-hidden rounded-xl border border-line bg-surface">
-                <Image src={e.image} alt={e.alt} width={900} height={e.name === "TEKNOFEST" ? 576 : 816} sizes="(min-width: 640px) 480px, 100vw" className="h-56 w-full object-cover object-top" />
+                <Image src={e.image} alt={e.alt} width={e.width} height={e.height} sizes="(min-width: 640px) 480px, 100vw" className="h-56 w-full object-cover object-top" />
                 <p className="p-4 text-sm">
                   <span className="font-semibold">{e.name}</span>
                   <span className="text-muted"> · {e.role}, {e.year}</span>
