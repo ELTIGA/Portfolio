@@ -210,8 +210,9 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-line">
-        <div className="mx-auto max-w-5xl px-4 py-8 text-xs text-muted sm:px-6">
-          © {new Date().getFullYear()} {profile.name}
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-xs text-muted sm:px-6">
+          <span>© {new Date().getFullYear()} {profile.name}</span>
+          <a href="/resume" className="underline-offset-4 hover:text-fg hover:underline">Résumé</a>
         </div>
       </footer>
     </>

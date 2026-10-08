@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, projects } from "@portfolio/content";
 import { DemoSlot } from "@/components/demos/DemoSlot";
+import { diagrams } from "@/components/diagrams/registry";
 import { EmailCta } from "@/components/EmailCta";
 
 type Params = { slug: string };
@@ -27,6 +28,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
+  const Diagram = diagrams[project.slug];
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -36,9 +38,22 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
       <p className="mt-4 text-lg leading-relaxed text-muted">{project.tagline}</p>
       <p className="mt-3 font-mono text-xs text-muted">Status: {project.status}</p>
 
+      {project.problem && (
+        <section className="mt-12" aria-labelledby="problem">
+          <h2 id="problem" className="text-xl font-semibold">The problem</h2>
+          <p className="mt-3 leading-relaxed text-muted">{project.problem}</p>
+        </section>
+      )}
+
       <section className="mt-12" aria-labelledby="overview">
-        <h2 id="overview" className="text-xl font-semibold">The problem and what I built</h2>
+        <h2 id="overview" className="text-xl font-semibold">{project.problem ? "What I built" : "Overview"}</h2>
         <p className="mt-3 leading-relaxed text-muted">{project.summary}</p>
+        {project.outcome && (
+          <p className="mt-4 rounded-lg border border-line bg-surface p-4 text-sm leading-relaxed">
+            <span className="font-mono text-xs uppercase tracking-widest text-accent">Outcome</span>
+            <span className="mt-1 block text-muted">{project.outcome}</span>
+          </p>
+        )}
       </section>
 
       <section className="mt-12" aria-labelledby="highlights">
@@ -61,6 +76,30 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
         </div>
       </section>
 
+      {Diagram && (
+        <section className="mt-12" aria-labelledby="architecture">
+          <h2 id="architecture" className="text-xl font-semibold">Architecture</h2>
+          <p className="mt-2 text-sm text-muted">How the pieces connect, drawn from the project&apos;s own documentation.</p>
+          <div className="mt-4">
+            <Diagram />
+          </div>
+        </section>
+      )}
+
+      {project.decisions && project.decisions.length > 0 && (
+        <section className="mt-12" aria-labelledby="decisions">
+          <h2 id="decisions" className="text-xl font-semibold">Engineering decisions</h2>
+          <ul className="mt-3 space-y-3 text-muted">
+            {project.decisions.map((d) => (
+              <li key={d} className="flex gap-2 leading-relaxed">
+                <span aria-hidden="true" className="font-mono text-accent">›</span>
+                <span>{d}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {project.security.length > 0 && (
         <section className="mt-12" aria-labelledby="security">
           <h2 id="security" className="text-xl font-semibold">How it&apos;s secured and shipped</h2>
@@ -69,6 +108,21 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
               <li key={s} className="flex gap-2 leading-relaxed">
                 <span aria-hidden="true" className="font-mono text-accent">✓</span>
                 <span>{s}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {project.nextSteps && project.nextSteps.length > 0 && (
+        <section className="mt-12" aria-labelledby="next">
+          <h2 id="next" className="text-xl font-semibold">What&apos;s next</h2>
+          <p className="mt-2 text-sm text-muted">From the project&apos;s own roadmap.</p>
+          <ul className="mt-3 space-y-2 text-muted">
+            {project.nextSteps.map((n) => (
+              <li key={n} className="flex gap-2 leading-relaxed">
+                <span aria-hidden="true" className="font-mono text-accent">›</span>
+                <span>{n}</span>
               </li>
             ))}
           </ul>
