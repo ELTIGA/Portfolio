@@ -1,0 +1,22 @@
+name: Setup
+description: Node 22 with the npm cache, plus a clean install of the workspaces (and optionally apps/shell).
+inputs:
+  shell:
+    description: Also install apps/shell (a standalone app with its own lockfile, needed to build).
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 22
+        cache: npm
+        cache-dependency-path: |
+          package-lock.json
+          apps/shell/package-lock.json
+    - run: npm ci --no-audit --no-fund
+      shell: bash
+    # apps/shell is a standalone app (not a workspace) with its own lockfile.
+    - if: inputs.shell == 'true'
+      run: npm ci --prefix apps/shell --no-audit --no-fund
+      shell: bash
