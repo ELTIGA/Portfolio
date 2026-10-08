@@ -99,13 +99,19 @@ export function useManifest(push: PushToast, dismiss: (id: number) => void) {
           push(`${current.file}: the second pass matched the current rows. Nothing changed.`);
           return;
         }
-        const snap: Snapshot = { id: counter.current++, imageId, rows: clone(current.rows), printedTotal: current.printedTotal };
+        const id = counter.current++;
+        const base = { id, imageId, rows: clone(current.rows), printedTotal: current.printedTotal };
+        // The toast's Undo needs the snapshot and the snapshot needs the toast id; build
+        // the final object first (the closure reads it lazily) so state is never mutated.
+        const snap: Snapshot = {
+          ...base,
+          toastId: push(`Reprocessed ${current.file}. Rows replaced with the second extraction.`, {
+            tone: "ok",
+            action: { label: "Undo", run: () => restore(snap) },
+          }),
+        };
         setHistory((h) => [...h, snap]);
         patchImage(imageId, (img) => ({ ...img, rows: clone(next.rows), printedTotal: next.printedTotal }));
-        snap.toastId = push(`Reprocessed ${current.file}. Rows replaced with the second extraction.`, {
-          tone: "ok",
-          action: { label: "Undo", run: () => restore(snap) },
-        });
       }, 900);
     },
     [busyId, patchImage, push, restore],

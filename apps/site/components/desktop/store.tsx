@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useReducer, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 
 export interface Rect {
   x: number;
@@ -31,21 +31,48 @@ type Action =
   | { type: "minimize"; id: string }
   | { type: "toggleMax"; id: string; viewport: { w: number; h: number } }
   | { type: "move"; id: string; x: number; y: number }
-  | { type: "resize"; id: string; w: number; h: number };
+  | { type: "resize"; id: string; w: number; h: number }
+  | { type: "clampAll"; viewport: { w: number; h: number } };
 
 const MENU = 28;
 export const DOCK = 84;
 export const MIN_W = 320;
 export const MIN_H = 200;
 
+const Z_BASE = 10;
+
+/** Keep a window reachable inside the viewport: title bar clear of the menu bar and dock. */
+function fit(w: WinState, vp: { w: number; h: number }): WinState {
+  if (w.maximized) {
+    const restore = w.restore && fitRect(w.restore, vp);
+    return { ...w, restore, x: 0, y: MENU, w: vp.w, h: vp.h - MENU - DOCK };
+  }
+  return { ...w, ...fitRect(w, vp) };
+}
+
+function fitRect(r: Rect, vp: { w: number; h: number }): Rect {
+  const w = Math.max(MIN_W, Math.min(r.w, vp.w - 16));
+  const h = Math.max(MIN_H, Math.min(r.h, vp.h - MENU - DOCK - 12));
+  const x = Math.max(0, Math.min(r.x, vp.w - Math.min(w, 140)));
+  const y = Math.max(MENU, Math.min(r.y, vp.h - DOCK - 36));
+  return { x, y, w, h };
+}
+
 function reducer(state: State, a: Action): State {
-  const bump = (id: string, patch: Partial<WinState> = {}): State => {
-    const z = state.zTop + 1;
-    return { ...state, zTop: z, wins: state.wins.map((w) => (w.id === id ? { ...w, ...patch, z } : w)) };
+  // Raise a window by renumbering the stack, so z stays within Z_BASE + window count
+  // and can never climb above the menu bar and dock (z-[1000]).
+  const bump = (id: string, patch: (w: WinState) => WinState = (w) => w): State => {
+    const order = [...state.wins].sort((p, q) => p.z - q.z).map((w) => w.id);
+    const ranked = [...order.filter((x) => x !== id), id];
+    const wins = state.wins.map((w) => {
+      const z = Z_BASE + 1 + ranked.indexOf(w.id);
+      return w.id === id ? { ...patch(w), z } : w.z === z ? w : { ...w, z };
+    });
+    return { ...state, zTop: Z_BASE + wins.length, wins };
   };
   switch (a.type) {
     case "open": {
-      if (state.wins.some((w) => w.id === a.id)) return bump(a.id, { minimized: false });
+      if (state.wins.some((w) => w.id === a.id)) return bump(a.id, (w) => fit({ ...w, minimized: false }, a.viewport));
       const w = Math.min(a.size.w, a.viewport.w - 24);
       const h = Math.min(a.size.h, a.viewport.h - MENU - DOCK - 12);
       const off = (state.cascade % 6) * 28;
@@ -60,8 +87,10 @@ function reducer(state: State, a: Action): State {
     }
     case "close":
       return { ...state, wins: state.wins.filter((w) => w.id !== a.id) };
-    case "focus":
-      return bump(a.id);
+    case "focus": {
+      const top = state.wins.reduce<WinState | null>((t, w) => (!t || w.z > t.z ? w : t), null);
+      return top?.id === a.id && !top.minimized ? state : bump(a.id);
+    }
     case "minimize":
       return { ...state, wins: state.wins.map((w) => (w.id === a.id ? { ...w, minimized: true } : w)) };
     case "toggleMax":
@@ -80,6 +109,8 @@ function reducer(state: State, a: Action): State {
         ...state,
         wins: state.wins.map((w) => (w.id === a.id ? { ...w, w: Math.max(MIN_W, a.w), h: Math.max(MIN_H, a.h) } : w)),
       };
+    case "clampAll":
+      return { ...state, wins: state.wins.map((w) => fit(w, a.viewport)) };
   }
 }
 
@@ -98,8 +129,22 @@ interface Api {
 const Ctx = createContext<Api | null>(null);
 
 export function WindowProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, { wins: [], zTop: 10, cascade: 0 });
+  const [state, dispatch] = useReducer(reducer, { wins: [], zTop: Z_BASE, cascade: 0 });
   const vp = () => ({ w: window.innerWidth, h: window.innerHeight });
+
+  // Windows (and maximized sizes) follow the browser window, so none ends up off-screen.
+  useEffect(() => {
+    let frame = 0;
+    const onResize = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => dispatch({ type: "clampAll", viewport: vp() }));
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   const open = useCallback<Api["open"]>((id, title, size = { w: 720, h: 480 }) => dispatch({ type: "open", id, title, size, viewport: vp() }), []);
   const close = useCallback((id: string) => dispatch({ type: "close", id }), []);

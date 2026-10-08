@@ -110,15 +110,19 @@ function fnv(s: string): string {
   return h.toString(16).padStart(8, "0");
 }
 
-/** Collapse `.` and `..` segments. Relative results keep a leading `./`. */
-export function normalizePath(p: string): string {
+const HOME = "/home/user";
+
+/** Expand `~/`, collapse `.` and `..` segments. Relative results keep a leading `./`. */
+export function normalizePath(raw: string): string {
+  const p = raw.startsWith("~/") ? `${HOME}/${raw.slice(2)}` : raw;
   const abs = p.startsWith("/");
   const out: string[] = [];
   for (const seg of p.split("/")) {
     if (seg === "" || seg === ".") continue;
     if (seg === "..") {
       if (out.length && out[out.length - 1] !== "..") out.pop();
-      else out.push("..");
+      // Above the root of an absolute path, ".." stays at the root ("/../etc" is "/etc").
+      else if (!abs) out.push("..");
     } else out.push(seg);
   }
   const body = out.join("/");
@@ -130,7 +134,7 @@ function pathAllowed(path: string, paths: string[]): boolean {
 }
 
 export function isProtectedPath(p: string): boolean {
-  const n = normalizePath(p.startsWith("~/") ? `/home/user/${p.slice(2)}` : p);
+  const n = normalizePath(p);
   return PROTECTED.some((x) => n === x || n.startsWith(`${x}/`)) || n.includes("/.ssh");
 }
 
@@ -289,7 +293,8 @@ function validateScopeInput(kind: "host" | "path", raw: string): { ok: true; val
   if (!(value.startsWith("./") || value.startsWith("/") || value.startsWith("~/"))) return { ok: false, error: "paths start with ./ or /" };
   if (value.includes("..")) return { ok: false, error: "scope entries cannot contain .." };
   if (isProtectedPath(value)) return { ok: false, error: "protected system path: it can never be added to a scope" };
-  return { ok: true, value };
+  // Expand ~ the same way isProtectedPath does, so the entry can match normalized call paths.
+  return { ok: true, value: value.startsWith("~/") ? `${HOME}/${value.slice(2)}` : value };
 }
 
 export function reducer(s: State, a: Action): State {

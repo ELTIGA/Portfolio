@@ -271,7 +271,10 @@ export function DispatchScreen({ store }: { store: Store }) {
                 <label htmlFor={`${uid}-rd`} className={labelCls}>
                   From
                 </label>
-                <select id={`${uid}-rd`} value={replyVid} onChange={(e) => setReplyVid(e.target.value)} className="mt-1 block h-9 rounded-lg border border-(--v-line) bg-white px-2 text-sm">
+                <select id={`${uid}-rd`} value={replyVid} onChange={(e) => {
+                    setReplyVid(e.target.value);
+                    setFeedback(null);
+                  }} className="mt-1 block h-9 rounded-lg border border-(--v-line) bg-white px-2 text-sm">
                   {seed.vehicles.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.driver.name}
@@ -326,7 +329,7 @@ export function DispatchScreen({ store }: { store: Store }) {
                 {[...d.log].reverse().map((l) => (
                   <li key={l.id} className="flex gap-2">
                     <span className="shrink-0 text-(--v-muted) tabular-nums">{l.at}</span>
-                    <span className={cx("w-4 shrink-0 text-center font-bold", l.dir === "in" ? "text-(--v-primary-ink)" : "text-(--v-muted)")} aria-label={l.dir === "in" ? "inbound" : l.dir === "out" ? "outbound" : "system"}>
+                    <span role="img" className={cx("w-4 shrink-0 text-center font-bold", l.dir === "in" ? "text-(--v-primary-ink)" : "text-(--v-muted)")} aria-label={l.dir === "in" ? "inbound" : l.dir === "out" ? "outbound" : "system"}>
                       {l.dir === "in" ? "←" : l.dir === "out" ? "→" : "·"}
                     </span>
                     <span className={cx("min-w-0 break-words", l.ok === false && "text-(--v-bad)", l.ok === true && "text-(--v-ok)")}>

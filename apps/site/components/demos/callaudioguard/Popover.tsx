@@ -72,7 +72,7 @@ export function Popover({ state, onSelect, onToggle }: { state: GuardState; onSe
             state.callActive ? "bg-emerald-400/20 text-emerald-200" : "bg-white/10 text-slate-200"
           }`}
         >
-          <span aria-hidden="true" className={`h-2 w-2 rounded-full ${state.callActive ? "animate-pulse bg-emerald-400" : "bg-slate-400"}`} />
+          <span aria-hidden="true" className={`h-2 w-2 rounded-full ${state.callActive ? "motion-safe:animate-pulse bg-emerald-400" : "bg-slate-400"}`} />
           {state.callActive ? "Call detected" : "Idle"}
         </p>
       </div>

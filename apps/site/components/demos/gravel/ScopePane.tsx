@@ -41,7 +41,10 @@ export function ScopePane({ state, dispatch }: { state: State; dispatch: Dispatc
           className="flex flex-col gap-1.5 px-3 py-2"
           onSubmit={(e) => {
             e.preventDefault();
-            dispatch({ type: "addHost", value });
+            // Enter adds whichever kind the value looks like.
+            const v = value.trim();
+            const isPath = v.startsWith(".") || v.startsWith("/") || v.startsWith("~");
+            dispatch({ type: isPath ? "addPath" : "addHost", value });
           }}
         >
           <label htmlFor="gravel-scope-input" className="text-[11px] uppercase tracking-wider text-muted">

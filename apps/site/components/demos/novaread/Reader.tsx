@@ -17,6 +17,20 @@ interface Msg {
 const btn =
   "rounded-lg border px-2.5 py-1 text-[13px] font-medium transition disabled:cursor-not-allowed disabled:opacity-45";
 
+/**
+ * Bring `el` into view inside its nearest scrolling ancestor only. scrollIntoView would
+ * also scroll the page around the demo when the preview is partly off-screen.
+ */
+function revealInDemo(el: HTMLElement | null, reduced: boolean) {
+  let box = el?.parentElement ?? null;
+  while (box && !(/(auto|scroll)/.test(getComputedStyle(box).overflowY) && box.scrollHeight > box.clientHeight)) box = box.parentElement;
+  if (!el || !box || box === document.scrollingElement || box === document.body) return;
+  const r = el.getBoundingClientRect();
+  const b = box.getBoundingClientRect();
+  const delta = r.bottom > b.bottom ? Math.min(r.bottom - b.bottom, r.top - b.top) : r.top < b.top ? r.top - b.top : 0;
+  if (delta) box.scrollBy({ top: delta, behavior: reduced ? "auto" : "smooth" });
+}
+
 export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuote[]; onSave: (q: Omit<SavedQuote, "id" | "when">) => boolean }) {
   const reduced = useReducedMotion();
   const articleRef = useRef<HTMLElement>(null);
@@ -94,12 +108,12 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
   };
 
   const ask = (kind: "explain" | "simplify") => {
-    if (active === null || !quote) return;
+    if (active === null || !quote || pending) return;
     const sentence = book.sentences[active];
     const asked = quote;
     push({ kind, quote: asked, text: kind === "explain" ? "Explain this" : "Simplify this", voice });
     setPending(true);
-    panelRef.current?.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+    revealInDemo(panelRef.current, reduced);
     const t = setTimeout(
       () => {
         const reply = sentence[kind];
@@ -118,7 +132,7 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
     const added = onSave({ book: book.title, text: quote });
     push({ kind: "note", quote: "", text: added ? "Saved to your Memory." : "That quote is already in your Memory.", voice: false });
     setTyping(null);
-    panelRef.current?.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+    revealInDemo(panelRef.current, reduced);
   };
 
   const typingNow = (m: Msg) => typing?.id === m.id && !reduced && typed < typing.len;
@@ -139,10 +153,10 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
             &rarr;
           </button>
           <span className="mx-1 hidden h-5 w-px bg-line @sm:block" aria-hidden="true" />
-          <button type="button" disabled={active === null} onClick={() => ask("explain")} className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}>
+          <button type="button" disabled={active === null || pending} onClick={() => ask("explain")} className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}>
             Explain
           </button>
-          <button type="button" disabled={active === null} onClick={() => ask("simplify")} className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}>
+          <button type="button" disabled={active === null || pending} onClick={() => ask("simplify")} className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}>
             Simplify
           </button>
           <button type="button" disabled={active === null} onClick={save} className={`${btn} border-amber-300/60 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20`}>
