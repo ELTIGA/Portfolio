@@ -298,7 +298,7 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
       <div ref={logRef} role="log" aria-label="getit event log" className="max-h-24 min-h-14 overflow-auto px-3 py-2 text-[12px]">
         {state.log.slice(-6).map((l) => (
           <div key={`${l.at.toFixed(2)}-${l.text}`} className={TONE[l.tone]}>
-            <span className="text-muted/70">+{l.at.toFixed(0).padStart(3, "0")}s </span>
+            <span className="text-muted">+{l.at.toFixed(0).padStart(3, "0")}s </span>
             {l.text}
           </div>
         ))}

@@ -32,7 +32,7 @@ export default function Resume() {
             <h1 id="resume-name">{profile.name}</h1>
             <p className="resume-title">DevSecOps &amp; AI-enabled full-stack engineer</p>
             <p className="resume-contact">
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              <a href={`mailto:${profile.email}`} data-cta="email" data-surface="resume">{profile.email}</a>
               <a href={profile.github} rel="noopener noreferrer">{bare(profile.github)}</a>
               <a href={profile.linkedin} rel="noopener noreferrer">{bare(profile.linkedin)}</a>
               <a href={profile.siteUrl}>{bare(profile.siteUrl)}</a>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { getProject } from "@portfolio/content";
 import { DemoFrame } from "@/components/frames/DemoFrame";
@@ -10,9 +11,17 @@ import { track } from "@/lib/track";
 export function ProjectApp({ slug }: { slug: string }) {
   const project = getProject(slug);
   const Demo = demos[slug];
+  const interacted = useRef(false);
   if (!project || !Demo) return <p className="p-4 text-sm text-muted">Project not found.</p>;
   const body = (
-    <div className="h-full" onPointerDownCapture={() => track("demo_interact", { slug })}>
+    <div
+      className="h-full"
+      onPointerDownCapture={() => {
+        if (interacted.current) return;
+        interacted.current = true;
+        track("demo_interact", { slug });
+      }}
+    >
       <Demo />
     </div>
   );

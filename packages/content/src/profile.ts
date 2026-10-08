@@ -38,11 +38,10 @@ export const profile: Profile = {
       type: "Contract",
       period: "Jul 2026 – present", // TODO(owner): owner will handle permission to name the company publicly
       summary:
-        "Sole developer of Express Ops and the post-tour review router for a tour operator. Express Ops is used daily by the operations team and saves roughly 3–5 hours a day.",
+        "Sole developer of Express Ops for a tour operator. Express Ops is used daily by the operations team and saves roughly 3–5 hours a day.",
       bullets: [
         "Sole developer of Express Ops, an operations platform for a tour operator: schema, role-based UI, OCR pipeline, CI/CD and production deployment.",
         "Used daily by the operations team; I estimate it saves them roughly 3–5 hours a day.",
-        "Built the post-tour review router, a QR-code landing page that sends customers to the review site where their booking lives.",
       ],
     },
     {

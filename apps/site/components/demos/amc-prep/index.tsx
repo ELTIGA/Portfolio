@@ -18,7 +18,7 @@ export default function Demo() {
     <div className="@container h-full overflow-y-auto bg-bg text-fg">
       <div className="mx-auto flex min-h-full max-w-4xl flex-col gap-3 p-3 @lg:p-5">
         <header className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <button type="button" onClick={() => setView({ name: "home" })} className="flex items-center gap-2 rounded-md" aria-label="AMC Prep home">
+          <button type="button" onClick={() => setView({ name: "home" })} className="flex items-center gap-2 rounded-md">
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-sky-400 font-mono text-xs font-bold text-slate-950" aria-hidden="true">
               Rx
             </span>
@@ -37,7 +37,7 @@ export default function Demo() {
           </p>
         </header>
 
-        <main className="flex-1">
+        <div className="flex-1">
           {view.name === "home" && (
             <Dashboard
               progress={progress}
@@ -49,7 +49,7 @@ export default function Demo() {
             <Quiz key={view.run} mode={view.mode} progress={progress} onProgress={setProgress} onExit={() => setView({ name: "home" })} />
           )}
           {view.name === "poker" && <Poker progress={progress} onProgress={setProgress} onExit={() => setView({ name: "home" })} />}
-        </main>
+        </div>
 
         <footer className="border-t border-line pt-3 text-[11px] leading-relaxed text-muted">
           Demo content on invented sample data: not exam material and not medical advice. Replica of the product&apos;s dashboard and question flow.

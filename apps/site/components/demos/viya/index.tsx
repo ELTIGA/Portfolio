@@ -146,11 +146,11 @@ export default function Demo() {
           </div>
         </nav>
 
-        <main className="min-h-0 [grid-area:main]" aria-label={NAV.find((n) => n.id === screen)?.label}>
+        <section className="min-h-0 [grid-area:main]" aria-label={NAV.find((n) => n.id === screen)?.label}>
           {screen === "manifests" && <ManifestsScreen key={seed.id} store={store} />}
           {screen === "routes" && <RoutesScreen key={seed.id} store={store} />}
           {screen === "dispatch" && <DispatchScreen key={seed.id} store={store} />}
-        </main>
+        </section>
       </div>
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {store.announcement}

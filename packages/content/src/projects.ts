@@ -56,7 +56,7 @@ export const projects: Project[] = [
     tagline: "Multi-tenant B2B SaaS that turns raw manifests into reviewed passenger data, optimized routes and driver dispatch.",
     order: 2,
     featured: true,
-    role: "Builder and sole developer",
+    role: "Builder",
     status: "Early MVP, built as a product for tour agencies beyond a single customer",
     summary:
       "Viya generalizes the Express Ops domain into a SaaS for any tour agency: ingest Excel or PDF manifests, extract structured data with a routable set of LLM and OCR providers, plan routes and dispatch drivers over the messaging apps they already use.",
@@ -81,7 +81,7 @@ export const projects: Project[] = [
       "Team invites and role-based privileges for organization members.",
     ],
     resume: [
-      "Sole developer of an early-MVP multi-tenant SaaS for tour agencies: manifest ingestion with four parse providers and LLM extraction routed across five providers.",
+      "Builder of an early-MVP multi-tenant SaaS for tour agencies: manifest ingestion with four parse providers and LLM extraction routed across five providers.",
       "Route generation on Google Maps or MapLibre with OSRM; driver dispatch over WhatsApp, Telegram and Slack with inbound status replies; Python FastAPI parsing service.",
       "Tenant isolation with Clerk and Convex ownership guards; Sentry across browser, server, edge and Python runtimes; separate local, staging and production stacks.",
     ],
