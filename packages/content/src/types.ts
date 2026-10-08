@@ -29,6 +29,37 @@ export interface Metric {
   source: string;
 }
 
+export interface Education {
+  school: string;
+  degree: string;
+  year: string;
+}
+
+export interface Experience {
+  org: string;
+  role: string;
+  type: string;
+  period: string;
+  summary: string;
+}
+
+export interface Credential {
+  name: string;
+  issuer: string;
+  year: string;
+  /** Plain-language status, shown as written. */
+  status: string;
+}
+
+export interface EventAttended {
+  name: string;
+  /** What the owner actually did there. Never "speaker" unless true. */
+  role: string;
+  year: string;
+  image: string;
+  alt: string;
+}
+
 export interface Profile {
   name: string;
   handle: string;
@@ -38,10 +69,13 @@ export interface Profile {
   email: string;
   github: string;
   linkedin: string;
-  /** Languages spoken. Null until the owner provides them (hidden in the UI). */
-  languages: string[] | null;
-  /** Path under /public. Null until the owner provides a photo. */
-  photo: string | null;
+  languages: string[];
+  portrait: { src: string; alt: string; width: number; height: number };
+  casual: { src: string; alt: string; width: number; height: number };
+  education: Education;
+  experience: Experience[];
+  credentials: Credential[];
+  events: EventAttended[];
   /** Canonical origin, used for metadata. Replace once the domain is chosen. */
   siteUrl: string;
   about: string[];
