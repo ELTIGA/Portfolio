@@ -29,7 +29,8 @@ export function SettingsApp() {
         <h3 className="font-mono text-xs uppercase tracking-widest text-muted">Credits</h3>
         <p className="mt-2 text-muted">
           Built with Next.js, React and Tailwind CSS. Previews use invented sample data. No customer information appears anywhere on this site.
-          {" "}3D intro engine based on henryjeff/portfolio-website (MIT).
+          {" "}3D intro engine based on henryjeff/portfolio-website (MIT).{" "}
+          <a href="/experience/licenses.txt" target="_blank" rel="noopener noreferrer" className="text-accent underline-offset-4 hover:underline">Third-party licenses</a>.
         </p>
       </section>
       <p className="font-mono text-xs text-muted">© {new Date().getFullYear()} {profile.name}</p>

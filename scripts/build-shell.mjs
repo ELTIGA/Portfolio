@@ -2,7 +2,7 @@
 // the Next site's public/ folder so it is served at /experience/index.html.
 // apps/shell is intentionally NOT an npm workspace: it has its own lockfile.
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, rmSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, rmSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -35,6 +35,8 @@ if (!existsSync(join(dist, "index.html"))) {
 rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
 cpSync(dist, target, { recursive: true });
+// Ship the third-party license text (MIT attribution + three.js) next to the bundle.
+copyFileSync(join(shell, "LICENSE-THIRD-PARTY.md"), join(target, "licenses.txt"));
 
 function size(dir) {
   let total = 0;
