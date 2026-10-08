@@ -70,7 +70,7 @@ function reducer(state: State, a: Action): State {
         wins: state.wins.map((w) => {
           if (w.id !== a.id) return w;
           if (w.maximized && w.restore) return { ...w, ...w.restore, maximized: false, restore: undefined };
-          return { ...w, restore: { x: w.x, y: w.y, w: w.w, h: w.h }, x: 0, y: MENU, w: a.viewport.w, h: a.viewport.h - MENU - 8, maximized: true };
+          return { ...w, restore: { x: w.x, y: w.y, w: w.w, h: w.h }, x: 0, y: MENU, w: a.viewport.w, h: a.viewport.h - MENU - DOCK, maximized: true };
         }),
       };
     case "move":
