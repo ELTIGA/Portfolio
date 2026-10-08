@@ -5,9 +5,9 @@ import type { Profile } from "./types";
 export const profile: Profile = {
   name: "Ahmed Eltigani",
   handle: "ELTIGA",
-  headline: "I build and secure production software, end to end.",
+  headline: "I build software a team runs on every day, and I make it hard to break.",
   subheadline:
-    "Software engineering graduate working across DevSecOps and AI-enabled full-stack development. I designed and shipped Express Ops, an operations platform a tour operator's team uses every day.",
+    "Sole developer of Express Ops, the operations platform a tour operator's team works in daily. Software engineering graduate and Certified Ethical Hacker, working across DevSecOps and AI-enabled full-stack development.",
   availability: "Open to remote roles · contract or full-time",
   email: "Eltiga@protonmail.com",
   github: "https://github.com/ELTIGA",
@@ -89,8 +89,8 @@ export const profile: Profile = {
   ],
   about: [
     "I graduated in Software Engineering from Nişantaşı University in 2026. Before that I spent a year as a UI/UX and front-end developer at Fyluim, a web3 and trading-bot company.",
-    "Since July 2026 I've been the sole developer on Express Ops for a tour operator: from the first schema to the CI pipeline that deploys it. I care about the unglamorous half of software: audit gates, tenant isolation, observability and safe defaults.",
-    "I'm also a Certified Ethical Hacker (2026), and I build tools that put guardrails around AI agents.",
+    "Since July 2026 I've been the only developer on Express Ops for a tour operator. I wrote the first schema and I run the CI pipeline that deploys it. Most of my time goes to the parts users never see: audit gates, tenant isolation, observability and safe defaults.",
+    "I'm a Certified Ethical Hacker (EC-Council, 2026). I also build guardrails for AI agents: scope checks, human approvals and an emergency stop.",
   ],
   resumeSummary:
     "Software engineering graduate (B.Sc., 2026) working across DevSecOps and AI-enabled full-stack development. Sole developer of Express Ops, an operations platform a tour operator's team uses every day, with CI/CD, dependency auditing and role-based access built in. Certified Ethical Hacker (EC-Council, 2026).",

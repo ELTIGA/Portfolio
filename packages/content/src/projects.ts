@@ -9,7 +9,7 @@ export const projects: Project[] = [
     tagline: "Operations platform that turns manifest photos into driver lists, double-booking checks and customer documents.",
     order: 1,
     featured: true,
-    role: "Sole developer, end to end",
+    role: "Sole developer",
     status: "In daily use by the operations team",
     summary:
       "I built a role-based web app that reads the photographed manifests, reconciles each one against the totals printed on the page, flags double bookings, and produces the finished driver lists and customer documents.",
@@ -63,7 +63,7 @@ export const projects: Project[] = [
     problem:
       "Tour agencies work from messy Excel and PDF manifests. Each day's passenger data has to be cleaned up, routed and sent to drivers. Express Ops solved this for one operator; Viya rebuilds the same domain as a multi-tenant product for any agency.",
     outcome:
-      "A working early MVP that covers manifest to driver dispatch end to end. The repo's notes list 59 backend test files (Vitest and convex-test), and CI/CD is configured but not yet cutting over production traffic. No customers or revenue are claimed.",
+      "A working early MVP that covers the whole path from manifest upload to driver dispatch. The repo's notes list 59 backend test files (Vitest and convex-test), and CI/CD is configured but not yet cutting over production traffic. No customers or revenue are claimed.",
     decisions: [
       "Route extraction across five LLM providers behind one layer (MiniMax by default, with a fallback chain across the others) instead of tying the pipeline to one vendor.",
       "Give spreadsheets a fast path: structured Excel files can skip much of the OCR and LLM work that photographed or PDF manifests need.",
