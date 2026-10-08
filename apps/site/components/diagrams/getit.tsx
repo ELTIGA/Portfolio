@@ -1,4 +1,4 @@
-import { FlowDiagram, type FlowSpec } from "./kit";
+import { FlowDiagram, type DiagramProps, type FlowSpec } from "./kit";
 
 // Source: getit README and docs/ARCHITECTURE.md.
 const spec: FlowSpec = {
@@ -38,6 +38,6 @@ const spec: FlowSpec = {
   ],
 };
 
-export function GetitDiagram() {
-  return <FlowDiagram spec={spec} />;
+export function GetitDiagram({ variant }: DiagramProps) {
+  return <FlowDiagram spec={spec} variant={variant} />;
 }

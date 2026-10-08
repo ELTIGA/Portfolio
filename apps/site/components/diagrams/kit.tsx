@@ -10,6 +10,10 @@ import type { ReactNode } from "react";
 
 export type Tone = "default" | "accent";
 
+export interface DiagramProps {
+  variant?: "page" | "panel";
+}
+
 export interface FlowNode {
   /** Bold heading; each entry is one line. */
   label: string[];
@@ -196,9 +200,26 @@ function Svg({ spec, mode }: { spec: FlowSpec; mode: Mode }) {
   );
 }
 
-export function FlowDiagram({ spec }: { spec: FlowSpec }) {
+/**
+ * `variant="page"` is the case-study figure; `"panel"` drops the frame and caption and
+ * scales to its container's height (homepage work reel). Both draw their strokes on
+ * view via the `data-draw` hook (see components/fx/FxRoot.tsx).
+ */
+export function FlowDiagram({ spec, variant = "page" }: { spec: FlowSpec } & DiagramProps) {
+  if (variant === "panel") {
+    return (
+      <figure className="diagram-hot flex h-full w-full items-center justify-center" data-draw-reel="">
+        <div className="hidden h-full w-full md:block [&_svg]:!h-full [&_svg]:max-h-full">
+          <Svg spec={spec} mode="wide" />
+        </div>
+        <div className="mx-auto w-full max-w-[420px] md:hidden">
+          <Svg spec={spec} mode="narrow" />
+        </div>
+      </figure>
+    );
+  }
   return (
-    <figure className="rounded-xl border border-line bg-bg p-2 sm:p-4 lg:-mx-12">
+    <figure className="diagram-hot brackets bg-bg/70 p-3 backdrop-blur-sm sm:p-5 lg:-mx-12" data-draw="">
       <div className="hidden md:block">
         <Svg spec={spec} mode="wide" />
       </div>

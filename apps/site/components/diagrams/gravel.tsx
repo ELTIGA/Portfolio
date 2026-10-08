@@ -1,4 +1,4 @@
-import { FlowDiagram, type FlowSpec } from "./kit";
+import { FlowDiagram, type DiagramProps, type FlowSpec } from "./kit";
 
 // Source: Gravel TUI README and docs (architecture, crates, operations).
 const spec: FlowSpec = {
@@ -36,6 +36,6 @@ const spec: FlowSpec = {
   ],
 };
 
-export function GravelDiagram() {
-  return <FlowDiagram spec={spec} />;
+export function GravelDiagram({ variant }: DiagramProps) {
+  return <FlowDiagram spec={spec} variant={variant} />;
 }
