@@ -39,6 +39,11 @@ export const profile: Profile = {
       period: "Jul 2026 – present", // TODO(owner): owner will handle permission to name the company publicly
       summary:
         "Sole developer of Express Ops and the post-tour review router for a tour operator. Express Ops is used daily by the operations team and saves roughly 3–5 hours a day.",
+      bullets: [
+        "Sole developer of Express Ops, an operations platform for a tour operator: schema, role-based UI, OCR pipeline, CI/CD and production deployment.",
+        "Used daily by the operations team; I estimate it saves them roughly 3–5 hours a day.",
+        "Built the post-tour review router, a QR-code landing page that sends customers to the review site where their booking lives.",
+      ],
     },
     {
       org: "Fyluim", // TODO(owner): confirm it's fine to name Fyluim on the site
@@ -46,6 +51,7 @@ export const profile: Profile = {
       type: "Employee",
       period: "2023 – 2024",
       summary: "UI/UX design and front-end development at a company building web3 technologies and trading bots.",
+      bullets: ["UI/UX design and front-end development at a company building web3 technologies and trading bots."],
     },
   ],
   credentials: [
@@ -83,6 +89,8 @@ export const profile: Profile = {
     "Since July 2026 I've been the sole developer on Express Ops for a tour operator: from the first schema to the CI pipeline that deploys it. I care about the unglamorous half of software: audit gates, tenant isolation, observability and safe defaults.",
     "I'm also a Certified Ethical Hacker (2026), and I build tools that put guardrails around AI agents.",
   ],
+  resumeSummary:
+    "Software engineering graduate (B.Sc., 2026) working across DevSecOps and AI-enabled full-stack development. Sole developer of Express Ops, an operations platform a tour operator's team uses every day, with CI/CD, dependency auditing and role-based access built in. Certified Ethical Hacker (EC-Council, 2026).",
   skills: [
     {
       group: "Product engineering",

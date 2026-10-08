@@ -10,8 +10,18 @@ export interface Project {
   featured: boolean;
   role: string;
   status: string;
-  /** 2–3 sentences: the problem and what was built. */
+  /** 2–3 sentences: what was built (and the problem, when `problem` is not set). */
   summary: string;
+  /** The situation that made this worth building. Facts from the repo docs or the owner only. */
+  problem?: string;
+  /** What changed as a result. Only measured or owner-stated outcomes; no adoption claims. */
+  outcome?: string;
+  /** Engineering decisions and trade-offs, each taken from repo docs. One sentence each. */
+  decisions?: string[];
+  /** Documented roadmap items (from the repo's own backlog), never invented. */
+  nextSteps?: string[];
+  /** 2–3 concise bullets for the printable résumé. Falls back to the first highlights. */
+  resume?: string[];
   /** Concrete capabilities / outcomes. Facts only. */
   highlights: string[];
   stack: string[];
@@ -41,6 +51,8 @@ export interface Experience {
   type: string;
   period: string;
   summary: string;
+  /** Résumé bullets. Falls back to `summary` when absent. */
+  bullets?: string[];
 }
 
 export interface Credential {
@@ -81,4 +93,6 @@ export interface Profile {
   about: string[];
   skills: { group: string; items: string[] }[];
   metrics: Metric[];
+  /** Two or three sentences for the top of the résumé. */
+  resumeSummary?: string;
 }

@@ -1,0 +1,72 @@
+/* Résumé "paper". On screen it is a light card on the dark site; in print it is the page itself. */
+.resume-paper {
+  --paper: #ffffff;
+  --ink: #111418;
+  --ink-soft: #3d4651;
+  --rule: #c9d0d8;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 210mm;
+  margin-inline: auto;
+  padding: 28px 20px;
+  border-radius: 6px;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  font-family: var(--font-sans);
+}
+
+@media (min-width: 640px) {
+  .resume-paper { padding: 16mm 17mm; }
+}
+
+.resume-paper a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.resume-paper a:focus-visible { outline: 2px solid #0b6b45; outline-offset: 2px; }
+
+.resume-paper h1 { font-size: 22pt; line-height: 1.15; font-weight: 700; letter-spacing: -0.01em; }
+.resume-paper .resume-title { margin-top: 2px; font-size: 11pt; color: var(--ink-soft); }
+.resume-paper .resume-contact { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 10pt; }
+
+.resume-paper h2 {
+  margin-top: 16px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 9.5pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  break-after: avoid;
+}
+
+.resume-paper h3 { font-size: 10.5pt; font-weight: 700; break-after: avoid; }
+.resume-paper .resume-entry { margin-top: 10px; break-inside: avoid; }
+.resume-paper .resume-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; }
+.resume-paper .resume-meta { color: var(--ink-soft); font-size: 9.5pt; }
+.resume-paper ul.resume-list { margin-top: 3px; padding-left: 16px; list-style: disc; }
+.resume-paper ul.resume-list li { margin-top: 2px; padding-left: 2px; }
+.resume-paper .resume-stack { margin-top: 3px; color: var(--ink-soft); font-size: 9.5pt; }
+.resume-paper p + p { margin-top: 4px; }
+
+@page { size: A4; margin: 13mm 14mm; }
+
+@media print {
+  html { color-scheme: light; }
+  html, body { background: #fff !important; color: #000 !important; }
+  .resume-paper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 10pt;
+    line-height: 1.38;
+    --ink: #000;
+    --ink-soft: #222;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .resume-paper a { text-decoration: none; }
+  .resume-paper h1 { font-size: 21pt; }
+  .resume-paper h2 { margin-top: 12px; }
+  .resume-paper .resume-entry { margin-top: 7px; }
+}
