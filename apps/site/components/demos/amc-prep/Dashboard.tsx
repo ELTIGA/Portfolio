@@ -90,8 +90,10 @@ export function Dashboard({
           <span aria-hidden="true">🔥</span> <span className="font-semibold">{progress.streak}-day streak</span>
         </p>
         <p className="text-xs text-muted">
-          {progress.streakSecured ? "Today is secured. " : "Answer 10 today to count this day. "}
-          {toMilestone > 0 ? `${toMilestone} day${toMilestone === 1 ? "" : "s"} to the 7-day badge.` : "7-day badge earned."}
+          {progress.streakSecured ? "Today is secured. " : `Answer ${DAILY_TARGET} today to count this day. `}
+          {toMilestone > 0
+            ? `${toMilestone} day${toMilestone === 1 ? "" : "s"} to the ${STREAK_MILESTONE}-day badge.`
+            : `${STREAK_MILESTONE}-day badge earned.`}
         </p>
       </section>
 

@@ -51,11 +51,11 @@ export function Quiz({
   const q = session[index];
 
   useEffect(() => {
-    if (answered) feedbackRef.current?.focus();
+    if (answered) feedbackRef.current?.focus({ preventScroll: true });
   }, [answered]);
 
   useEffect(() => {
-    topRef.current?.focus();
+    topRef.current?.focus({ preventScroll: true });
   }, [index, done]);
 
   const submit = (picked: OptionId) => {
@@ -216,7 +216,7 @@ export function Quiz({
         </ul>
       </section>
 
-      <div ref={feedbackRef} tabIndex={-1} aria-live="polite" className="outline-none">
+      <div ref={feedbackRef} tabIndex={-1} className="outline-none">
         {answered && (
           <section className="space-y-3 rounded-xl border border-line bg-surface p-4 @lg:p-5" aria-label="Explanation">
             <div>

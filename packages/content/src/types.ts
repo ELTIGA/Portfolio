@@ -69,6 +69,9 @@ export interface EventAttended {
   role: string;
   year: string;
   image: string;
+  /** Intrinsic pixel size of `image`, for layout-stable rendering. */
+  width: number;
+  height: number;
   alt: string;
 }
 

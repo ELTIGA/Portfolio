@@ -2,8 +2,8 @@
 
 import { useEffect, useReducer, useState } from "react";
 import { CliTab } from "./CliTab";
-import { initialState, reducer } from "./engine";
-import { useReducedMotion, useWidth } from "./hooks";
+import { hasWork, initialState, reducer } from "./engine";
+import { usePageVisible, useReducedMotion, useWidth } from "./hooks";
 import { McpTab } from "./McpTab";
 import { handleTuiKey, TuiTab } from "./TuiTab";
 import { Tabs, type TabDef } from "./ui";
@@ -28,13 +28,15 @@ export default function Demo() {
   const compact = width > 0 && width < 700;
 
   // Simulation clock. Reduced motion: fewer, larger steps instead of a smooth 4 fps.
-  const quit = state.quit;
+  // It only runs while the TUI is on screen and has something to advance.
+  const visible = usePageVisible();
+  const ticking = hasWork(state) && tab === "tui" && visible;
   useEffect(() => {
-    if (quit) return;
+    if (!ticking) return;
     const ms = reduced ? 1000 : 250;
     const id = setInterval(() => dispatch({ type: "tick", dt: ms / 1000 }), ms);
     return () => clearInterval(id);
-  }, [quit, reduced]);
+  }, [ticking, reduced]);
 
   const select = (id: TabId) => {
     setTab(id);

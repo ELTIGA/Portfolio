@@ -23,6 +23,7 @@ function Field({ label, span, children }: { label: string; span: string; childre
 }
 
 function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; onEdit: (c: Partial<Passenger>) => void; onConfirm: () => void }) {
+  const [blank, setBlank] = useState<"adults" | "children" | "infants" | null>(null);
   const num = (key: "adults" | "children" | "infants", label: string) => (
     <input
       type="number"
@@ -30,8 +31,13 @@ function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; on
       max={99}
       inputMode="numeric"
       aria-label={`${p.guest} ${label}`}
-      value={p[key]}
-      onChange={(e) => onEdit({ [key]: Math.max(0, Math.min(99, Number(e.target.value) || 0)) })}
+      // An emptied field shows blank while editing instead of snapping back to 0 (and "05").
+      value={p[key] === 0 && blank === key ? "" : p[key]}
+      onChange={(e) => {
+        setBlank(e.target.value === "" ? key : null);
+        onEdit({ [key]: Math.max(0, Math.min(99, Number(e.target.value) || 0)) });
+      }}
+      onBlur={() => setBlank(null)}
       className={cx(input, "text-center tabular-nums")}
     />
   );

@@ -1,11 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { track } from "@/lib/track";
 
-/** Mounts Vercel Analytics and reports email CTA clicks via one delegated listener. */
+const noSubscribe = () => () => {};
+const isTopLevel = () => window.self === window.top;
+
+/**
+ * Mounts Vercel Analytics and reports email CTA clicks via one delegated listener.
+ * Pageviews are skipped when framed (the 3D intro iframes /desktop), so each intro
+ * doesn't log a phantom /desktop visit.
+ */
 export function AnalyticsEvents({ analytics }: { analytics: boolean }) {
+  const topLevel = useSyncExternalStore(noSubscribe, isTopLevel, () => false);
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const el = (e.target as HTMLElement | null)?.closest<HTMLElement>("[data-cta='email']");
@@ -14,5 +22,5 @@ export function AnalyticsEvents({ analytics }: { analytics: boolean }) {
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, []);
-  return analytics ? <Analytics /> : null;
+  return analytics && topLevel ? <Analytics /> : null;
 }

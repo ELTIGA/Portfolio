@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { memo } from "react";
 import type { AuditEntry, Decision } from "./engine";
+import { useStickToBottom } from "./hooks";
 import { AMBER, Badge, Pane, RED } from "./ui";
 
 const COLOR: Record<Decision, string> = {
@@ -19,18 +20,20 @@ const COLOR: Record<Decision, string> = {
   GRANT: AMBER,
 };
 
-export function AuditPane({ audit, wide }: { audit: AuditEntry[]; wide: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
+/** Rows rendered at once; the full chain stays in state, the view shows the tail. */
+const VISIBLE = 200;
+
+// Memoized: the demo ticks 4x a second but the audit only changes on new entries.
+export const AuditPane = memo(function AuditPane({ audit, wide }: { audit: AuditEntry[]; wide: boolean }) {
   const n = audit.length;
-  useEffect(() => {
-    const el = ref.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [n]);
+  const ref = useStickToBottom<HTMLDivElement>(n);
   const last = audit[n - 1];
+  const shown = n > VISIBLE ? audit.slice(-VISIBLE) : audit;
   return (
     <Pane id="gravel-audit" title="Audit log" right={<span className="text-[11px] text-muted">append-only · {n} entries · chain {last?.hash.slice(0, 6)}</span>}>
       <div ref={ref} role="log" aria-label="Audit log" className="max-h-60 min-h-32 flex-1 overflow-auto text-[12px]">
-        {audit.map((e) =>
+        {n > VISIBLE && <p className="px-3 py-1 text-[11px] text-muted">… {n - VISIBLE} earlier entries (chain intact)</p>}
+        {shown.map((e) =>
           wide ? (
             <div key={e.seq} className="grid grid-cols-[3rem_4.25rem_5.5rem_8rem_10rem_minmax(0,1fr)_3.5rem] items-baseline gap-x-2 border-b border-line/40 px-3 py-1">
               <span className="text-muted">#{String(e.seq).padStart(4, "0")}</span>
@@ -58,4 +61,4 @@ export function AuditPane({ audit, wide }: { audit: AuditEntry[]; wide: boolean 
       </div>
     </Pane>
   );
-}
+});

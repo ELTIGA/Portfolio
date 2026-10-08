@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import type { Driver, DriverBatch } from "./data";
 import { batchOk, batchSum, sumPax } from "./logic";
 import type { PushToast } from "./hooks";
 import { Chip, Icon, NumField } from "./ui";
 
-type Props = { drivers: Driver[]; setDrivers: Dispatch<SetStateAction<Driver[]>>; push: PushToast; compact: boolean };
+type Props = {
+  drivers: Driver[];
+  setDrivers: Dispatch<SetStateAction<Driver[]>>;
+  open: Set<string>;
+  setOpen: Dispatch<SetStateAction<Set<string>>>;
+  push: PushToast;
+  compact: boolean;
+};
 
-export function DriversScreen({ drivers, setDrivers, push, compact }: Props) {
-  const [open, setOpen] = useState<Set<string>>(() => new Set(drivers.flatMap((d) => d.batches.filter((b) => !batchOk(b)).map((b) => b.id))));
+export function DriversScreen({ drivers, setDrivers, open, setOpen, push, compact }: Props) {
 
   const allBatches = drivers.flatMap((d) => d.batches);
   const mismatches = allBatches.filter((b) => !batchOk(b)).length;

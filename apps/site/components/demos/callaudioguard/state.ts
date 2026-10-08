@@ -87,8 +87,11 @@ export function reducer(s: GuardState, a: Action): GuardState {
       };
       return push({ ...s, headphones: false, selected, current }, a.at, `${HEADPHONES} disconnected: back to ${current.output}`);
     }
-    case "toggleGuard":
-      return push({ ...s, guard: !s.guard }, a.at, s.guard ? "Keep on selected device: off" : "Keep on selected device: on");
+    case "toggleGuard": {
+      const next = push({ ...s, guard: !s.guard }, a.at, s.guard ? "Keep on selected device: off" : "Keep on selected device: on");
+      // Turning Keep on mid-call restores the chosen devices right away.
+      return next.guard ? enforce(next, a.at, "Keep turned on") : next;
+    }
     case "select": {
       const selected = { ...s.selected, [a.kind]: a.device };
       const current = { ...s.current, [a.kind]: a.device };

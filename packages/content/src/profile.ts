@@ -73,6 +73,8 @@ export const profile: Profile = {
       role: "Attendee",
       year: "2026",
       image: "/images/event-aws-2026.webp",
+      width: 900,
+      height: 816,
       alt: "Ahmed Eltigani wearing an attendee badge in front of the AWS Cloud and AI Day Türkiye backdrop",
     },
     {
@@ -80,6 +82,8 @@ export const profile: Profile = {
       role: "Participant",
       year: "2023",
       image: "/images/event-teknofest-2023.webp",
+      width: 900,
+      height: 576,
       alt: "Ahmed Eltigani wearing a TEKNOFEST lanyard in front of a green wall of plants and neon icons",
     },
   ],
