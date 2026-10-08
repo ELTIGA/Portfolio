@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { profile, projects } from "@portfolio/content";
 import { EmailCta } from "@/components/EmailCta";
+import { Intro3D } from "@/components/Intro3D";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/components/Section";
 
@@ -30,6 +31,7 @@ export default function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }} />
+      <Intro3D />
       <header className="sticky top-0 z-20 border-b border-line bg-bg/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
           <a href="#top" className="font-mono text-sm font-semibold">

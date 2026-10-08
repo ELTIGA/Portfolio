@@ -17,8 +17,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/shell/package-lock.json
       - run: npm ci
+      # apps/shell is a standalone app (not a workspace) with its own lockfile.
+      - run: npm ci --prefix apps/shell
       - run: npm run audit:ci
       - run: npm run lint
       - run: npm run typecheck
+      # Builds the 3D intro (apps/shell -> apps/site/public/experience), then the site.
       - run: npm run build

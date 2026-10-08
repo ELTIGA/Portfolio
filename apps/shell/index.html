@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0e11" />
+    <link rel="icon" href="data:," />
+    <title>3D desk intro</title>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="css-layer" inert></div>
+      <canvas id="gl" aria-hidden="true"></canvas>
+    </div>
+
+    <div id="loading" role="status" aria-live="polite">
+      <div class="loading-inner">
+        <span class="loading-mark" aria-hidden="true">~/</span>
+        <span>Setting up the desk</span>
+        <span class="loading-bar" aria-hidden="true"><i></i></span>
+      </div>
+    </div>
+
+    <div id="controls">
+      <a id="skip" class="btn btn-solid" href="/" target="_top">Skip to portfolio</a>
+      <button id="action" class="btn" type="button" hidden>Open the desktop</button>
+    </div>
+
+    <p id="fail" role="alert" hidden>
+      3D isn't available in this browser.
+      <a href="/" target="_top">Continue to the portfolio</a>
+    </p>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
