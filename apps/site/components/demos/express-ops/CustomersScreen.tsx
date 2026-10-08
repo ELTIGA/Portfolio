@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { customerListsSeed } from "./data";
 import type { Role } from "./data";
 import { Chip, Icon } from "./ui";
 
-export function CustomersScreen({ role }: { role: Role }) {
-  const [boarded, setBoarded] = useState<Set<string>>(new Set(["c1-1"]));
+type Props = { role: Role; boarded: Set<string>; setBoarded: Dispatch<SetStateAction<Set<string>>> };
+
+export function CustomersScreen({ role, boarded, setBoarded }: Props) {
   const toggle = (id: string) =>
     setBoarded((prev) => {
       const next = new Set(prev);
