@@ -8,10 +8,11 @@
   ],
   "scripts": {
     "dev": "npm run dev -w @portfolio/site",
-    "build": "npm run build -w @portfolio/site",
+    "build:shell": "node scripts/build-shell.mjs",
+    "build": "npm run build:shell && npm run build -w @portfolio/site",
     "lint": "npm run lint -w @portfolio/site",
     "typecheck": "npm run typecheck -w @portfolio/site -w @portfolio/content",
-    "audit:ci": "npm audit --omit=dev --audit-level=moderate"
+    "audit:ci": "npm audit --omit=dev --audit-level=moderate && npm audit --omit=dev --audit-level=moderate --prefix apps/shell"
   },
   "engines": {
     "node": ">=22"
