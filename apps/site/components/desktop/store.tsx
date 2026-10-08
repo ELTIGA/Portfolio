@@ -34,7 +34,7 @@ type Action =
   | { type: "resize"; id: string; w: number; h: number };
 
 const MENU = 28;
-const DOCK = 84;
+export const DOCK = 84;
 export const MIN_W = 320;
 export const MIN_H = 200;
 
@@ -50,7 +50,7 @@ function reducer(state: State, a: Action): State {
       const h = Math.min(a.size.h, a.viewport.h - MENU - DOCK - 12);
       const off = (state.cascade % 6) * 28;
       const x = Math.max(8, Math.min((a.viewport.w - w) / 2 + off - 70, a.viewport.w - w - 8));
-      const y = MENU + 16 + off;
+      const y = Math.max(MENU + 4, Math.min(MENU + 16 + off, a.viewport.h - DOCK - 12 - h));
       const z = state.zTop + 1;
       return {
         zTop: z,

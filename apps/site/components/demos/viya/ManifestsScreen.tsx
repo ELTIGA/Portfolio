@@ -36,7 +36,7 @@ function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; on
     />
   );
   return (
-    <div role="row" className={cx(GRID, "border-t border-(--v-line) px-3 py-2.5", p.review && "bg-(--v-warn-soft)/50")}>
+    <div className={cx(GRID, "border-t border-(--v-line) px-3 py-2.5", p.review && "bg-(--v-warn-soft)/50")}>
       <Field label="Guest" span="col-span-6 @2xl:col-span-1">
         <input aria-label={`Guest name, row ${n}`} value={p.guest} onChange={(e) => onEdit({ guest: e.target.value })} className={cx(input, "font-semibold")} />
       </Field>
@@ -62,7 +62,7 @@ function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; on
               <Icon name="alert" size={12} />
               <span className="truncate">{p.review}</span>
             </Chip>
-            <Btn size="sm" variant="neutral" onClick={onConfirm} aria-label={`Mark ${p.guest} row as reviewed`} className="shrink-0">
+            <Btn size="sm" variant="neutral" onClick={onConfirm} aria-label={`OK, mark ${p.guest} row as reviewed`} className="shrink-0">
               OK
             </Btn>
           </>
@@ -167,17 +167,17 @@ export function ManifestsScreen({ store }: { store: Store }) {
                 {cap.effective} seats needed · {cap.infants} {cap.infants === 1 ? "infant" : "infants"} not counted · cells are editable
               </p>
             </div>
-            <div role="table" aria-label="Extracted passengers">
-              <div role="rowgroup" className="hidden @2xl:block">
-                <div role="row" className={cx(GRID, "border-t border-(--v-line) bg-(--v-bg) px-3 py-1.5")}>
+            <div aria-label="Extracted passengers">
+              <div className="hidden @2xl:block">
+                <div className={cx(GRID, "border-t border-(--v-line) bg-(--v-bg) px-3 py-1.5")}>
                   {["Guest", "Pickup hotel", "Time", "Adults", "Children", "Infants", "Review"].map((h, i) => (
-                    <div key={h} role="columnheader" className={cx(labelCls, i >= 3 && i <= 5 && "text-center")}>
+                    <div key={h} className={cx(labelCls, i >= 3 && i <= 5 && "text-center")}>
                       {h}
                     </div>
                   ))}
                 </div>
               </div>
-              <div role="rowgroup">
+              <div>
                 {m.passengers.map((p, i) => (
                   <PassengerRow key={p.id} p={p} n={i + 1} onEdit={(c) => store.editPassenger(m.id, p.id, c)} onConfirm={() => store.confirmPassenger(m.id, p.id)} />
                 ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type PointerEvent as RPointerEvent, type ReactNode } from "react";
-import { MIN_H, MIN_W, useWindows, type WinState } from "./store";
+import { DOCK, MIN_H, MIN_W, useWindows, type WinState } from "./store";
 
 const MENU = 28;
 
@@ -19,8 +19,9 @@ export function Window({ win, active, children }: { win: WinState; active: boole
   };
   const onTitleMove = (e: RPointerEvent<HTMLDivElement>) => {
     if (!drag.current) return;
-    const x = Math.min(Math.max(e.clientX - drag.current.dx, 80 - win.w), window.innerWidth - 80);
-    const y = Math.min(Math.max(e.clientY - drag.current.dy, MENU), window.innerHeight - 60);
+    // keep the title bar and its traffic lights reachable, clear of the menu bar and dock
+    const x = Math.min(Math.max(e.clientX - drag.current.dx, 0), window.innerWidth - 140);
+    const y = Math.min(Math.max(e.clientY - drag.current.dy, MENU), window.innerHeight - DOCK - 36);
     move(win.id, x, y);
   };
   const endDrag = () => {
@@ -35,7 +36,9 @@ export function Window({ win, active, children }: { win: WinState; active: boole
   };
   const onResizeMove = (e: RPointerEvent<HTMLDivElement>) => {
     if (!size.current) return;
-    resize(win.id, size.current.w + e.clientX - size.current.sx, size.current.h + e.clientY - size.current.sy);
+    const w = Math.min(size.current.w + e.clientX - size.current.sx, window.innerWidth - win.x - 4);
+    const h = Math.min(size.current.h + e.clientY - size.current.sy, window.innerHeight - DOCK - 8 - win.y);
+    resize(win.id, w, h);
   };
   const endResize = () => {
     size.current = null;
@@ -65,7 +68,7 @@ export function Window({ win, active, children }: { win: WinState; active: boole
         <h2 className={`flex-1 truncate text-center text-xs font-medium ${active ? "text-fg" : "text-muted"}`}>{win.title}</h2>
         <span className="w-12" aria-hidden="true" />
       </div>
-      <div className="min-h-0 flex-1 overflow-auto">{children}</div>
+      <div tabIndex={0} className="min-h-0 flex-1 overflow-auto focus-visible:outline-offset-[-2px]">{children}</div>
       {!win.maximized && (
         <div
           onPointerDown={onResizeDown}

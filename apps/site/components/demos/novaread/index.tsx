@@ -59,11 +59,11 @@ export default function Demo() {
           </nav>
         </header>
 
-        <main className="mt-4">
+        <div className="mt-4">
           {screen === "library" && <Library onOpen={open} />}
           {screen === "reader" && <Reader key={book.id} book={book} quotes={quotes} onSave={save} />}
           {screen === "memory" && <Memory quotes={quotes} onRemove={(id) => setQuotes((prev) => prev.filter((q) => q.id !== id))} onLibrary={() => setScreen("library")} />}
-        </main>
+        </div>
       </div>
     </div>
   );

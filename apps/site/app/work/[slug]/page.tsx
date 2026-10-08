@@ -5,6 +5,7 @@ import { getProject, projects } from "@portfolio/content";
 import { DemoSlot } from "@/components/demos/DemoSlot";
 import { diagrams } from "@/components/diagrams/registry";
 import { EmailCta } from "@/components/EmailCta";
+import { TrackView } from "@/components/TrackView";
 
 type Params = { slug: string };
 
@@ -32,6 +33,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <TrackView slug={project.slug} />
       <Link href="/#work" className="font-mono text-xs text-muted hover:text-fg">← All work</Link>
       <p className="mt-8 font-mono text-xs uppercase tracking-widest text-accent">{project.role}</p>
       <h1 className="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">{project.name}</h1>
@@ -140,7 +142,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
 
       <div className="mt-16 rounded-xl border border-line bg-surface p-6">
         <h2 className="text-lg font-semibold">Want this kind of work on your team?</h2>
-        <div className="mt-4"><EmailCta /></div>
+        <div className="mt-4"><EmailCta surface="case-study" /></div>
       </div>
     </main>
   );

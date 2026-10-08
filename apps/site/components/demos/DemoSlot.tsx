@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { PreviewKind } from "@portfolio/content";
 import { DemoFrame } from "@/components/frames/DemoFrame";
 import { TerminalFrame } from "@/components/frames/TerminalFrame";
@@ -11,10 +11,16 @@ import { demos } from "./registry";
 export function DemoSlot({ slug, name, kind, height = 560 }: { slug: string; name: string; kind: PreviewKind; height?: number }) {
   const [launched, setLaunched] = useState(false);
   const Demo = demos[slug];
+  const interacted = useRef(false);
   if (!Demo) return null;
+  const onInteract = () => {
+    if (interacted.current) return;
+    interacted.current = true;
+    track("demo_interact", { slug });
+  };
 
   const body = (
-    <div className="h-full" onPointerDownCapture={() => track("demo_interact", { slug })}>
+    <div className="h-full" onPointerDownCapture={onInteract} onKeyDownCapture={onInteract}>
       <Demo />
     </div>
   );

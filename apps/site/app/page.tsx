@@ -32,6 +32,7 @@ export default function Home() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }} />
       <Intro3D />
+      <a href="#top" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-ink">Skip to content</a>
       <header className="sticky top-0 z-20 border-b border-line bg-bg/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
           <a href="#top" className="font-mono text-sm font-semibold">
@@ -42,7 +43,7 @@ export default function Home() {
             <a className="hidden hover:text-fg sm:inline" href="#work">Work</a>
             <a className="hidden hover:text-fg sm:inline" href="#experience">Experience</a>
             <a className="hidden hover:text-fg sm:inline" href="#about">About</a>
-            <EmailCta className="!px-3 !py-1.5" label="Email" />
+            <EmailCta className="!px-3 !py-1.5" label="Email" surface="header" />
           </nav>
         </div>
       </header>
@@ -57,10 +58,10 @@ export default function Home() {
             <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">{profile.headline}</h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{profile.subheadline}</p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <EmailCta />
+              <EmailCta surface="hero" />
               <a className={linkClass} href="#work">See the work</a>
-              <span className="font-mono text-xs text-muted">{profile.languages.join(" · ")}</span>
             </div>
+            <p className="mt-4 font-mono text-xs text-muted">Languages: {profile.languages.join(" · ")}</p>
           </div>
           <figure className="order-first mx-auto w-40 md:order-none md:w-full">
             <Image
@@ -201,10 +202,10 @@ export default function Home() {
 
         <Section id="contact" eyebrow="06 / contact" title="Let's talk about your team">
           <p className="max-w-xl text-lg text-muted">
-            The fastest way to reach me is email. I reply to every message about a role, a contract or a project.
+            Email is the fastest way to reach me. Tell me about the role, the contract or the project.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
-            <EmailCta label={`Email ${profile.email}`} />
+            <EmailCta label={`Email ${profile.email}`} surface="contact" />
             <a className={linkClass} href={profile.linkedin} rel="noopener noreferrer" target="_blank">LinkedIn</a>
             <a className={linkClass} href={profile.github} rel="noopener noreferrer" target="_blank">GitHub</a>
           </div>
