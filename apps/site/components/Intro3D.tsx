@@ -14,6 +14,7 @@ const SKIP_KEY = "intro3d:skipped";
 const SHELL_URL = "/experience/index.html";
 const READY_TIMEOUT_MS = 12000;
 const BOT_UA = /bot|crawl|spider|slurp|lighthouse|pagespeed|prerender|gtmetrix/i;
+const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|microsoft basic render/i;
 
 type NetworkInfo = { saveData?: boolean; effectiveType?: string };
 type NavigatorExtras = Navigator & { connection?: NetworkInfo; deviceMemory?: number };
@@ -37,11 +38,14 @@ function rememberSkip() {
 function hasWebGL2() {
   try {
     const canvas = document.createElement("canvas");
-    // Rejects software renderers (SwiftShader, llvmpipe) that would run the scene badly.
     const gl = canvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
     if (!gl) return false;
+    // Software renderers (SwiftShader, llvmpipe) don't always report a performance
+    // caveat; they would run the scene badly, so check the renderer name too.
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? "");
     gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return true;
+    return !SOFTWARE_GL.test(renderer);
   } catch {
     return false;
   }
