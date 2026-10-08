@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { driversSeed } from "./data";
+import { batchOk } from "./logic";
 import type { Driver, Role } from "./data";
 import { LayoutContext, useElementWidth, useToasts } from "./hooks";
 import type { Breakpoint } from "./hooks";
@@ -33,6 +34,12 @@ export default function Demo() {
   const [role, setRole] = useState<Role>("operator");
   const [active, setActive] = useState<ScreenId>("manifest");
   const [drivers, setDrivers] = useState<Driver[]>(driversSeed);
+  // Per-screen progress lives here so it survives switching screens (and toast Undo still works).
+  const [resolved, setResolved] = useState<Set<string>>(() => new Set());
+  const [openBatches, setOpenBatches] = useState<Set<string>>(
+    () => new Set(driversSeed.flatMap((d) => d.batches.filter((b) => !batchOk(b)).map((b) => b.id))),
+  );
+  const [boarded, setBoarded] = useState<Set<string>>(() => new Set(["c1-1"]));
   const { toasts, push, dismiss } = useToasts();
   const manifest = useManifest(push, dismiss);
 
@@ -50,7 +57,7 @@ export default function Demo() {
       if (!(e.metaKey || e.ctrlKey) || e.shiftKey || e.altKey || e.key.toLowerCase() !== "z") return;
       const t = e.target as HTMLElement | null;
       if (t && t.closest("input, textarea, select, [contenteditable='true']")) return;
-      const inside = !!t && (rootRef.current?.contains(t) || t === document.body);
+      const inside = !!t && !!rootRef.current?.contains(t);
       if (inside && undoRef.current()) e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
@@ -152,9 +159,9 @@ export default function Demo() {
 
           <div role="region" className="eo-scroll min-w-0 flex-1 overflow-y-auto" aria-label={current.label}>
             {screen === "manifest" && <ManifestScreen m={manifest} contentW={contentW} />}
-            {screen === "drivers" && <DriversScreen drivers={drivers} setDrivers={setDrivers} push={push} compact={contentW < 560} />}
-            {screen === "doubles" && <DoublesScreen push={push} compact={contentW < 600} />}
-            {screen === "customers" && <CustomersScreen role={role} />}
+            {screen === "drivers" && <DriversScreen drivers={drivers} setDrivers={setDrivers} open={openBatches} setOpen={setOpenBatches} push={push} compact={contentW < 560} />}
+            {screen === "doubles" && <DoublesScreen resolved={resolved} setResolved={setResolved} push={push} compact={contentW < 600} />}
+            {screen === "customers" && <CustomersScreen role={role} boarded={boarded} setBoarded={setBoarded} />}
           </div>
         </div>
 

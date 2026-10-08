@@ -24,7 +24,8 @@ export default function Demo() {
             </span>
             <span className="text-sm font-semibold">AMC Prep</span>
           </button>
-          <p className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs" aria-label="Your progress">
+          <p className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+            <span className="sr-only">Your progress: </span>
             <span className="rounded-full bg-sky-400/15 px-2.5 py-1 text-sky-100">
               L{level} {titleFor(level)}
             </span>

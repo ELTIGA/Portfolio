@@ -4,11 +4,14 @@ import { profile, projects } from "@portfolio/content";
 import { PrintButton } from "./PrintButton";
 import "./resume.css";
 
+const description = `${profile.name}: résumé. Experience, projects, skills, education and credentials.`;
+
 export const metadata: Metadata = {
   title: "Résumé",
-  description: `${profile.name}: résumé. Experience, projects, skills, education and credentials.`,
+  description,
   alternates: { canonical: "/resume" },
-  openGraph: { title: `Résumé · ${profile.name}`, url: "/resume" },
+  openGraph: { title: `Résumé · ${profile.name}`, description, url: "/resume", type: "profile", siteName: profile.name },
+  twitter: { card: "summary_large_image", title: `Résumé · ${profile.name}`, description },
 };
 
 const sorted = [...projects].sort((a, b) => a.order - b.order);
