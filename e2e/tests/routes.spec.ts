@@ -23,7 +23,7 @@ test.describe("routes @smoke", () => {
     const res = await page.goto("/desktop", { waitUntil: "networkidle" });
     expect(res?.status()).toBe(200);
     // The Projects (Finder) window opens on mount.
-    await expect(page.getByRole("dialog", { name: "Projects" })).toBeVisible();
+    await expect(page.getByRole("group", { name: "Projects" })).toBeVisible();
     expect(errors).toEqual([]);
   });
 
