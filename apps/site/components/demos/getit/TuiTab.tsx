@@ -39,11 +39,18 @@ export function handleTuiKey(e: KeyboardEvent, state: State, dispatch: Dispatch<
     e.preventDefault();
     dispatch(a);
   };
+  // Arrows move the selection only from the queue itself or the demo root; on other
+  // controls they keep their default (e.g. scrolling the panel).
+  const onList = t === e.currentTarget || t.getAttribute("role") === "listbox" || !!t.closest("[role='listbox']");
   switch (e.key) {
     case "ArrowDown":
+      if (!onList) return;
+      return act({ type: "move", delta: 1 });
     case "j":
       return act({ type: "move", delta: 1 });
     case "ArrowUp":
+      if (!onList) return;
+      return act({ type: "move", delta: -1 });
     case "k":
       return act({ type: "move", delta: -1 });
     case "p":
@@ -110,6 +117,13 @@ function PromptForm({ state, dispatch, rootRef }: { state: State; dispatch: Disp
         <input
           id="getit-prompt"
           ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key !== "Escape") return;
+            e.preventDefault();
+            e.stopPropagation();
+            dispatch({ type: "closePrompt" });
+            rootRef.current?.focus({ preventScroll: true });
+          }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           type={isPw ? "password" : "text"}
@@ -297,7 +311,7 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
 
       <div ref={logRef} role="log" aria-label="getit event log" className="max-h-24 min-h-14 overflow-auto px-3 py-2 text-[12px]">
         {state.log.slice(-6).map((l) => (
-          <div key={`${l.at.toFixed(2)}-${l.text}`} className={TONE[l.tone]}>
+          <div key={l.id} className={TONE[l.tone]}>
             <span className="text-muted">+{l.at.toFixed(0).padStart(3, "0")}s </span>
             {l.text}
           </div>

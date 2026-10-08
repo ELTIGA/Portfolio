@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { memo, useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { DEMO_PASSWORD } from "./engine";
 import { checkUrl, fakeSha, fmtEta, fmtSize, hash32, nameFromUrl, sizeFromUrl } from "./lib";
 import { Chip } from "./ui";
@@ -116,7 +116,8 @@ interface Job {
   elapsed: number;
 }
 
-export function CliTab({ active, reduced }: { active: boolean; reduced: boolean }) {
+// Memoized: the parent demo re-renders on its own simulation ticks.
+export const CliTab = memo(function CliTab({ active, reduced }: { active: boolean; reduced: boolean }) {
   const [lines, setLines] = useState<Line[]>([
     { id: 0, kind: "dim", text: "getit demo shell. Nothing is downloaded: all output is simulated in your browser." },
     { id: 1, kind: "dim", text: "Try a suggestion below, or type `getit --help`." },
@@ -145,11 +146,13 @@ export function CliTab({ active, reduced }: { active: boolean; reduced: boolean 
 
   useEffect(() => stopTimer, [stopTimer]);
 
+  // Keyed to the newest line, not the count: the buffer is capped at 200 lines.
   const hasLive = live !== null;
+  const lastId = lines.length ? lines[lines.length - 1].id : -1;
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [lines.length, hasLive]);
+  }, [lastId, hasLive]);
 
   const finish = useCallback(() => {
     stopTimer();
@@ -272,11 +275,16 @@ export function CliTab({ active, reduced }: { active: boolean; reduced: boolean 
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
       const h = history.current;
-      if (!h.length) return;
+      if (!h.length || running) return;
+      // ArrowDown before any ArrowUp has nothing newer to show.
+      if (e.key === "ArrowDown" && histPos.current < 0) return;
       e.preventDefault();
       histPos.current = e.key === "ArrowUp" ? (histPos.current < 0 ? h.length - 1 : Math.max(0, histPos.current - 1)) : Math.min(h.length, histPos.current + 1);
       setValue(h[histPos.current] ?? "");
     } else if (e.key === "c" && e.ctrlKey) {
+      const el = e.currentTarget;
+      // With text selected and nothing running, Ctrl+C is copy.
+      if (!running && el.selectionStart !== el.selectionEnd) return;
       e.preventDefault();
       if (running) interrupt();
       else setValue("");
@@ -350,12 +358,14 @@ export function CliTab({ active, reduced }: { active: boolean; reduced: boolean 
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={onKey}
-            disabled={running}
+            // readOnly (not disabled) keeps focus here, so Ctrl+C can interrupt a run.
+            readOnly={running}
+            aria-busy={running}
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}
             placeholder={running ? "downloading… (Ctrl+C to interrupt)" : "getit download https://example.test/f/abc123 -c 2"}
-            className="min-w-0 flex-1 bg-transparent py-1 text-[13px] text-fg placeholder:text-muted/60 focus:outline-none disabled:opacity-60"
+            className="min-w-0 flex-1 bg-transparent py-1 text-[13px] text-fg placeholder:text-muted/60 focus:outline-none read-only:opacity-60"
           />
           {running ? (
             <button type="button" onClick={interrupt} className="rounded border border-line px-2 py-1 text-[12px] text-[#ff6b6b] hover:border-[#ff6b6b]/60">
@@ -370,7 +380,7 @@ export function CliTab({ active, reduced }: { active: boolean; reduced: boolean 
       </div>
     </div>
   );
-}
+});
 
 function textBar(pct: number, width: number) {
   const full = Math.round((Math.max(0, Math.min(100, pct)) / 100) * width);

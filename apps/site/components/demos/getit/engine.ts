@@ -104,12 +104,30 @@ export type Action =
   | { type: "quit" }
   | { type: "restart" };
 
+/** Log ids only ever grow (newest is last), so they are unique React keys even after capping. */
+const nextLogId = (log: LogLine[]) => (log.length ? log[log.length - 1].id + 1 : 0);
+
 function say(s: State, text: string, tone: Tone = "info"): LogLine[] {
-  return [...s.log, { id: s.nextId + s.log.length + 1000, at: s.clock, text, tone }].slice(-40);
+  return [...s.log, { id: nextLogId(s.log), at: s.clock, text, tone }].slice(-40);
+}
+
+/** True while the simulation has something to advance; the clock can idle otherwise. */
+export function hasWork(s: State): boolean {
+  if (s.quit) return false;
+  if (s.items.some((i) => i.status === "downloading" || i.status === "verifying")) return true;
+  return !s.pwPrompted && s.items.some((i) => i.status === "locked");
 }
 
 function withItem(s: State, id: number, patch: Partial<Item>): Item[] {
   return s.items.map((i) => (i.id === id ? { ...i, ...patch } : i));
+}
+
+/** Like fillSlots, but also re-queues the newest active downloads when the limit was lowered. */
+function fitSlots(items: Item[], concurrency: number): Item[] {
+  const active = items.filter((i) => i.status === "downloading");
+  if (active.length <= concurrency) return fillSlots(items, concurrency);
+  const excess = new Set(active.slice(concurrency).map((i) => i.id));
+  return items.map((i) => (excess.has(i.id) ? { ...i, status: "queued" as const, speed: 0 } : i));
 }
 
 function fillSlots(items: Item[], concurrency: number): Item[] {
@@ -126,11 +144,11 @@ function fillSlots(items: Item[], concurrency: number): Item[] {
 export function reducer(s: State, a: Action): State {
   switch (a.type) {
     case "tick": {
-      if (s.quit) return s;
+      if (!hasWork(s)) return s;
       const clock = s.clock + a.dt;
       let log = s.log;
       const push = (text: string, tone: Tone = "info") => {
-        log = [...log, { id: s.nextId + log.length + Math.floor(clock * 100), at: clock, text, tone }].slice(-40);
+        log = [...log, { id: nextLogId(log), at: clock, text, tone }].slice(-40);
       };
       const raw = s.items.map((i) => (i.status === "downloading" ? i.base * (0.82 + 0.28 * Math.sin(clock * 1.3 + i.id * 1.7)) : 0));
       const sum = raw.reduce((x, y) => x + y, 0);
@@ -238,7 +256,7 @@ export function reducer(s: State, a: Action): State {
       const added: Item[] = [];
       for (const url of urls) {
         const chk = checkUrl(url);
-        if (!chk.ok) continue;
+        if (!chk.ok || s.items.some((i) => i.url === url)) continue;
         added.push(mk(nextId++, url, nameFromUrl(chk.url), chk.host?.label ?? "Direct", sizeFromUrl(chk.url), 8 + (hash32(url) % 22), { encrypted: chk.host?.key === "mega" }));
       }
       const items = fillSlots([...s.items, ...added], s.concurrency);
@@ -248,7 +266,7 @@ export function reducer(s: State, a: Action): State {
       return { ...s, settingsOpen: !s.settingsOpen, prompt: null };
     case "concurrency": {
       const concurrency = Math.min(6, Math.max(1, s.concurrency + a.delta));
-      return { ...s, concurrency, items: fillSlots(s.items, concurrency) };
+      return { ...s, concurrency, items: fitSlots(s.items, concurrency) };
     }
     case "cycleLimit": {
       const order = [0, 10, 25];
