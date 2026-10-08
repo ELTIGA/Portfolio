@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/desktop" },
 };
 
-export default async function DesktopPage({ searchParams }: { searchParams: Promise<{ open?: string }> }) {
-  const { open } = await searchParams;
-  return <Desktop initial={open} />;
+export default function DesktopPage() {
+  return <Desktop />;
 }
