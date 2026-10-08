@@ -1,0 +1,19 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @portfolio/site",
+    "build": "npm run build -w @portfolio/site",
+    "lint": "npm run lint -w @portfolio/site",
+    "typecheck": "npm run typecheck -w @portfolio/site -w @portfolio/content",
+    "audit:ci": "npm audit --omit=dev --audit-level=moderate"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
