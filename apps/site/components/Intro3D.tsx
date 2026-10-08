@@ -147,6 +147,8 @@ export function Intro3D() {
     const prevOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
     skipRef.current?.focus();
+    // Lets the homepage particle field pause while the intro owns the GPU.
+    window.dispatchEvent(new Event("intro3d:open"));
     const fade = window.requestAnimationFrame(() => setVisible(true));
 
     // If the 3D app never reports ready (missing build, blocked), fall back quietly.
@@ -180,6 +182,7 @@ export function Intro3D() {
       window.removeEventListener("message", onMessage);
       for (const el of inerted) el.inert = false;
       document.documentElement.style.overflow = prevOverflow;
+      window.dispatchEvent(new Event("intro3d:close"));
       returnFocus.current?.focus?.({ preventScroll: true });
     };
   }, [open, close]);
