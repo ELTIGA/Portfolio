@@ -19,8 +19,11 @@ export function TerminalApp() {
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Scroll only the window's own content box; scrollIntoView would also scroll every
+  // ancestor, including the 3D shell's frame when the desktop is shown on the monitor.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    const box = endRef.current?.closest<HTMLElement>("[data-win-content]");
+    if (box) box.scrollTop = box.scrollHeight;
   }, [lines]);
 
   const run = (raw: string) => {

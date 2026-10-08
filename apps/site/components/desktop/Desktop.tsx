@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dock } from "./Dock";
 import { MenuBar } from "./MenuBar";
 import { Window } from "./Window";
@@ -15,17 +15,34 @@ import { SettingsApp } from "./apps/SettingsApp";
 import { TerminalApp } from "./apps/TerminalApp";
 import { getProject } from "@portfolio/content";
 
-function Surface({ initial }: { initial?: string }) {
+function Surface() {
   const { wins, topId, open } = useWindows();
 
   useEffect(() => {
     const finder = APPS.find((a) => a.id === "finder")!;
     open(finder.id, finder.title, finder.size);
+    // Read ?open= on the client so /desktop stays a static page.
+    const initial = new URLSearchParams(window.location.search).get("open");
     const p = initial ? getProject(initial) : undefined;
     if (p) open(projectWindowId(p.slug), p.name, { w: 940, h: 620 });
     // run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keyboard focus follows the active window: into a newly opened or raised window,
+  // and to the next one when the focused window is closed or minimized. The very
+  // first window is left alone so loading the page never steals focus.
+  const settled = useRef(false);
+  useEffect(() => {
+    if (!topId) return;
+    if (!settled.current) {
+      settled.current = true;
+      return;
+    }
+    const content = document.querySelector<HTMLElement>(`[data-win-content="${CSS.escape(topId)}"]`);
+    if (!content || content.parentElement?.contains(document.activeElement)) return;
+    content.focus({ preventScroll: true });
+  }, [topId]);
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[radial-gradient(ellipse_at_top,#16202b,#0b0e11_70%)]">
@@ -49,7 +66,7 @@ function Surface({ initial }: { initial?: string }) {
 }
 
 /** Desktop experience. Narrow screens get a pointer to the plain page instead of cramped windows. */
-export function Desktop({ initial }: { initial?: string }) {
+export function Desktop() {
   const [wide, setWide] = useState<boolean | null>(null);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 900px) and (min-height: 560px)");
@@ -74,7 +91,7 @@ export function Desktop({ initial }: { initial?: string }) {
   }
   return (
     <WindowProvider>
-      <Surface initial={initial} />
+      <Surface />
     </WindowProvider>
   );
 }
