@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { profile } from "@portfolio/content";
+import { AnalyticsEvents } from "@/components/AnalyticsEvents";
 import "./globals.css";
 
 const title = `${profile.name}: DevSecOps & AI-enabled full-stack engineer`;
@@ -20,7 +21,10 @@ export const viewport: Viewport = { themeColor: "#0b0e11", colorScheme: "dark" }
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" dir="ltr">
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">
+        {children}
+        <AnalyticsEvents analytics={Boolean(process.env.VERCEL)} />
+      </body>
     </html>
   );
 }

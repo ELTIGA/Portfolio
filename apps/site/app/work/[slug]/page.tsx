@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, projects } from "@portfolio/content";
+import { DemoSlot } from "@/components/demos/DemoSlot";
 import { EmailCta } from "@/components/EmailCta";
 
 type Params = { slug: string };
@@ -52,7 +53,13 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
         </ul>
       </section>
 
-      {/* TODO: interactive preview (DemoFrame) goes here, kind: {project.preview} */}
+      <section className="mt-12" aria-labelledby="preview">
+        <h2 id="preview" className="text-xl font-semibold">Try it</h2>
+        <p className="mt-2 text-sm text-muted">A working replica of the real interface, running on made-up sample data.</p>
+        <div className="mt-4">
+          <DemoSlot slug={project.slug} name={project.name} kind={project.preview} />
+        </div>
+      </section>
 
       {project.security.length > 0 && (
         <section className="mt-12" aria-labelledby="security">
