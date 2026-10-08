@@ -165,6 +165,26 @@ export const projects: Project[] = [
     preview: "menubar",
     links: [],
   },
+  {
+    slug: "novaread",
+    name: "NovaRead",
+    tagline: "AI-assisted digital library: read books and get explanations, simplifications and voice help in context.",
+    order: 8,
+    featured: false,
+    role: "Co-developer: React front end and AI integration",
+    status: "Team graduation project",
+    summary:
+      "A library platform where users upload and read books, save quotes to a memory section, and ask an AI to explain or simplify what they are reading by text or voice. I worked on the React front end and the AI integration with Gemini and the OpenAI Realtime API.",
+    highlights: [
+      "Reading screen with real-time AI explanations and simplifications.",
+      "Memory screen for saving quotes and highlights.",
+      "Voice and text interaction with the AI assistant.",
+    ],
+    stack: ["React", "Tailwind CSS", "Gemini API", "OpenAI Realtime API"],
+    security: [],
+    preview: "web",
+    links: [],
+  },
 ];
 
 export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
