@@ -5,7 +5,7 @@ test.describe("desktop", () => {
   test("?open=<slug> opens that project's window", async ({ page }) => {
     const project = projects.find((p) => p.featured) ?? projects[0];
     await page.goto(`/desktop?open=${project.slug}`);
-    const win = page.getByRole("dialog", { name: project.name });
+    const win = page.getByRole("group", { name: project.name, exact: true });
     await expect(win).toBeVisible();
     await win.getByRole("button", { name: `Close ${project.name}` }).click();
     await expect(win).toBeHidden();
