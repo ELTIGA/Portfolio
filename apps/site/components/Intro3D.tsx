@@ -16,6 +16,7 @@ const READY_TIMEOUT_MS = 12000;
 const BOT_UA = /bot|crawl|spider|slurp|lighthouse|pagespeed|prerender|gtmetrix/i;
 
 type NetworkInfo = { saveData?: boolean; effectiveType?: string };
+type NavigatorExtras = Navigator & { connection?: NetworkInfo; deviceMemory?: number };
 
 function alreadySkipped() {
   try {
@@ -36,7 +37,8 @@ function rememberSkip() {
 function hasWebGL2() {
   try {
     const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl2");
+    // Rejects software renderers (SwiftShader, llvmpipe) that would run the scene badly.
+    const gl = canvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
     if (!gl) return false;
     gl.getExtension("WEBGL_lose_context")?.loseContext();
     return true;
@@ -55,7 +57,9 @@ function isCapable() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   if (!window.matchMedia("(pointer: fine)").matches) return false;
   if (window.innerWidth < 1024 || window.innerHeight < 600) return false;
-  const conn = (navigator as Navigator & { connection?: NetworkInfo }).connection;
+  const nav = navigator as NavigatorExtras;
+  if (nav.deviceMemory !== undefined && nav.deviceMemory < 4) return false;
+  const conn = nav.connection;
   if (conn?.saveData) return false;
   if (conn?.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return false;
   return hasWebGL2();
@@ -71,22 +75,37 @@ export function Intro3D() {
   const entered = useRef(false);
 
   // Decide after the page is idle so the 3D never competes with the first paint.
+  // Never interrupt a visitor who has already started reading or clicking.
   useEffect(() => {
     let cancelled = false;
+    let engaged = false;
     let idleId: number | undefined;
     let timerId: number | undefined;
 
+    const engage = () => {
+      engaged = true;
+    };
+    const engageEvents = ["scroll", "pointerdown", "keydown", "touchstart"] as const;
+    for (const type of engageEvents) window.addEventListener(type, engage, { once: true, passive: true });
+
     const schedule = () => {
-      const show = () => {
-        if (!cancelled && isCapable()) {
-          returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-          setOpen(true);
+      const show = async () => {
+        if (cancelled || engaged || !isCapable()) return;
+        // The shell is a separate build; if it is missing, never show an overlay over a 404.
+        try {
+          const res = await fetch(SHELL_URL, { method: "HEAD" });
+          if (!res.ok) return;
+        } catch {
+          return;
         }
+        if (cancelled || engaged) return;
+        returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        setOpen(true);
       };
       if (typeof window.requestIdleCallback === "function") {
-        idleId = window.requestIdleCallback(show, { timeout: 4000 });
+        idleId = window.requestIdleCallback(() => void show(), { timeout: 4000 });
       } else {
-        timerId = window.setTimeout(show, 2000);
+        timerId = window.setTimeout(() => void show(), 2000);
       }
     };
 
@@ -95,6 +114,7 @@ export function Intro3D() {
 
     return () => {
       cancelled = true;
+      for (const type of engageEvents) window.removeEventListener(type, engage);
       window.removeEventListener("load", schedule);
       if (idleId !== undefined && typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
       if (timerId !== undefined) window.clearTimeout(timerId);

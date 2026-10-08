@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { CSS3DObject, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { SCREEN, addGlobalLights, buildRoom } from "./room";
 import { Pose, Tween, applyPose, clonePose, deskPose, introCurve, zoomPose } from "./rig";
-import { notifyParent, requestSkip } from "./bridge";
+import { notifyParent, rememberSkip, requestSkip } from "./bridge";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -21,11 +21,7 @@ function fail(reason: unknown) {
   notifyParent("failed");
   if (!embedded) {
     // Standalone: nothing to show without WebGL, go to the plain portfolio.
-    try {
-      sessionStorage.setItem("intro3d:skipped", "1");
-    } catch {
-      /* storage can be unavailable */
-    }
+    rememberSkip();
     window.location.replace("/");
   }
 }
@@ -88,11 +84,17 @@ function boot() {
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // 1.5 keeps large/HiDPI screens with shadows affordable on integrated GPUs.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(width, height);
     cssRenderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    refit();
+  }
+
+  /** Re-derive the resting pose for the current aspect (after a resize, or a move that spanned one). */
+  function refit() {
     if (state === "desk") pose = deskPose(camera.aspect);
     if (state === "zoomed") pose = zoomPose(camera.aspect, camera.fov, height);
     dirty = true;
@@ -118,19 +120,20 @@ function boot() {
   }
 
   function go(to: Pose, seconds: number, next: State, path?: THREE.CatmullRomCurve3) {
-    const dur = reduceMotion ? 0 : seconds;
-    if (dur === 0) {
-      pose = clonePose(to);
+    const arrive = () => {
       tween = null;
       setState(next);
+      refit();
       if (next === "zoomed") iframe.focus({ preventScroll: true });
+      else if (next === "desk" && refocusAction) actionBtn.focus({ preventScroll: true });
+      refocusAction = false;
+    };
+    if (reduceMotion || seconds === 0) {
+      pose = clonePose(to);
+      arrive();
       return;
     }
-    tween = new Tween(pose, to, dur, path, () => {
-      tween = null;
-      setState(next);
-      if (next === "zoomed") iframe.focus({ preventScroll: true });
-    });
+    tween = new Tween(pose, to, seconds, path, arrive);
   }
 
   function startIntro() {
@@ -151,8 +154,12 @@ function boot() {
     go(zoomPose(camera.aspect, camera.fov, height), 1.15, "zoomed");
   }
 
+  // Zooming out makes the monitor inert, which drops focus to <body>; return it to the control.
+  let refocusAction = false;
+
   function zoomOut() {
     if (state !== "zoomed") return;
+    refocusAction = true;
     setState("zoomOut");
     go(deskPose(camera.aspect), 1.0, "desk");
   }
@@ -211,6 +218,9 @@ function boot() {
     }
   }
   window.addEventListener("keydown", onKey);
+
+  // Standalone "Skip" link: remember the choice so "/" doesn't reopen the intro.
+  $("skip").addEventListener("click", rememberSkip);
 
   iframe.addEventListener("load", () => {
     iframeLoaded = true;
@@ -286,6 +296,7 @@ function boot() {
 
   canvas.addEventListener("webglcontextlost", (e) => {
     e.preventDefault();
+    stop();
     fail("context lost");
   });
 
