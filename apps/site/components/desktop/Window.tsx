@@ -11,7 +11,7 @@ export function Window({ win, active, children }: { win: WinState; active: boole
   const size = useRef<{ sx: number; sy: number; w: number; h: number } | null>(null);
 
   const onTitleDown = (e: RPointerEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest("button")) return;
+    if (e.button !== 0 || (e.target as HTMLElement).closest("button")) return;
     focus(win.id);
     if (win.maximized) return;
     drag.current = { dx: e.clientX - win.x, dy: e.clientY - win.y };
@@ -29,6 +29,7 @@ export function Window({ win, active, children }: { win: WinState; active: boole
   };
 
   const onResizeDown = (e: RPointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
     focus(win.id);
     size.current = { sx: e.clientX, sy: e.clientY, w: win.w, h: win.h };
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -46,7 +47,7 @@ export function Window({ win, active, children }: { win: WinState; active: boole
 
   return (
     <section
-      role="dialog"
+      role="group"
       aria-label={win.title}
       onPointerDown={() => !active && focus(win.id)}
       style={{ left: win.x, top: win.y, width: win.w, height: win.h, zIndex: win.z, display: win.minimized ? "none" : undefined, minWidth: MIN_W, minHeight: MIN_H }}
@@ -57,7 +58,9 @@ export function Window({ win, active, children }: { win: WinState; active: boole
         onPointerMove={onTitleMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        onDoubleClick={() => toggleMax(win.id)}
+        onDoubleClick={(e) => {
+          if (!(e.target as HTMLElement).closest("button")) toggleMax(win.id);
+        }}
         className={`flex touch-none select-none items-center gap-3 border-b border-line px-3 py-2 ${win.maximized ? "" : "cursor-grab active:cursor-grabbing"} ${active ? "bg-surface" : "bg-bg"}`}
       >
         <span className="flex gap-2">
@@ -68,7 +71,7 @@ export function Window({ win, active, children }: { win: WinState; active: boole
         <h2 className={`flex-1 truncate text-center text-xs font-medium ${active ? "text-fg" : "text-muted"}`}>{win.title}</h2>
         <span className="w-12" aria-hidden="true" />
       </div>
-      <div tabIndex={0} className="min-h-0 flex-1 overflow-auto focus-visible:outline-offset-[-2px]">{children}</div>
+      <div tabIndex={0} data-win-content={win.id} className="min-h-0 flex-1 overflow-auto focus-visible:outline-offset-[-2px]">{children}</div>
       {!win.maximized && (
         <div
           onPointerDown={onResizeDown}

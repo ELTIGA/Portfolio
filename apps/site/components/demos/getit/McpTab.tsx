@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 
 type Ev =
   | { t: "system"; text: string }
@@ -69,7 +69,8 @@ function Json({ data }: { data: unknown }) {
 }
 
 /** Mounted the first time the tab is opened, so the conversation starts when the visitor arrives. */
-export function McpTab({ reduced }: { reduced: boolean }) {
+// Memoized: the parent demo re-renders on its own simulation ticks.
+export const McpTab = memo(function McpTab({ reduced }: { reduced: boolean }) {
   const [step, setStep] = useState(0);
   const [run, setRun] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -182,7 +183,7 @@ export function McpTab({ reduced }: { reduced: boolean }) {
           })}
           {!finished && step > 0 && (
             <p className="text-[12px] text-muted" aria-hidden="true">
-              <span className="inline-block animate-pulse">▍</span>
+              <span className="inline-block motion-safe:animate-pulse">▍</span>
             </p>
           )}
           {finished && <p className="text-center text-[11px] text-muted">— end of simulated session. Nothing was downloaded. —</p>}
@@ -190,4 +191,4 @@ export function McpTab({ reduced }: { reduced: boolean }) {
       </div>
     </div>
   );
-}
+});

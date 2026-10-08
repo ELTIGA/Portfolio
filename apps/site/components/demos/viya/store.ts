@@ -145,25 +145,27 @@ export function useStore() {
     const channel = state.dispatch.channel;
     const chLabel = channel === "whatsapp" ? "WhatsApp" : channel === "telegram" ? "Telegram" : "Slack";
     clearTimers(tid);
+    const started = entry("sys", `Dispatch started: ${seed.vehicles.length} drivers via ${chLabel}`);
     const queued = seed.vehicles.map((v) => entry("out", `Queued route message for ${v.driver.name} via ${chLabel}`, { note: v.label }));
     patch(tid, (s) => ({
       ...s,
       dispatch: {
         channel,
         runs: Object.fromEntries(seed.vehicles.map((v) => [v.id, { status: "queued", reply: null } satisfies DriverRun])),
-        log: [entry("sys", `Dispatch started: ${seed.vehicles.length} drivers via ${chLabel}`), ...queued],
+        log: [started, ...queued],
       },
     }));
     say(`Dispatching ${seed.vehicles.length} routes via ${chLabel}. Status: queued.`);
 
     const stage = (vid: string, status: "sent" | "delivered", delay: number, text: string) => {
       const id = window.setTimeout(() => {
+        const line = entry("out", text, { note: status });
         patch(tid, (s) => ({
           ...s,
           dispatch: {
             ...s.dispatch,
             runs: { ...s.dispatch.runs, [vid]: { ...s.dispatch.runs[vid], status } },
-            log: [...s.dispatch.log, entry("out", text, { note: status })],
+            log: [...s.dispatch.log, line],
           },
         }));
         say(text);
@@ -219,12 +221,13 @@ export function useStore() {
     }
     const parsed =
       kind === "confirm" ? "confirm → route accepted" : kind === "issue" ? "issue → flagged for dispatcher" : `no_show(${n}) → ${n} pax removed from manifest count`;
+    const parsedLine = entry("sys", `Parsed: ${parsed}`, { ok: true });
     patch(tid, (s) => ({
       ...s,
       dispatch: {
         ...s.dispatch,
         runs: { ...s.dispatch.runs, [vid]: { ...s.dispatch.runs[vid], reply: { kind, n } } },
-        log: [...s.dispatch.log, inbound, entry("sys", `Parsed: ${parsed}`, { ok: true })],
+        log: [...s.dispatch.log, inbound, parsedLine],
       },
     }));
     const message = kind === "confirm" ? `${v.label} confirmed.` : kind === "issue" ? `${v.label} reported an issue.` : `${v.label}: ${n} no-show.`;

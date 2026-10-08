@@ -26,7 +26,7 @@ export function AnalyticsPanel({
           review_channel_click
         </h2>
         <p className="mt-2 flex items-baseline gap-2">
-          <span className="text-4xl font-semibold tabular-nums" aria-live="polite" aria-atomic="true">
+          <span className="text-4xl font-semibold tabular-nums">
             {total}
           </span>
           <span className="text-sm text-muted">{total === 1 ? "click" : "clicks"} this session</span>

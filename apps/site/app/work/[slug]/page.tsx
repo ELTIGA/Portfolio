@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProject, projects } from "@portfolio/content";
+import { getProject, profile, projects } from "@portfolio/content";
 import { DemoSlot } from "@/components/demos/DemoSlot";
 import { diagrams } from "@/components/diagrams/registry";
 import { EmailCta } from "@/components/EmailCta";
@@ -17,11 +17,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return {};
+  const title = `${project.name} · ${profile.name}`;
   return {
     title: project.name,
     description: project.tagline,
     alternates: { canonical: `/work/${project.slug}` },
-    openGraph: { title: project.name, description: project.tagline, url: `/work/${project.slug}` },
+    // Child openGraph/twitter objects replace the root ones, so set every field.
+    openGraph: { title, description: project.tagline, url: `/work/${project.slug}`, type: "article", siteName: profile.name },
+    twitter: { card: "summary_large_image", title, description: project.tagline },
   };
 }
 

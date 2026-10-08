@@ -36,7 +36,9 @@ export default function Demo() {
   }, []);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape" && open) {
+    // Only Escape from inside the menu (or its icon) closes it and returns focus to the icon.
+    const inMenu = (e.target as HTMLElement).closest("#cag-popover") || e.target === iconRef.current;
+    if (e.key === "Escape" && open && inMenu) {
       setOpen(false);
       iconRef.current?.focus();
     }
@@ -65,9 +67,7 @@ export default function Demo() {
             >
               <ShieldIcon active={state.callActive} />
             </button>
-            <span className="tabular-nums" aria-label="Clock">
-              {clock}
-            </span>
+            <span className="tabular-nums">{clock}</span>
           </span>
         </div>
 

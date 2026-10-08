@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, type Dispatch } from "react";
+import { memo, type Dispatch } from "react";
 import type { Action, Call, CallStatus, State } from "./engine";
+import { useStickToBottom } from "./hooks";
 import { AMBER, Badge, KeyButton, Pane, RED } from "./ui";
 
 const STATUS: Record<CallStatus, { label: string; color: string }> = {
@@ -12,7 +13,7 @@ const STATUS: Record<CallStatus, { label: string; color: string }> = {
   rejected: { label: "rejected", color: RED },
 };
 
-function CallRow({ c }: { c: Call }) {
+const CallRow = memo(function CallRow({ c }: { c: Call }) {
   const st = STATUS[c.status];
   return (
     <li className={`border-b border-line/60 px-3 py-2 ${c.status === "blocked" || c.status === "rejected" ? "bg-[#ff6b6b]/5" : ""}`}>
@@ -43,16 +44,12 @@ function CallRow({ c }: { c: Call }) {
       )}
     </li>
   );
-}
+});
 
 export function TimelinePane({ state, dispatch }: { state: State; dispatch: Dispatch<Action> }) {
-  const ref = useRef<HTMLDivElement>(null);
   const count = state.calls.length;
   const lastStatus = state.calls[count - 1]?.status;
-  useEffect(() => {
-    const el = ref.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [count, lastStatus]);
+  const ref = useStickToBottom<HTMLDivElement>(`${count}:${lastStatus}`);
 
   const blockedByStop = state.estop;
   const stateLabel = blockedByStop ? "frozen" : state.pendingId !== null ? "waiting for operator" : state.agentRunning ? "running" : "paused";

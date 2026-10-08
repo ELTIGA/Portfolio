@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { Booking, DoubleBooking, Severity } from "./data";
 import { doublesSeed } from "./data";
 import type { PushToast } from "./hooks";
@@ -10,9 +11,10 @@ const SEV_TONE: Record<Severity, "bad" | "warn" | "info"> = { high: "bad", mediu
 const SEV_LABEL: Record<Severity, string> = { high: "High", medium: "Medium", low: "Low" };
 const FILTERS: Array<Severity | "all"> = ["all", "high", "medium", "low"];
 
-export function DoublesScreen({ push, compact }: { push: PushToast; compact: boolean }) {
+type Props = { resolved: Set<string>; setResolved: Dispatch<SetStateAction<Set<string>>>; push: PushToast; compact: boolean };
+
+export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
   const [openId, setOpenId] = useState<string | null>("db1");
-  const [resolved, setResolved] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<Severity | "all">("all");
 
   const items = [...doublesSeed]
@@ -151,7 +153,11 @@ function BookingCard({ b, label, others }: { b: Booking; label: string; others: 
       <p className="mb-2 text-[13px] font-semibold">{b.guest}</p>
       <dl className="grid gap-y-1" style={{ gridTemplateColumns: "88px minmax(0,1fr)" }}>
         {fields.map(([k, v, key]) => {
-          const differs = (diff(key) && !(key === "ref" && !b.flag)) || (key === "hotel" && !b.hotel) || (key === "pax" && b.pax === 0);
+          const differs =
+            (diff(key) && !(key === "ref" && !b.flag)) ||
+            (key === "ref" && /reference/i.test(b.flag ?? "")) ||
+            (key === "hotel" && !b.hotel) ||
+            (key === "pax" && b.pax === 0);
           return (
             <div key={k} className="contents">
               <dt className="eo-muted text-[12px]">{k}</dt>
