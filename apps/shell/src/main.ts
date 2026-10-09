@@ -348,8 +348,13 @@ function boot() {
   resize();
   setState("intro");
   if (!document.hidden) start();
-  // Two frames: the first compiles shaders and draws shadows, the second is on screen.
-  requestAnimationFrame(() => requestAnimationFrame(ready));
+  // The loop sleeps when idle, so covers that arrive late must ask for a frame. Waiting
+  // for them before the fly-in avoids a visible pop; then two frames: the first compiles
+  // shaders and draws shadows, the second is on screen.
+  room.artReady.then(() => {
+    dirty = true;
+    requestAnimationFrame(() => requestAnimationFrame(ready));
+  });
   // Hidden or throttled frames must not hold the loader.
   window.setTimeout(ready, 3000);
 }
