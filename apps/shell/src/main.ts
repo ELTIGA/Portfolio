@@ -104,7 +104,6 @@ function boot() {
   let state: State = "intro";
   let pose: Pose = introCurve.start();
   let tween: Tween | null = null;
-  const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
 
   const actionBtn = $<HTMLButtonElement>("action");
 
@@ -178,8 +177,6 @@ function boot() {
   }
 
   canvas.addEventListener("pointermove", (ev) => {
-    parallax.tx = (ev.clientX / width) * 2 - 1;
-    parallax.ty = (ev.clientY / height) * 2 - 1;
     if (state !== "desk") return;
     const hit = hitMonitor(ev);
     if (hit !== hovering) {
@@ -190,8 +187,6 @@ function boot() {
     }
   });
   canvas.addEventListener("pointerleave", () => {
-    parallax.tx = 0;
-    parallax.ty = 0;
     if (hovering) {
       hovering = false;
       canvas.dataset.hover = "false";
@@ -252,31 +247,21 @@ function boot() {
   // ---- Loop ------------------------------------------------------------------------
   let raf = 0;
   let last = 0;
-  const lookTarget = new THREE.Vector3();
+  const scratch = new THREE.Vector3();
 
   function frame(now: number) {
     raf = requestAnimationFrame(frame);
     const dt = Math.min((now - last) / 1000 || 0, 0.25);
     last = now;
 
-    let moving = false;
-    if (tween) {
-      tween.update(dt, pose);
-      moving = true;
-    }
-    if (!reduceMotion && (state === "desk" || state === "intro")) {
-      const k = 1 - Math.exp(-dt * 3.5);
-      const nx = parallax.x + (parallax.tx - parallax.x) * k;
-      const ny = parallax.y + (parallax.ty - parallax.y) * k;
-      if (Math.abs(nx - parallax.x) > 1e-4 || Math.abs(ny - parallax.y) > 1e-4) moving = true;
-      parallax.x = nx;
-      parallax.y = ny;
-    }
-    if (!moving && !dirty) return;
+    // No pointer parallax: the monitor content is a CSS3D layer composited separately
+    // from the WebGL bezel, so any idle camera motion makes the two drift apart and
+    // the screen visibly swims and flickers. The camera only moves during tweens.
+    if (tween) tween.update(dt, pose);
+    else if (!dirty) return;
     dirty = false;
 
-    const par = state === "desk" || state === "intro" ? 1 : 0;
-    applyPose(camera, pose, -parallax.x * 0.05 * par, -parallax.y * 0.022 * par, lookTarget);
+    applyPose(camera, pose, scratch);
     renderer.render(scene, camera);
     cssRenderer.render(cssScene, camera);
   }

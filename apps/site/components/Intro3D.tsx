@@ -200,7 +200,8 @@ export function Intro3D() {
       <iframe
         ref={iframeRef}
         src={SHELL_URL}
-        title="Interactive 3D desk with the portfolio desktop on the monitor"
+        // aria-label, not title: browsers show an iframe's title as a hover tooltip over the scene.
+        aria-label="Interactive 3D desk with the portfolio desktop on the monitor"
         className="absolute inset-0 h-full w-full border-0"
         allow=""
       />
