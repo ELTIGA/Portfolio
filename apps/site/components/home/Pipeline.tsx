@@ -43,10 +43,11 @@ export function Pipeline({ stages }: { stages: { name: string; detail: string }[
       <div
         data-rail=""
         aria-hidden="true"
-        className="absolute bottom-3 left-[11px] top-3 w-px bg-line [--p:1] md:bottom-auto md:left-0 md:right-0 md:top-[11px] md:h-px md:w-auto"
+        className="absolute bottom-3 left-[11px] top-3 w-px bg-line [--p:1] [container-type:size] md:bottom-auto md:left-0 md:right-0 md:top-[11px] md:h-px md:w-auto"
       >
         <div className="h-full w-full origin-top bg-gradient-to-b from-accent to-signal max-md:[transform:scaleY(var(--p))] md:origin-left md:bg-gradient-to-r md:[transform:scaleX(var(--p))]" />
-        <div className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fg shadow-[0_0_24px_6px_rgb(255_181_71/0.7)] max-md:left-1/2 max-md:top-[calc(var(--p)*100%)] md:left-[calc(var(--p)*100%)] md:top-1/2" />
+        {/* The packet rides the rail by transform (container units), never by left/top. */}
+        <div className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fg shadow-[0_0_24px_6px_rgb(255_181_71/0.7)] will-change-transform max-md:left-1/2 max-md:top-0 max-md:[transform:translateY(calc(var(--p)*100cqh))] md:left-0 md:top-1/2 md:[transform:translateX(calc(var(--p)*100cqw))]" />
       </div>
       <ol className="relative grid gap-8 md:grid-cols-6 md:gap-4">
         {stages.map((s, i) => (

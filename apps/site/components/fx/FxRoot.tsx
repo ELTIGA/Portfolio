@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { loadGsap, prefersReducedMotion } from "./gsap";
 import { setLenis } from "./lenis";
+import { introIsOpen, isFramed, onIntro } from "./runtime";
 import { primeStrokes } from "./draw";
 import { scramble } from "./scramble";
 
@@ -17,9 +18,18 @@ import { scramble } from "./scramble";
  */
 export function FxRoot() {
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    // Content is fully visible without this, so a framed copy of the page (inside the 3D
+    // shell's monitor) skips it and leaves the GPU to the shell.
+    if (prefersReducedMotion() || isFramed()) return;
     let disposed = false;
     const cleanups: (() => void)[] = [];
+
+    // Looping photo sweeps only run while their photo is on screen.
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.target.toggleAttribute("data-offscreen", !e.isIntersecting);
+    });
+    for (const el of document.querySelectorAll(".duotone")) io.observe(el);
+    cleanups.push(() => io.disconnect());
 
     void (async () => {
       const [{ gsap, ScrollTrigger }, { default: Lenis }] = await Promise.all([loadGsap(), import("lenis")]);
@@ -29,18 +39,51 @@ export function FxRoot() {
       const lenis = new Lenis({ lerp: 0.09, anchors: { offset: -64 }, autoRaf: false });
       setLenis(lenis);
       lenis.on("scroll", ScrollTrigger.update);
-      const raf = (time: number) => lenis.raf(time * 1000);
-      gsap.ticker.add(raf);
-      gsap.ticker.lagSmoothing(0);
-      // The 3D intro overlay locks the page; Lenis would otherwise keep scrolling it.
-      const pause = () => lenis.stop();
-      const resume = () => lenis.start();
-      window.addEventListener("intro3d:open", pause);
-      window.addEventListener("intro3d:close", resume);
-      cleanups.push(() => {
-        window.removeEventListener("intro3d:open", pause);
-        window.removeEventListener("intro3d:close", resume);
+      // Lenis only rides the GSAP ticker while something is scrolling; an idle page then
+      // has no per-frame callback at all, so the main thread can actually sleep.
+      let ticking = false;
+      let quietSince = 0;
+      let introOpen = introIsOpen();
+      const raf = (time: number) => {
+        lenis.raf(time * 1000);
+        if (lenis.isScrolling) quietSince = 0;
+        else if (!quietSince) quietSince = time;
+        else if (time - quietSince > 0.5) sleep();
+      };
+      const sleep = () => {
+        if (!ticking) return;
+        ticking = false;
         gsap.ticker.remove(raf);
+      };
+      const wake = () => {
+        if (ticking || introOpen) return;
+        ticking = true;
+        quietSince = 0;
+        gsap.ticker.add(raf);
+      };
+      const inputs = ["wheel", "touchstart", "touchmove", "keydown", "pointerdown", "scroll"] as const;
+      for (const type of inputs) window.addEventListener(type, wake, { capture: true, passive: true });
+      gsap.ticker.lagSmoothing(0);
+      // The 3D intro overlay hides the page: stop Lenis and its ticking, then re-measure
+      // triggers when the page comes back.
+      const sync = (open: boolean) => {
+        introOpen = open;
+        if (open) {
+          lenis.stop();
+          sleep();
+        } else {
+          lenis.start();
+          wake();
+          ScrollTrigger.refresh();
+        }
+      };
+      if (introOpen) lenis.stop();
+      else wake();
+      const offIntro = onIntro(sync);
+      cleanups.push(() => {
+        offIntro();
+        for (const type of inputs) window.removeEventListener(type, wake, { capture: true });
+        sleep();
         lenis.destroy();
         setLenis(null);
       });

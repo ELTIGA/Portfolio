@@ -14,6 +14,7 @@ export function ProfileBlock() {
         </div>
         <figure data-reveal="wipe" className="mx-auto w-3/4 md:w-full">
           <div className="duotone brackets p-2">
+            <span aria-hidden="true" className="duotone-sweep" />
             <Image src={profile.casual.src} alt={profile.casual.alt} width={profile.casual.width} height={profile.casual.height} sizes="(min-width: 768px) 300px, 70vw" className="h-auto w-full" />
           </div>
           <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">off duty</figcaption>
@@ -29,6 +30,7 @@ export function ProfileBlock() {
         {profile.events.map((e) => (
           <li key={e.name} data-reveal="wipe">
             <div className="duotone">
+              <span aria-hidden="true" className="duotone-sweep" />
               <Image src={e.image} alt={e.alt} width={e.width} height={e.height} sizes="(min-width: 640px) 560px, 100vw" className="h-72 w-full object-cover object-top" />
             </div>
             <p className="mt-4 flex items-baseline justify-between gap-4">
