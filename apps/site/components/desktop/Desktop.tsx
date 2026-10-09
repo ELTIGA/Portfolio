@@ -45,7 +45,7 @@ function Surface() {
   }, [topId]);
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[radial-gradient(ellipse_at_top,#16202b,#0b0e11_70%)]">
+    <div className="fixed inset-0 overflow-hidden bg-[radial-gradient(ellipse_at_top,#16202b,#05070a_70%)]">
       <div aria-hidden="true" className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]" />
       <MenuBar />
       <main aria-label="Desktop">

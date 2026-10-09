@@ -19,6 +19,14 @@ Portfolio for Ahmed Eltigani (ahmedeltigani.com), built to get one thing done: a
 | `packages/content` | Typed single source of truth for profile and projects |
 | `scripts/build-shell.mjs` | Builds the shell and copies it (and its licenses) into the site |
 
+Motion and visual effects live in `apps/site/components/fx/` and only run on the client after first paint:
+
+- `SignalField` + `signal-field/` — three.js particle field behind the homepage (~52k points; 20k on phones). Particles assemble the handle, become a globe past the hero and fold into a radar at the contact section; all morphing happens in the vertex shader. It falls back to a static CSS backdrop when WebGL2 is missing or software-rendered, on save-data, or with reduced motion. `?gl=1` forces it on (e.g. screenshots under SwiftShader), `?gl=0` forces it off.
+- `FxRoot` — Lenis smooth scrolling synced with GSAP ScrollTrigger, plus data-attribute hooks so sections stay server components: `data-reveal`, `data-scramble`, `data-draw`, `data-spine`.
+- `Cursor`, `Hud`, `Magnetic`, `HoloCard`, `Counter` — reticle cursor, viewport HUD, magnetic buttons, holographic tilt card, odometer numbers.
+
+Nothing in `fx/` runs under `prefers-reduced-motion`; content is server-rendered and fully visible without JS.
+
 Interactive demos live in `apps/site/components/demos/<slug>/`. Each is client-only, self-contained, lazy-loaded and uses invented data, following the contract documented in `components/demos/registry.tsx`.
 
 ## Develop

@@ -1,4 +1,4 @@
-import { FlowDiagram, type FlowSpec } from "./kit";
+import { FlowDiagram, type DiagramProps, type FlowSpec } from "./kit";
 
 // Source: viya README, docs/overview.md, docs/implementation.md, docs/manifest-operations-policies.md.
 const spec: FlowSpec = {
@@ -41,6 +41,6 @@ const spec: FlowSpec = {
   ],
 };
 
-export function ViyaDiagram() {
-  return <FlowDiagram spec={spec} />;
+export function ViyaDiagram({ variant }: DiagramProps) {
+  return <FlowDiagram spec={spec} variant={variant} />;
 }

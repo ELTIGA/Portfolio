@@ -1,4 +1,4 @@
-import { FlowDiagram, type FlowSpec } from "./kit";
+import { FlowDiagram, type DiagramProps, type FlowSpec } from "./kit";
 
 // Source: Express-Lists README ("What it does", "Release and CI/CD", "Convex networking in production").
 const spec: FlowSpec = {
@@ -47,6 +47,6 @@ const spec: FlowSpec = {
   ],
 };
 
-export function ExpressOpsDiagram() {
-  return <FlowDiagram spec={spec} />;
+export function ExpressOpsDiagram({ variant }: DiagramProps) {
+  return <FlowDiagram spec={spec} variant={variant} />;
 }
