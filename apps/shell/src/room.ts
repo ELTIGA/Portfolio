@@ -1,10 +1,14 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import awakenMyLove from "./posters/awaken-my-love.jpg";
+import darkSide from "./posters/dark-side-of-the-moon.jpg";
+import easternSounds from "./posters/eastern-sounds.jpg";
+import pulpFiction from "./posters/pulp-fiction.jpg";
 
 /**
  * Procedural room. 1 world unit = 1 mm, which keeps the CSS3DRenderer (where one
  * world unit is one CSS pixel) well behaved. Everything is built from three.js
- * primitives; there are no external model or texture files.
+ * primitives; the only image files are the framed covers on the back wall.
  */
 
 export const COLORS = {
@@ -92,6 +96,8 @@ export interface Room {
   screenHole: THREE.Mesh;
   /** Lights that follow the screen content brightness. */
   screenGlow: THREE.PointLight;
+  /** Settles once every wall cover has loaded (or failed). Never rejects. */
+  artReady: Promise<void>;
 }
 
 export function buildRoom(): Room {
@@ -409,12 +415,21 @@ export function buildRoom(): Room {
   photo.rotation.z = 0.04;
   group.add(photo);
 
-  // Poster (canvas texture drawn at runtime)
-  const poster = new THREE.Group();
-  poster.position.set(690, 1500, -692);
-  poster.add(rbox(470, 610, 18, 4, frameMat));
-  poster.add(at(new THREE.Mesh(new THREE.PlaneGeometry(430, 570), new THREE.MeshBasicMaterial({ map: posterTexture() })), 0, 0, 10));
-  group.add(poster);
+  // Wall art: the film one-sheet right of the monitor, three album sleeves above it.
+  const covers: Promise<void>[] = [];
+  function hang(x: number, y: number, frameW: number, frameH: number, artW: number, artH: number, url: string, label: string) {
+    const art = new THREE.Group();
+    art.position.set(x, y, -692);
+    art.add(rbox(frameW, frameH, 18, 4, frameMat));
+    const material = new THREE.MeshBasicMaterial({ map: placeholderTexture(label), toneMapped: false });
+    art.add(at(new THREE.Mesh(new THREE.PlaneGeometry(artW, artH), material), 0, 0, 10));
+    group.add(art);
+    covers.push(loadCover(url, material));
+  }
+  hang(720, 1330, 400, 560, 366, 522, pulpFiction, "Pulp Fiction");
+  hang(-240, 1555, 180, 180, 160, 160, darkSide, "The Dark Side of the Moon");
+  hang(0, 1555, 180, 180, 160, 160, easternSounds, "Eastern Sounds");
+  hang(240, 1555, 180, 180, 160, 160, awakenMyLove, "Awaken, My Love!");
 
   // ---- Ambient dust-free wall sconce glow to lift the left wall -----------------
   const fill = new THREE.PointLight(0x7fb0ff, 1.1, 4200, 0);
@@ -427,36 +442,48 @@ export function buildRoom(): Room {
     bezelMaterial,
     screenHole,
     screenGlow,
+    artReady: Promise.all(covers).then(() => undefined),
   };
 }
 
-function posterTexture() {
+/** Dark card with the title, shown until (or if never) the cover image arrives. */
+function placeholderTexture(label: string) {
   const c = document.createElement("canvas");
-  c.width = 430;
-  c.height = 570;
+  c.width = 256;
+  c.height = 256;
   const g = c.getContext("2d");
   if (g) {
     g.fillStyle = "#0e1318";
     g.fillRect(0, 0, c.width, c.height);
-    g.strokeStyle = "#3ddc97";
-    g.lineWidth = 3;
-    g.strokeRect(22, 22, c.width - 44, c.height - 44);
-    g.fillStyle = "#3ddc97";
-    g.font = "bold 150px ui-monospace, Menlo, Consolas, monospace";
+    g.fillStyle = "#8a96a3";
+    g.font = "18px ui-monospace, Menlo, Consolas, monospace";
     g.textAlign = "center";
-    g.fillText("~/", c.width / 2, 250);
-    g.font = "26px ui-monospace, Menlo, Consolas, monospace";
-    g.fillStyle = "#e8edf2";
-    g.textAlign = "left";
-    const lines = ["$ audit      ok", "$ test       ok", "$ build      ok", "$ ship       ok"];
-    lines.forEach((l, i) => g.fillText(l, 62, 340 + i * 44));
-    g.fillStyle = "#3ddc97";
-    g.fillRect(62, 500, 16, 28);
+    g.fillText(label, c.width / 2, c.height / 2, c.width - 32);
   }
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
   return t;
+}
+
+const coverLoader = new THREE.TextureLoader();
+
+/** Swaps the cover in once loaded; resolves either way so a failed image never blocks. */
+function loadCover(url: string, material: THREE.MeshBasicMaterial) {
+  return new Promise<void>((resolve) => {
+    coverLoader.load(
+      url,
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = 4;
+        material.map?.dispose();
+        material.map = tex;
+        material.needsUpdate = true;
+        resolve();
+      },
+      undefined,
+      () => resolve(),
+    );
+  });
 }
 
 /** Scene-level lights (the room adds its own local ones). */

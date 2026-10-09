@@ -50,7 +50,7 @@ export function Record() {
           </div>
         )}
         {otherCreds.map((c) => (
-          <div key={c.name} data-reveal="up" className="border border-line bg-surface/60 p-6 backdrop-blur-sm">
+          <div key={c.name} data-reveal="up" className="border border-line bg-surface/80 p-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted">{c.year}</p>
             <h3 className="mt-3 font-semibold">{c.name}</h3>
             <p className="mt-1 text-sm text-muted">

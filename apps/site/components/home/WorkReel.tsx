@@ -10,7 +10,7 @@ export function WorkPanel({ project, index }: { project: Project; index: number 
     <article
       data-panel=""
       aria-labelledby={`panel-${project.slug}`}
-      className="brackets relative grid shrink-0 snap-center gap-8 overflow-hidden border border-line/60 bg-surface/70 p-6 backdrop-blur-md sm:p-10 lg:h-[min(78dvh,720px)] lg:w-[min(84vw,1180px)] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
+      className="brackets relative grid shrink-0 snap-center gap-8 overflow-hidden border border-line/60 bg-surface/85 p-6 sm:p-10 lg:h-[min(78dvh,720px)] lg:w-[min(84vw,1180px)] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
     >
       <span
         data-numeral=""

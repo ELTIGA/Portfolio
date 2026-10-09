@@ -48,6 +48,7 @@ export function Hero() {
 
         <figure className="hero-in hidden w-56 md:block" style={delay(700)}>
           <div className="duotone brackets p-2">
+            <span aria-hidden="true" className="duotone-sweep" />
             <Image
               src={profile.portrait.src}
               alt={profile.portrait.alt}

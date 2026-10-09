@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { finePointer, prefersReducedMotion } from "./gsap";
+import { isFramed } from "./runtime";
 
 /**
  * Targeting reticle that replaces the pointer on mouse/trackpad devices. The ring lags
@@ -15,7 +16,8 @@ export function Cursor() {
   const coords = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (!finePointer() || prefersReducedMotion()) return;
+    // Never inside another document (the 3D shell's monitor), where it would draw off-scale.
+    if (!finePointer() || prefersReducedMotion() || isFramed()) return;
     const root = document.documentElement;
     const d = dot.current!;
     const r = ring.current!;
@@ -53,32 +55,47 @@ export function Cursor() {
     const onDown = () => (targetScale *= 0.8);
     const onUp = () => (targetScale /= 0.8);
 
+    // Runs only until the ring catches up with the dot, then sleeps until the next input.
     const tick = () => {
-      raf = requestAnimationFrame(tick);
       rx += (x - rx) * 0.18;
       ry += (y - ry) * 0.18;
       scale += (targetScale - scale) * 0.15;
+      const settled = Math.abs(x - rx) + Math.abs(y - ry) < 0.1 && Math.abs(targetScale - scale) < 0.001;
+      if (settled) {
+        rx = x;
+        ry = y;
+        scale = targetScale;
+      }
       d.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       r.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${scale})`;
+      raf = settled ? 0 : requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointerup", onUp);
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const onInput = (e: PointerEvent) => {
+      if (e.type === "pointermove") onMove(e);
+      else if (e.type === "pointerdown") onDown();
+      else onUp();
+      wake();
+    };
+    window.addEventListener("pointermove", onInput, { passive: true });
+    window.addEventListener("pointerdown", onInput);
+    window.addEventListener("pointerup", onInput);
     document.addEventListener("pointerleave", onLeave);
     return () => {
       cancelAnimationFrame(raf);
       root.classList.remove("has-cursor");
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointermove", onInput);
+      window.removeEventListener("pointerdown", onInput);
+      window.removeEventListener("pointerup", onInput);
       document.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[90] hidden [@media(pointer:fine)]:block">
-      <div ref={dot} className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 bg-accent opacity-0 mix-blend-difference transition-opacity" />
+      <div ref={dot} className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 bg-accent opacity-0 transition-opacity" />
       <div
         ref={ring}
         className="group absolute -left-5 -top-5 grid h-10 w-10 place-items-center opacity-0 transition-opacity"

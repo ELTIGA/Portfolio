@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { scrollToY } from "@/components/fx/lenis";
 import { track } from "@/lib/track";
 
 /**
@@ -13,6 +14,8 @@ import { track } from "@/lib/track";
 const SKIP_KEY = "intro3d:skipped";
 const SHELL_URL = "/experience/index.html";
 const READY_TIMEOUT_MS = 12000;
+// Matches the overlay's fade; the page underneath is frozen only once it is fully covered.
+const COVER_MS = 320;
 const BOT_UA = /bot|crawl|spider|slurp|lighthouse|pagespeed|prerender|gtmetrix/i;
 const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|microsoft basic render/i;
 /** Dispatched by <OfficeButton> to reopen the 3D desk after it was skipped. */
@@ -99,6 +102,7 @@ export function Intro3D() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const entered = useRef(false);
+  const returnHash = useRef("");
 
   // Decide after the page is idle so the 3D never competes with the first paint.
   // Never interrupt a visitor who has already started reading or clicking.
@@ -151,8 +155,9 @@ export function Intro3D() {
     return () => window.removeEventListener(OPEN_REQUEST, onRequest);
   }, []);
 
-  const close = useCallback((reason: "skip" | "failed") => {
+  const close = useCallback((reason: "skip" | "failed", hash = "") => {
     rememberSkip();
+    returnHash.current = /^#[\w-]+$/.test(hash) ? hash : "";
     if (reason === "skip") track("skip_3d");
     setVisible(false);
     setOpen(false);
@@ -173,9 +178,16 @@ export function Intro3D() {
     const prevOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
     skipRef.current?.focus();
-    // Lets the homepage particle field pause while the intro owns the GPU.
-    window.dispatchEvent(new Event("intro3d:open"));
     const fade = window.requestAnimationFrame(() => setVisible(true));
+    // Once the overlay fully covers the page, freeze everything beneath it: the particle
+    // field releases its GPU context, loops and CSS animations stop, and the page itself
+    // stops painting (see [data-intro] in globals.css). One WebGL scene runs at a time.
+    let covered = false;
+    const cover = window.setTimeout(() => {
+      covered = true;
+      document.documentElement.dataset.intro = "open";
+      window.dispatchEvent(new Event("intro3d:open"));
+    }, COVER_MS);
 
     // If the 3D app never reports ready (missing build, blocked), fall back quietly.
     const guard = window.setTimeout(() => close("failed"), READY_TIMEOUT_MS);
@@ -186,9 +198,9 @@ export function Intro3D() {
     const onMessage = (e: MessageEvent) => {
       if (e.origin !== window.location.origin) return;
       if (e.source !== iframeRef.current?.contentWindow) return;
-      const data = e.data as { source?: string; type?: string } | null;
+      const data = e.data as { source?: string; type?: string; hash?: unknown } | null;
       if (!data || data.source !== "portfolio-shell") return;
-      if (data.type === "skip") close("skip");
+      if (data.type === "skip") close("skip", typeof data.hash === "string" ? data.hash : "");
       else if (data.type === "failed") close("failed");
       else if (data.type === "ready") {
         window.clearTimeout(guard);
@@ -203,13 +215,19 @@ export function Intro3D() {
 
     return () => {
       window.cancelAnimationFrame(fade);
+      window.clearTimeout(cover);
       window.clearTimeout(guard);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("message", onMessage);
       for (const el of inerted) el.inert = false;
       document.documentElement.style.overflow = prevOverflow;
-      window.dispatchEvent(new Event("intro3d:close"));
+      delete document.documentElement.dataset.intro;
+      if (covered) window.dispatchEvent(new Event("intro3d:close"));
       returnFocus.current?.focus?.({ preventScroll: true });
+      // Left via a link to a section (e.g. "Case files" on the monitor): land there.
+      const target = returnHash.current && document.getElementById(returnHash.current.slice(1));
+      returnHash.current = "";
+      if (target) window.requestAnimationFrame(() => scrollToY(target.getBoundingClientRect().top + window.scrollY - 64, true));
     };
   }, [open, close]);
 

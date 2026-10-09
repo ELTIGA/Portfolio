@@ -26,5 +26,10 @@
     "@playwright/test": "^1.64.0",
     "@types/node": "^22.20.5",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "basic-ftp": "^6.2.2",
+    "tmp": "^0.2.7",
+    "uuid": "^14.0.2"
   }
 }
