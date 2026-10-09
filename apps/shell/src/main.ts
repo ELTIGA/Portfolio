@@ -114,7 +114,7 @@ function boot() {
     canvas.style.pointerEvents = zoomed || next === "zoomIn" ? "none" : "auto";
     cssLayer.inert = !zoomed;
     actionBtn.hidden = !(next === "desk" || zoomed);
-    actionBtn.textContent = zoomed ? "Back to room" : "Open the desktop";
+    actionBtn.textContent = zoomed ? "Back to the office" : "Open the desktop";
     dirty = true;
   }
 

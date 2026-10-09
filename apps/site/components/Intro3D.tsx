@@ -15,6 +15,8 @@ const SHELL_URL = "/experience/index.html";
 const READY_TIMEOUT_MS = 12000;
 const BOT_UA = /bot|crawl|spider|slurp|lighthouse|pagespeed|prerender|gtmetrix/i;
 const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|microsoft basic render/i;
+/** Dispatched by <OfficeButton> to reopen the 3D desk after it was skipped. */
+const OPEN_REQUEST = "intro3d:request";
 
 type NetworkInfo = { saveData?: boolean; effectiveType?: string };
 type NavigatorExtras = Navigator & { connection?: NetworkInfo; deviceMemory?: number };
@@ -35,7 +37,14 @@ function rememberSkip() {
   }
 }
 
+let webgl2: boolean | undefined;
+
 function hasWebGL2() {
+  webgl2 ??= probeWebGL2();
+  return webgl2;
+}
+
+function probeWebGL2() {
   try {
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
@@ -51,13 +60,16 @@ function hasWebGL2() {
   }
 }
 
-/** Every condition must hold; anything else gets the plain page only. */
-function isCapable() {
+/**
+ * Every condition must hold; anything else gets the plain page only. An explicit
+ * request (the "Back to the office" button) ignores an earlier skip.
+ */
+function isCapable({ requested = false } = {}) {
   if (typeof window === "undefined") return false;
   // Never nest the intro (e.g. when the monitor iframe navigates to "/").
   if (window.self !== window.top) return false;
   if (BOT_UA.test(navigator.userAgent)) return false;
-  if (alreadySkipped()) return false;
+  if (!requested && alreadySkipped()) return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   if (!window.matchMedia("(pointer: fine)").matches) return false;
   if (window.innerWidth < 1024 || window.innerHeight < 600) return false;
@@ -67,6 +79,16 @@ function isCapable() {
   if (conn?.saveData) return false;
   if (conn?.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return false;
   return hasWebGL2();
+}
+
+/** The shell is a separate build; if it is missing, never show an overlay over a 404. */
+async function shellAvailable() {
+  try {
+    const res = await fetch(SHELL_URL, { method: "HEAD" });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
 
 export function Intro3D() {
@@ -95,14 +117,7 @@ export function Intro3D() {
     const schedule = () => {
       const show = async () => {
         if (cancelled || engaged || !isCapable()) return;
-        // The shell is a separate build; if it is missing, never show an overlay over a 404.
-        try {
-          const res = await fetch(SHELL_URL, { method: "HEAD" });
-          if (!res.ok) return;
-        } catch {
-          return;
-        }
-        if (cancelled || engaged) return;
+        if (!(await shellAvailable()) || cancelled || engaged) return;
         returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
         setOpen(true);
       };
@@ -123,6 +138,17 @@ export function Intro3D() {
       if (idleId !== undefined && typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
       if (timerId !== undefined) window.clearTimeout(timerId);
     };
+  }, []);
+
+  // "Back to the office": reopen on request, even after a skip or once the visitor is reading.
+  useEffect(() => {
+    const onRequest = () => {
+      if (!isCapable({ requested: true })) return;
+      returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setOpen(true);
+    };
+    window.addEventListener(OPEN_REQUEST, onRequest);
+    return () => window.removeEventListener(OPEN_REQUEST, onRequest);
   }, []);
 
   const close = useCallback((reason: "skip" | "failed") => {
@@ -218,5 +244,29 @@ export function Intro3D() {
       </button>
     </div>,
     document.body,
+  );
+}
+
+/** Header control that reopens the 3D desk. Renders only where the desk can run. */
+export function OfficeButton({ className = "" }: { className?: string }) {
+  const [available, setAvailable] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (isCapable({ requested: true })) {
+      void shellAvailable().then((ok) => {
+        if (!cancelled) setAvailable(ok);
+      });
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!available) return null;
+  return (
+    <button type="button" className={className} onClick={() => window.dispatchEvent(new Event(OPEN_REQUEST))}>
+      Back to the office
+    </button>
   );
 }
