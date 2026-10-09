@@ -105,7 +105,11 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
           <span className="h-px w-10 bg-line" aria-hidden="true" />
           <span>{project.role}</span>
         </p>
-        <h1 className="hero-in font-display mt-6 text-7xl font-black uppercase leading-[0.82] tracking-tight sm:text-9xl lg:text-[11rem]" style={{ animationDelay: "120ms" }}>
+        <h1
+          className="hero-in font-display mt-6 font-black uppercase leading-[0.82] tracking-tight"
+          // Size to the name so one long word (CallAudioGuard) still fits the column: ~0.46em per glyph.
+          style={{ animationDelay: "120ms", fontSize: `min(11rem, 26vw, calc((min(100vw, 72rem) - 4rem) / ${(project.name.length * 0.46).toFixed(2)}))` }}
+        >
           {project.name}
         </h1>
         <p className="hero-in mt-8 max-w-3xl text-xl leading-snug text-fg/90 sm:text-2xl" style={{ animationDelay: "240ms" }}>
@@ -165,7 +169,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
             </Block>
 
             <Block id="preview" n={num("preview")} title={`Run ${project.name}`} note="A working replica of the real interface, on made-up sample data">
-              <div className="brackets p-2 sm:p-3 lg:-mr-8">
+              <div className="brackets p-2 sm:p-3 xl:-mr-8">
                 <DemoSlot slug={project.slug} name={project.name} kind={project.preview} />
               </div>
             </Block>
@@ -250,7 +254,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
               <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted">
                 {dir === "previous" ? "← previous file" : "next file →"}
               </span>
-              <span className="font-display mt-3 block text-4xl font-extrabold uppercase leading-none transition-colors group-hover:text-accent sm:text-6xl">
+              <span className="font-display mt-3 block text-[clamp(1.75rem,5vw,3.75rem)] font-extrabold uppercase leading-none transition-colors group-hover:text-accent">
                 {p.name}
               </span>
             </Link>

@@ -21,7 +21,7 @@ export interface ProcessRow {
 export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
   const [active, setActive] = useState<number | null>(null);
   const card = useRef<HTMLDivElement>(null);
-  const pos = useRef({ x: 0, y: 0, cx: 0, cy: 0 });
+  const pos = useRef({ x: 0, y: 0, cx: 0, cy: 0, w: 0 });
 
   useEffect(() => {
     if (!finePointer()) return;
@@ -31,7 +31,12 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
       const p = pos.current;
       p.cx += (p.x - p.cx) * 0.14;
       p.cy += (p.y - p.cy) * 0.14;
-      if (card.current) card.current.style.transform = `translate3d(${p.cx + 28}px, ${p.cy - 60}px, 0) rotate(${(p.x - p.cx) * 0.04}deg)`;
+      const el = card.current;
+      if (!el) return;
+      // Sit right of the cursor, or flip to its left when that would leave the table.
+      const cw = el.offsetWidth;
+      const x = p.cx + 28 + cw > p.w ? Math.max(p.cx - 28 - cw, 0) : p.cx + 28;
+      el.style.transform = `translate3d(${x}px, ${p.cy - 60}px, 0) rotate(${(p.x - p.cx) * 0.04}deg)`;
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
@@ -40,12 +45,13 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
   const row = active === null ? null : rows[active];
   return (
     <div
-      className="relative"
+      className="relative [overflow-x:clip]"
       onPointerMove={(e) => {
         if (e.pointerType !== "mouse") return;
         const r = e.currentTarget.getBoundingClientRect();
         pos.current.x = e.clientX - r.left;
         pos.current.y = e.clientY - r.top;
+        pos.current.w = r.width;
       }}
       onPointerLeave={() => setActive(null)}
     >
@@ -78,7 +84,7 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
                 <span className="text-signal" aria-hidden="true">● </span>
                 <span className="hidden sm:inline">{r.status}</span>
               </span>
-              <span className="col-span-full max-w-2xl text-sm leading-relaxed text-muted sm:col-start-2 [@media(pointer:fine)]:sr-only">{r.tagline}</span>
+              <span className="col-span-full max-w-2xl text-sm leading-relaxed text-muted sm:col-start-2 [@media(pointer:fine)_and_(min-width:768px)]:sr-only">{r.tagline}</span>
             </Link>
           </li>
         ))}
@@ -86,7 +92,7 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
       <div
         ref={card}
         aria-hidden="true"
-        className={`pointer-events-none absolute left-0 top-0 z-10 hidden w-80 border border-accent/40 bg-bg/90 p-5 backdrop-blur-md transition-[opacity,scale] duration-300 [@media(pointer:fine)]:block ${row ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}
+        className={`pointer-events-none absolute left-0 top-0 z-10 hidden w-80 border border-accent/40 bg-bg/90 p-5 backdrop-blur-md transition-[opacity,scale] duration-300 [@media(pointer:fine)_and_(min-width:768px)]:block ${row ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}
       >
         {row && (
           <>

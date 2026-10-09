@@ -65,11 +65,16 @@ export function ReelPin({ children }: { children: ReactNode }) {
             gsap.fromTo(num, { xPercent: 40 }, { xPercent: -40, ease: "none", scrollTrigger: { trigger: panel, containerAnimation: tween, start: "left right", end: "right left", scrub: true } });
         }
         const onFocus = (e: FocusEvent) => {
-          const panel = (e.target as HTMLElement).closest<HTMLElement>("[data-panel]");
-          if (!panel) return;
+          const target = e.target as HTMLElement;
+          const panel = target.closest<HTMLElement>("[data-panel]");
+          // Keyboard focus only: a mouse press also focuses the link, and moving the reel
+          // between mousedown and mouseup would swallow the click.
+          if (!panel || !target.matches(":focus-visible")) return;
           // Focus makes the browser scroll the clipped section sideways; undo that and
           // move the page instead so the pin's own translation brings the panel into view.
           sec.scrollLeft = 0;
+          const r = panel.getBoundingClientRect();
+          if (r.left >= 0 && r.right <= window.innerWidth && r.top >= 0 && r.bottom <= window.innerHeight) return;
           const x = panel.offsetLeft - (window.innerWidth - panel.offsetWidth) / 2;
           const p = Math.min(Math.max(x / Math.max(distance(), 1), 0), 1);
           scrollToY(st.start + p * (st.end - st.start), true);
