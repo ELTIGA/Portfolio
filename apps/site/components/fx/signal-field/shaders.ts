@@ -54,6 +54,9 @@ uniform float uTime;
 uniform float uIntro;      // 0 cloud -> 1 name
 uniform float uToGlobe;    // 0 name -> 1 globe
 uniform float uToRadar;    // 0 globe -> 1 radar
+uniform vec4 uNeed;        // 1 where a noise term can show: cloud, name, radar, flight
+uniform float uFrost;      // 0..1 defocus behind glass panels
+uniform float uGlow;       // 1 when bloom is off: softer, brighter sprites
 uniform vec3 uMouse;       // cursor on the z=0 plane, world units
 uniform float uMouseForce;
 uniform float uPixelRatio;
@@ -90,21 +93,25 @@ void main(){
 
   float t = uTime;
 
+  // Noise is the expensive part; uNeed (uniform, so every vertex branches the same way)
+  // skips the terms that are fully blended out, e.g. all cloud drift once the name is set.
   vec3 cloud = aCloud;
-  cloud += 0.6 * vec3(
-    snoise(aCloud * 0.25 + vec3(t * 0.05, 0.0, 0.0)),
-    snoise(aCloud * 0.25 + vec3(0.0, t * 0.05, 7.1)),
-    snoise(aCloud * 0.25 + vec3(3.3, 0.0, t * 0.05))
-  );
+  if (uNeed.x > 0.5) {
+    cloud += 0.6 * vec3(
+      snoise(aCloud * 0.25 + vec3(t * 0.05, 0.0, 0.0)),
+      snoise(aCloud * 0.25 + vec3(0.0, t * 0.05, 7.1)),
+      snoise(aCloud * 0.25 + vec3(3.3, 0.0, t * 0.05))
+    );
+  }
 
   vec3 text = aText * vec3(uTextScale, 1.0) + uTextCenter;
   // The name breathes: a slow noise shimmer along z.
-  text.z += 0.06 * snoise(vec3(aText.xy * 3.0, t * 0.4));
+  if (uNeed.y > 0.5) text.z += 0.06 * snoise(vec3(aText.xy * 3.0, t * 0.4));
 
   vec3 globe = rotX(0.38) * rotY(t * 0.12) * (aGlobe * uGlobeRadius) + uGlobeCenter;
 
   vec3 radar = aRadar * uRadarRadius;
-  radar.z += 0.05 * snoise(vec3(aRadar.xy * 4.0, t * 0.3));
+  if (uNeed.z > 0.5) radar.z += 0.05 * snoise(vec3(aRadar.xy * 4.0, t * 0.3));
   radar = rotX(-0.95) * radar + uRadarCenter;
 
   vec3 pos = mix(cloud, text, tIntro);
@@ -112,12 +119,14 @@ void main(){
   pos = mix(pos, radar, tRadar);
 
   // In flight between shapes, particles drift through a noise field.
-  float flight = sin(tIntro * 3.14159) + sin(tGlobe * 3.14159) + sin(tRadar * 3.14159);
-  pos += flight * 0.45 * vec3(
-    snoise(pos * 0.6 + t * 0.2),
-    snoise(pos * 0.6 + 11.0 + t * 0.2),
-    snoise(pos * 0.6 + 23.0 + t * 0.2)
-  );
+  if (uNeed.w > 0.5) {
+    float flight = sin(tIntro * 3.14159) + sin(tGlobe * 3.14159) + sin(tRadar * 3.14159);
+    pos += flight * 0.45 * vec3(
+      snoise(pos * 0.6 + t * 0.2),
+      snoise(pos * 0.6 + 11.0 + t * 0.2),
+      snoise(pos * 0.6 + 23.0 + t * 0.2)
+    );
+  }
 
   // Cursor: push particles out of a soft disc and lift them toward the camera.
   vec2 d = pos.xy - uMouse.xy;
@@ -134,7 +143,10 @@ void main(){
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mv;
   float size = uSize * (0.55 + aSeed * 0.9) * (1.0 + field * 1.4 + radarGlow * 0.6);
-  gl_PointSize = size * uPixelRatio * (10.0 / -mv.z);
+  // Frost: points swell into soft discs like an out-of-focus lens; their light spreads
+  // over the larger area, so brightness falls with it.
+  float defocus = 1.0 + uFrost * 2.2;
+  gl_PointSize = size * defocus * uPixelRatio * (10.0 / -mv.z);
 
   vec3 amber = vec3(1.0, 0.71, 0.28);
   vec3 cyan = vec3(0.37, 0.88, 1.0);
@@ -144,11 +156,13 @@ void main(){
   col = mix(col, hot, clamp(field * 0.9 + radarGlow * 0.5, 0.0, 1.0));
   vColor = col;
   float twinkle = 0.75 + 0.25 * sin(t * (1.0 + aSeed * 3.0) + aSeed * 40.0);
-  vAlpha = twinkle * mix(0.55, 1.0, tIntro) * (1.0 - 0.35 * tRadar + radarGlow);
+  vAlpha = twinkle * mix(0.55, 1.0, tIntro) * (1.0 - 0.35 * tRadar + radarGlow) / (defocus * defocus) * (1.0 + uFrost * 0.7);
 }
 `;
 
 export const fragmentShader = /* glsl */ `
+uniform float uFrost;
+uniform float uGlow;
 varying vec3 vColor;
 varying float vAlpha;
 void main(){
@@ -156,7 +170,10 @@ void main(){
   float r = length(c);
   if (r > 0.5) discard;
   float core = smoothstep(0.5, 0.0, r);
-  gl_FragColor = vec4(vColor * core * core * 1.6, vAlpha * core);
+  // Sharp core normally; flatter discs when defocused or standing in for bloom.
+  float soft = max(uFrost, uGlow * 0.6);
+  float shape = mix(core * core, core, soft);
+  gl_FragColor = vec4(vColor * shape * (1.6 + uGlow * 0.5), vAlpha * core);
 }
 `;
 
