@@ -66,7 +66,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }} />
       <Intro3D />
       <FxRoot />
-      <SignalField word={profile.handle} heroId="hero" radarId="contact" />
+      <SignalField word={profile.handle} heroId="hero" radarId="contact" frostIds={["work", "record"]} />
       <Hud sectors={sectors} />
       <Cursor />
       <div aria-hidden="true" className="atmosphere" />
