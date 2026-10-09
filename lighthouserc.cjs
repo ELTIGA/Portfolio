@@ -17,7 +17,11 @@ module.exports = {
         // Vercel serves preview URLs with `X-Robots-Tag: noindex`, so crawlability is only
         // meaningful against a local build or production.
         ...(process.env.BASE_URL ? { skipAudits: ["is-crawlable"] } : {}),
-        ...(bypass ? { extraHeaders: JSON.stringify({ "x-vercel-protection-bypass": bypass, "x-vercel-skip-toolbar": "1" }) } : {}),
+        // The bypass cookie also covers requests Lighthouse makes outside the page load
+        // (e.g. its /robots.txt fetch), which don't get the extra headers.
+        ...(bypass
+          ? { extraHeaders: JSON.stringify({ "x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true", "x-vercel-skip-toolbar": "1" }) }
+          : {}),
       },
     },
     assert: {
