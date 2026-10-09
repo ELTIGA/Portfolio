@@ -3,12 +3,12 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import awakenMyLove from "./posters/awaken-my-love.jpg";
 import darkSide from "./posters/dark-side-of-the-moon.jpg";
 import easternSounds from "./posters/eastern-sounds.jpg";
-import pulpFiction from "./posters/pulp-fiction.jpg";
+import porscheGt3Rs from "./posters/porsche-gt3-rs.jpg";
 
 /**
  * Procedural room. 1 world unit = 1 mm, which keeps the CSS3DRenderer (where one
  * world unit is one CSS pixel) well behaved. Everything is built from three.js
- * primitives; the only image files are the framed covers on the back wall.
+ * primitives; the only image files are the framed prints on the back wall.
  */
 
 export const COLORS = {
@@ -415,7 +415,7 @@ export function buildRoom(): Room {
   photo.rotation.z = 0.04;
   group.add(photo);
 
-  // Wall art: the film one-sheet right of the monitor, three album sleeves above it.
+  // Wall art: a Porsche 911 GT3 RS print right of the monitor, three album sleeves above it.
   const covers: Promise<void>[] = [];
   function hang(x: number, y: number, frameW: number, frameH: number, artW: number, artH: number, url: string, label: string) {
     const art = new THREE.Group();
@@ -426,7 +426,7 @@ export function buildRoom(): Room {
     group.add(art);
     covers.push(loadCover(url, material));
   }
-  hang(720, 1330, 400, 560, 366, 522, pulpFiction, "Pulp Fiction");
+  hang(720, 1330, 400, 524, 366, 490, porscheGt3Rs, "911 GT3 RS");
   hang(-240, 1555, 180, 180, 160, 160, darkSide, "The Dark Side of the Moon");
   hang(0, 1555, 180, 180, 160, 160, easternSounds, "Eastern Sounds");
   hang(240, 1555, 180, 180, 160, 160, awakenMyLove, "Awaken, My Love!");
