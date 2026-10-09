@@ -73,6 +73,15 @@ function cyl(rt: number, rb: number, h: number, mat: THREE.Material, seg = 32) {
   return m;
 }
 
+/** Cylinder spanning two points (cylinders are built along +Y). */
+function rod(from: THREE.Vector3, to: THREE.Vector3, r: number, mat: THREE.Material) {
+  const dir = to.clone().sub(from);
+  const m = cyl(r, r, dir.length(), mat, 12);
+  m.position.copy(from).addScaledVector(dir, 0.5);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+  return m;
+}
+
 function at<T extends THREE.Object3D>(o: T, x: number, y: number, z: number) {
   o.position.set(x, y, z);
   return o;
@@ -273,24 +282,26 @@ export function buildRoom(): Room {
   group.add(pen);
 
   // ---- Desk lamp ----------------------------------------------------------------
-  const lamp = new THREE.Group();
-  lamp.position.set(-760, DESK_Y, -230);
+  // Architect lamp in the back-left corner: the arm rises behind the props and reaches
+  // forward so the shade hangs over the notebook and mug, clear of the monitor.
   const lampMat = std(0x1c2127, 0.35, 0.7);
-  lamp.add(at(cyl(85, 95, 16, lampMat), 0, 8, 0));
-  const arm1 = cyl(7, 7, 380, lampMat, 12);
-  arm1.position.set(40, 200, 0);
-  arm1.rotation.z = -0.22;
-  lamp.add(arm1);
-  const joint = new THREE.Mesh(new THREE.SphereGeometry(14, 16, 12), lampMat);
-  joint.position.set(112, 385, 0);
-  lamp.add(joint);
-  const arm2 = cyl(6, 6, 330, lampMat, 12);
-  arm2.position.set(250, 340, 0);
-  arm2.rotation.z = Math.PI / 2 - 0.35;
-  lamp.add(arm2);
+  const lampBase = new THREE.Vector3(-800, DESK_Y, -250);
+  const shoulder = new THREE.Vector3(-800, DESK_Y + 30, -250);
+  const elbow = new THREE.Vector3(-840, DESK_Y + 540, -320);
+  const head = new THREE.Vector3(-560, DESK_Y + 450, 20);
+  const lampTarget = new THREE.Vector3(-580, DESK_Y, 150);
+  group.add(at(cyl(85, 95, 16, lampMat), lampBase.x, lampBase.y + 8, lampBase.z));
+  group.add(rod(lampBase, shoulder, 12, lampMat), rod(shoulder, elbow, 7, lampMat), rod(elbow, head, 6, lampMat));
+  for (const p of [shoulder, elbow, head]) {
+    const joint = new THREE.Mesh(new THREE.SphereGeometry(14, 16, 12), lampMat);
+    joint.position.copy(p);
+    joint.castShadow = true;
+    group.add(joint);
+  }
+  const beam = lampTarget.clone().sub(head).normalize();
   const headPivot = new THREE.Group();
-  headPivot.position.set(395, 298, 0);
-  headPivot.rotation.z = -0.55;
+  headPivot.position.copy(head);
+  headPivot.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), beam);
   const shade = new THREE.Mesh(new THREE.ConeGeometry(78, 120, 32, 1, true), std(0x242b32, 0.4, 0.6, { side: THREE.DoubleSide }));
   shade.position.y = -40;
   shade.castShadow = false;
@@ -298,12 +309,11 @@ export function buildRoom(): Room {
   const bulb = new THREE.Mesh(new THREE.SphereGeometry(28, 16, 12), new THREE.MeshBasicMaterial({ color: COLORS.warm }));
   bulb.position.y = -72;
   headPivot.add(bulb);
-  lamp.add(headPivot);
-  group.add(lamp);
+  group.add(headPivot);
 
-  const lampLight = new THREE.SpotLight(COLORS.warm, 9, 1900, 0.9, 0.7, 0);
-  lampLight.position.set(-760 + 395 + 10, DESK_Y + 215, -230);
-  lampLight.target.position.set(-480, DESK_Y, 90);
+  const lampLight = new THREE.SpotLight(COLORS.warm, 9, 1900, 0.8, 0.7, 0);
+  lampLight.position.copy(head).addScaledVector(beam, 72);
+  lampLight.target.position.copy(lampTarget);
   lampLight.castShadow = true;
   lampLight.shadow.mapSize.set(1024, 1024);
   lampLight.shadow.bias = -0.0004;
