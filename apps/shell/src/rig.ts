@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { SCREEN } from "./room";
 
+/** Reused by Tween.write so the intro flight allocates nothing per frame. */
+const scratch = new THREE.Vector3();
+
 /** Camera expressed as an orbit around a target: easy to arc around the desk. */
 export interface Pose {
   target: THREE.Vector3;
@@ -89,7 +92,7 @@ export class Tween {
   private write(u: number, out: Pose) {
     out.target.lerpVectors(this.from.target, this.to.target, u);
     if (this.path) {
-      const p = this.path.getPoint(u);
+      const p = this.path.getPoint(u, scratch);
       out.yaw = p.x;
       out.pitch = p.y;
       out.radius = p.z;
