@@ -104,11 +104,9 @@ export class Tween {
   }
 }
 
-export function applyPose(cam: THREE.PerspectiveCamera, p: Pose, yawOffset: number, pitchOffset: number, scratch: THREE.Vector3) {
-  const yaw = p.yaw + yawOffset;
-  const pitch = p.pitch + pitchOffset;
-  const cp = Math.cos(pitch);
-  scratch.set(Math.sin(yaw) * cp, Math.sin(pitch), Math.cos(yaw) * cp).multiplyScalar(p.radius);
+export function applyPose(cam: THREE.PerspectiveCamera, p: Pose, scratch: THREE.Vector3) {
+  const cp = Math.cos(p.pitch);
+  scratch.set(Math.sin(p.yaw) * cp, Math.sin(p.pitch), Math.cos(p.yaw) * cp).multiplyScalar(p.radius);
   cam.position.copy(p.target).add(scratch);
   cam.lookAt(p.target);
 }

@@ -14,7 +14,7 @@ import { Record } from "@/components/home/Record";
 import { ReelPin } from "@/components/home/ReelPin";
 import { Transmit } from "@/components/home/Transmit";
 import { WorkPanel } from "@/components/home/WorkReel";
-import { Intro3D } from "@/components/Intro3D";
+import { Intro3D, OfficeButton } from "@/components/Intro3D";
 import { Section } from "@/components/Section";
 
 const sorted = [...projects].sort((a, b) => a.order - b.order);
@@ -84,6 +84,7 @@ export default function Home() {
             <a className={`${navLink} hidden sm:inline`} href="#work">Work</a>
             <a className={`${navLink} hidden sm:inline`} href="#record">Record</a>
             <a className={`${navLink} hidden sm:inline`} href="#about">About</a>
+            <OfficeButton className={navLink} />
             <Magnetic>
               <EmailCta className="!px-4 !py-2.5" label="Email" surface="header" />
             </Magnetic>
