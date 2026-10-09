@@ -14,6 +14,15 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 
 type State = "intro" | "desk" | "zoomIn" | "zoomed" | "zoomOut";
 
+/**
+ * Device pixel ratio capped by a pixel budget: crisp on laptops, but a 1440p+ display at
+ * 2x no longer renders 8+ megapixels with MSAA and shadows every frame.
+ */
+function budgetDpr(w: number, h: number, megapixels = 3.5) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  return Math.max(1, Math.min(dpr, Math.sqrt((megapixels * 1e6) / Math.max(w * h, 1))));
+}
+
 function fail(reason: unknown) {
   console.warn("[shell] 3D unavailable:", reason);
   $("fail").hidden = false;
@@ -43,6 +52,10 @@ function boot() {
   renderer.setClearColor(0x000000, 0);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  // Nothing that casts a shadow ever moves, so shadow maps render once (and after resizes),
+  // not every frame the camera moves.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.2;
 
@@ -59,18 +72,31 @@ function boot() {
   scene.add(room.group);
 
   // ---- Monitor content: same-origin iframe on the CSS3D layer --------------------
+  // The monitor boots: a static boot screen during the fly-in, then the real /desktop
+  // app loads once the camera settles (or the visitor heads for it sooner). That keeps a
+  // whole second Next.js app from hydrating while the intro flight is running.
   const holder = document.createElement("div");
+  holder.className = "monitor";
   holder.style.width = `${SCREEN.iframePx.w}px`;
   holder.style.height = `${SCREEN.iframePx.h}px`;
-  holder.style.background = "#0b0e11";
+  const boot = document.createElement("div");
+  boot.className = "monitor-boot";
+  boot.setAttribute("aria-hidden", "true");
+  boot.innerHTML = '<span class="monitor-mark">~/</span><span>desktop<i class="monitor-caret"></i></span>';
+  holder.appendChild(boot);
   const iframe = document.createElement("iframe");
   iframe.title = "Interactive portfolio desktop";
-  iframe.src = "/desktop";
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "0";
   iframe.setAttribute("referrerpolicy", "same-origin");
-  holder.appendChild(iframe);
+  let iframeRequested = false;
+  function loadDesktop() {
+    if (iframeRequested) return;
+    iframeRequested = true;
+    iframe.src = "/desktop";
+    holder.appendChild(iframe);
+  }
   const cssObject = new CSS3DObject(holder);
   cssObject.position.copy(SCREEN.center);
   cssObject.position.z += 1.5;
@@ -84,9 +110,9 @@ function boot() {
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
-    // 1.5 keeps large/HiDPI screens with shadows affordable on integrated GPUs.
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setPixelRatio(budgetDpr(width, height));
     renderer.setSize(width, height);
+    renderer.shadowMap.needsUpdate = true;
     cssRenderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -121,6 +147,7 @@ function boot() {
   function go(to: Pose, seconds: number, next: State, path?: THREE.CatmullRomCurve3) {
     const arrive = () => {
       tween = null;
+      if (next === "desk") loadDesktop();
       setState(next);
       refit();
       if (next === "zoomed") iframe.focus({ preventScroll: true });
@@ -139,6 +166,7 @@ function boot() {
     const target = deskPose(camera.aspect);
     if (reduceMotion) {
       pose = target;
+      loadDesktop();
       setState("desk");
       return;
     }
@@ -149,6 +177,7 @@ function boot() {
 
   function zoomIn() {
     if (state !== "desk") return;
+    loadDesktop();
     setState("zoomIn");
     go(zoomPose(camera.aspect, camera.fov, height), 1.15, "zoomed");
   }
@@ -217,8 +246,11 @@ function boot() {
   // Standalone "Skip" link: remember the choice so "/" doesn't reopen the intro.
   $("skip").addEventListener("click", rememberSkip);
 
+  // Warm the desktop up as soon as the visitor reaches for it.
+  actionBtn.addEventListener("pointerenter", loadDesktop, { once: true });
+
   iframe.addEventListener("load", () => {
-    iframeLoaded = true;
+    holder.classList.add("booted");
     try {
       // Same-origin: let Esc inside the desktop step back out of the monitor.
       iframe.contentWindow?.addEventListener("keydown", onKey);
@@ -229,11 +261,13 @@ function boot() {
         (ev) => {
           const a = (ev.target as Element | null)?.closest?.("a");
           if (!a || a.target || ev.defaultPrevented || ev.button !== 0) return;
+          // Any link back to the homepage (also "/#work") leaves the 3D scene for the real
+          // page, at that section, instead of loading a second homepage inside the monitor.
           const url = new URL(a.href, window.location.href);
-          if (url.origin === window.location.origin && url.pathname === "/" && !url.hash && !url.search) {
+          if (url.origin === window.location.origin && url.pathname === "/" && !url.search) {
             ev.preventDefault();
             ev.stopPropagation();
-            requestSkip();
+            requestSkip(url.hash);
           }
         },
         true,
@@ -241,7 +275,6 @@ function boot() {
     } catch {
       /* cross-origin is not expected; ignore */
     }
-    maybeReady();
   });
 
   // ---- Loop ------------------------------------------------------------------------
@@ -286,22 +319,29 @@ function boot() {
   });
 
   // ---- Loading / ready ---------------------------------------------------------------
-  let iframeLoaded = false;
+  // The room is ready once WebGL has drawn it; the monitor boots on its own afterwards.
   let introStarted = false;
-  function maybeReady(force = false) {
-    if (introStarted || (!iframeLoaded && !force)) return;
+  function ready() {
+    if (introStarted) return;
     introStarted = true;
     $("loading").classList.add("done");
     notifyParent("ready");
     // Let the fade-out begin, then fly in.
     window.setTimeout(startIntro, reduceMotion ? 0 : 250);
   }
-  // Never hold the user on the loader if the desktop is slow.
-  window.setTimeout(() => maybeReady(true), 6000);
 
   resize();
   setState("intro");
   if (!document.hidden) start();
+  // The loop sleeps when idle, so covers that arrive late must ask for a frame. Waiting
+  // for them before the fly-in avoids a visible pop; then two frames: the first compiles
+  // shaders and draws shadows, the second is on screen.
+  room.artReady.then(() => {
+    dirty = true;
+    requestAnimationFrame(() => requestAnimationFrame(ready));
+  });
+  // Hidden or throttled frames must not hold the loader.
+  window.setTimeout(ready, 3000);
 }
 
 boot();

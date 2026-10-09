@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { introIsOpen, onIntro } from "./runtime";
 
 /**
  * Decorative heads-up display framing the viewport: corner brackets, a UTC clock,
@@ -22,33 +23,66 @@ export function Hud({ sectors }: { sectors: { id: string; label: string }[] }) {
       const s = Math.floor((Date.now() - start) / 1000);
       setUptime(`${pad(Math.floor(s / 60))}:${pad(s % 60)}`);
     };
-    tick();
-    const id = window.setInterval(tick, 1000);
+    // The clock only ticks while someone can see it.
+    let id = 0;
+    const syncClock = () => {
+      window.clearInterval(id);
+      id = 0;
+      if (document.hidden || introIsOpen()) return;
+      tick();
+      id = window.setInterval(tick, 1000);
+    };
+    syncClock();
+    document.addEventListener("visibilitychange", syncClock);
+    const offIntro = onIntro(syncClock);
 
+    // Scroll rail: page height is cached and only re-read when the layout resizes.
+    let max = 0;
+    const measure = () => {
+      max = document.documentElement.scrollHeight - window.innerHeight;
+    };
     let raf = 0;
     const onScroll = () => {
-      cancelAnimationFrame(raf);
+      if (raf) return;
       raf = requestAnimationFrame(() => {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const p = max > 0 ? window.scrollY / max : 0;
+        raf = 0;
+        const p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
         if (rail.current) rail.current.style.transform = `scaleY(${p})`;
-        // Active sector: the last one whose top has passed 40% of the viewport.
-        let idx = 0;
-        sectors.forEach((s, i) => {
-          const el = document.getElementById(s.id);
-          if (el && el.getBoundingClientRect().top < window.innerHeight * 0.4) idx = i;
-        });
-        setActive(idx);
       });
     };
+    const ro = new ResizeObserver(() => {
+      measure();
+      onScroll();
+    });
+    ro.observe(document.body);
+    measure();
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+
+    // Active sector: the last section crossing a line 40% down the viewport.
+    const els = sectors.map((s) => document.getElementById(s.id));
+    const crossing = new Set<number>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const i = els.indexOf(e.target as HTMLElement);
+          if (e.isIntersecting) crossing.add(i);
+          else crossing.delete(i);
+        }
+        if (crossing.size) setActive(Math.max(...crossing));
+      },
+      { rootMargin: "-40% 0px -60% 0px" },
+    );
+    for (const el of els) if (el) io.observe(el);
+
     return () => {
       window.clearInterval(id);
       cancelAnimationFrame(raf);
+      document.removeEventListener("visibilitychange", syncClock);
+      offIntro();
+      ro.disconnect();
+      io.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
     };
   }, [sectors]);
 

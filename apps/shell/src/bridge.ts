@@ -4,10 +4,10 @@
  */
 export type ShellMessage = "ready" | "skip" | "failed";
 
-export function notifyParent(type: ShellMessage) {
+export function notifyParent(type: ShellMessage, hash?: string) {
   if (window.parent === window) return;
   try {
-    window.parent.postMessage({ source: "portfolio-shell", type }, window.location.origin);
+    window.parent.postMessage({ source: "portfolio-shell", type, hash }, window.location.origin);
   } catch {
     /* nothing to notify */
   }
@@ -24,12 +24,12 @@ export function rememberSkip() {
   }
 }
 
-/** Leave the 3D intro for the plain portfolio page. */
-export function requestSkip() {
+/** Leave the 3D intro for the plain portfolio page, optionally at a section (`#work`). */
+export function requestSkip(hash = "") {
   if (window.parent !== window) {
-    notifyParent("skip");
+    notifyParent("skip", hash || undefined);
     return;
   }
   rememberSkip();
-  window.location.assign("/");
+  window.location.assign(`/${hash}`);
 }
