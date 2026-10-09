@@ -16,6 +16,8 @@ export function Hero() {
         </span>
       </div>
 
+      {/* Scrim so the copy stays readable over the brightest part of the particle word. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-bg via-bg/75 to-transparent" />
       <div className="relative mx-auto mt-auto grid w-full max-w-6xl items-end gap-10 px-5 pb-14 sm:px-8 md:grid-cols-[minmax(0,1fr)_auto] md:pb-20">
         <div>
           <p className="hero-in flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted" style={delay(300)}>

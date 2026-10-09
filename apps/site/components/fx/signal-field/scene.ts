@@ -209,7 +209,7 @@ export function createSignalScene({ canvas, word, fontFamily, count, bloom }: Op
     uniforms.uTextCenter.value.set(0, wide ? visH * 0.13 : visH * 0.2, 0);
     uniforms.uGlobeCenter.value.set(wide ? visW * 0.24 : 0, wide ? 0 : visH * 0.05, -1);
     uniforms.uGlobeRadius.value = wide ? Math.min(visH * 0.27, visW * 0.16) : visW * 0.3;
-    uniforms.uRadarCenter.value.set(wide ? visW * 0.12 : 0, -visH * 0.22, -1);
+    uniforms.uRadarCenter.value.set(wide ? visW * 0.12 : 0, -visH * (wide ? 0.22 : 0.46), -1);
     uniforms.uRadarRadius.value = Math.min(visW * 0.42, visH * 0.6);
     uniforms.uSize.value = wide ? 2.2 : 3;
   };

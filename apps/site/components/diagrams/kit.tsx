@@ -219,7 +219,7 @@ export function FlowDiagram({ spec, variant = "page" }: { spec: FlowSpec } & Dia
     );
   }
   return (
-    <figure className="diagram-hot brackets bg-bg/70 p-3 backdrop-blur-sm sm:p-5 lg:-mx-12" data-draw="">
+    <figure className="diagram-hot brackets bg-bg/70 p-3 backdrop-blur-sm sm:p-5 xl:-mx-12" data-draw="">
       <div className="hidden md:block">
         <Svg spec={spec} mode="wide" />
       </div>

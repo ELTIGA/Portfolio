@@ -26,7 +26,7 @@ export function Transmit() {
               data-cta="email"
               data-surface="contact"
               data-cursor="send"
-              className="group font-display block break-all text-[11vw] font-black uppercase leading-[0.85] transition-colors sm:text-[8.4vw] lg:text-[6.5rem]"
+              className="group font-display block text-[8.6vw] font-black uppercase leading-[0.85] transition-colors sm:text-[8vw] xl:text-[6.5rem]"
             >
               <span className="text-fg transition-colors group-hover:text-accent">{user}</span>
               <span className="text-outline">@{domain}</span>
