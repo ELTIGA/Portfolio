@@ -11,6 +11,14 @@ Only code ideas were reused. No assets (models, textures, images, video or audio
 from that project are included: the room is built procedurally from three.js
 primitives, and the scene, UI and logic in `src/` were written for this site.
 
+## Wall art
+
+The framed covers on the back wall (`src/posters/`) are the film poster for
+*Pulp Fiction* and the album covers of *The Dark Side of the Moon*, *Eastern
+Sounds* and *"Awaken, My Love!"*. They are shown as a personal tribute and remain
+the property of their respective rights holders. They are not covered by the
+license below.
+
 ### MIT License
 
 Copyright 2024 Henry Heffernan
