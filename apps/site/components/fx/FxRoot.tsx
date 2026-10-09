@@ -7,6 +7,52 @@ import { introIsOpen, isFramed, onIntro } from "./runtime";
 import { primeStrokes } from "./draw";
 import { scramble } from "./scramble";
 
+// Grain jitter offsets (px) and timing, matching the CSS fallback in globals.css.
+const GRAIN = [
+  [0, 0],
+  [-96, 64],
+  [80, -112],
+  [-48, 128],
+  [112, 32],
+  [0, 0],
+];
+const GRAIN_MS = 150;
+const BLINK_MS = 550;
+
+/**
+ * Steps the film grain and the status blinks from one low-rate timer. As CSS animations
+ * they kept Chrome rendering a main-thread frame every vsync for the whole visit; stepped
+ * here they cost ~9 tiny style updates a second and look the same (both were stepped).
+ * Sleeps while the tab is hidden or the 3D intro covers the page.
+ */
+function stepLoops() {
+  const root = document.documentElement;
+  const grain = document.querySelector<HTMLElement>(".atmosphere");
+  let tick = 0;
+  let id = 0;
+  const step = () => {
+    tick++;
+    const [x, y] = GRAIN[tick % GRAIN.length];
+    grain?.style.setProperty("--gx", `${x}px`);
+    grain?.style.setProperty("--gy", `${y}px`);
+    if (tick % Math.round(BLINK_MS / GRAIN_MS) === 0) root.dataset.blink = root.dataset.blink === "off" ? "on" : "off";
+  };
+  const sync = () => {
+    window.clearInterval(id);
+    id = 0;
+    if (!document.hidden && !introIsOpen()) id = window.setInterval(step, GRAIN_MS);
+  };
+  sync();
+  document.addEventListener("visibilitychange", sync);
+  const offIntro = onIntro(sync);
+  return () => {
+    window.clearInterval(id);
+    document.removeEventListener("visibilitychange", sync);
+    offIntro();
+    delete root.dataset.blink;
+  };
+}
+
 /**
  * Page-wide motion, driven by data attributes so sections can stay server components:
  *  - [data-reveal="up" | "wipe" | "fade"]   enters when scrolled into view (batched)
@@ -24,12 +70,13 @@ export function FxRoot() {
     let disposed = false;
     const cleanups: (() => void)[] = [];
 
-    // Looping photo sweeps only run while their photo is on screen.
+    // Smooth looping animations (photo sweeps, the scroll cue) only run while on screen.
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) e.target.toggleAttribute("data-offscreen", !e.isIntersecting);
     });
-    for (const el of document.querySelectorAll(".duotone")) io.observe(el);
+    for (const el of document.querySelectorAll(".duotone, .scroll-cue")) io.observe(el);
     cleanups.push(() => io.disconnect());
+    cleanups.push(stepLoops());
 
     void (async () => {
       const [{ gsap, ScrollTrigger }, { default: Lenis }] = await Promise.all([loadGsap(), import("lenis")]);

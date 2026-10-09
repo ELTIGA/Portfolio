@@ -67,7 +67,8 @@ export function qualityFor(tier: number, mobile: boolean): Quality {
 
 /**
  * Watches rendered-frame intervals and moves one tier at a time: down when frames run
- * 25% over budget for a 2s window, up (once per session) after 10s comfortably under.
+ * 25% over budget for two 2s windows in a row (one GC or tab-switch hiccup never costs a
+ * visitor the full look), up (once per session) after 10s comfortably under.
  * The gap between the two thresholds keeps it from flapping.
  */
 export function createGovernor(start: number, floor: number, apply: (tier: number) => void) {
@@ -78,6 +79,7 @@ export function createGovernor(start: number, floor: number, apply: (tier: numbe
   let n = 0;
   let windowStart = 0;
   let goodSince = 0;
+  let slowWindows = 0;
   document.documentElement.dataset.glTier = String(tier);
 
   const set = (next: number) => {
@@ -86,6 +88,7 @@ export function createGovernor(start: number, floor: number, apply: (tier: numbe
     document.documentElement.dataset.glTier = String(tier);
     since = performance.now();
     goodSince = 0;
+    slowWindows = 0;
     apply(tier);
   };
 
@@ -106,8 +109,12 @@ export function createGovernor(start: number, floor: number, apply: (tier: numbe
       sum = n = 0;
       windowStart = now;
       if (avg > budget * 1.25 && tier < TIERS.length - 1) {
-        set(tier + 1);
-      } else if (avg < budget * 1.08 && tier > floor && !upgraded) {
+        goodSince = 0;
+        if (++slowWindows >= 2) set(tier + 1);
+        return;
+      }
+      slowWindows = 0;
+      if (avg < budget * 1.08 && tier > floor && !upgraded) {
         goodSince ||= now;
         if (now - goodSince > UPGRADE_AFTER_MS) {
           upgraded = true;

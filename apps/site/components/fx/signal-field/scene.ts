@@ -285,7 +285,11 @@ export function createSignalScene({ canvas, data, quality, initial, onSample }: 
     uniforms.uGlobeRadius.value = wide ? Math.min(visH * 0.27, visW * 0.16) : visW * 0.3;
     uniforms.uRadarCenter.value.set(wide ? visW * 0.12 : 0, -visH * (wide ? 0.22 : 0.46), -1);
     uniforms.uRadarRadius.value = Math.min(visW * 0.42, visH * 0.6);
-    uniforms.uSize.value = (wide ? 2.2 : 3) * (q.bloom ? 1 : 1.2);
+    // Desktop tiers that lose bloom get bigger, softer sprites in its place; phones never
+    // had bloom, so their look stays exactly as designed.
+    const standIn = wide && !q.bloom;
+    uniforms.uSize.value = wide ? 2.2 * (standIn ? 1.2 : 1) : 3;
+    uniforms.uGlow.value = standIn ? 1 : 0;
     needsDraw = true;
   };
 
@@ -301,7 +305,6 @@ export function createSignalScene({ canvas, data, quality, initial, onSample }: 
     // Without bloom, points are 1-2px and a strong RGB split turns them into rainbow noise;
     // a softer, brighter sprite stands in for the glow.
     finish.uniforms.uAberration.value = q.bloom ? 0.018 : 0.003;
-    uniforms.uGlow.value = q.bloom ? 0 : 1;
     geometry.setDrawRange(0, Math.min(q.count, data.count));
     layout();
   };
