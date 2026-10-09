@@ -21,39 +21,66 @@ export interface ProcessRow {
 export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
   const [active, setActive] = useState<number | null>(null);
   const card = useRef<HTMLDivElement>(null);
-  const pos = useRef({ x: 0, y: 0, cx: 0, cy: 0, w: 0 });
+  const pos = useRef({ x: 0, y: 0, cx: 0, cy: 0, w: 0, cw: 0 });
+  const loop = useRef<{ start: () => void; stop: () => void } | null>(null);
+  const unscramble = useRef<() => void>(() => {});
 
+  // The card only trails the cursor while it is over the table; the loop sleeps otherwise.
   useEffect(() => {
     if (!finePointer()) return;
     let raf = 0;
     const tick = () => {
-      raf = requestAnimationFrame(tick);
       const p = pos.current;
       p.cx += (p.x - p.cx) * 0.14;
       p.cy += (p.y - p.cy) * 0.14;
       const el = card.current;
       if (!el) return;
       // Sit right of the cursor, or flip to its left when that would leave the table.
-      const cw = el.offsetWidth;
-      const x = p.cx + 28 + cw > p.w ? Math.max(p.cx - 28 - cw, 0) : p.cx + 28;
+      const x = p.cx + 28 + p.cw > p.w ? Math.max(p.cx - 28 - p.cw, 0) : p.cx + 28;
       el.style.transform = `translate3d(${x}px, ${p.cy - 60}px, 0) rotate(${(p.x - p.cx) * 0.04}deg)`;
+      raf = Math.abs(p.x - p.cx) + Math.abs(p.y - p.cy) > 0.1 ? requestAnimationFrame(tick) : 0;
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    loop.current = {
+      start: () => {
+        if (!raf) raf = requestAnimationFrame(tick);
+      },
+      stop: () => {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      },
+    };
+    return () => {
+      loop.current?.stop();
+      loop.current = null;
+      unscramble.current();
+    };
   }, []);
 
   const row = active === null ? null : rows[active];
   return (
     <div
       className="relative [overflow-x:clip]"
+      onPointerEnter={(e) => {
+        if (e.pointerType !== "mouse") return;
+        // Read layout once per visit, not every frame.
+        const r = e.currentTarget.getBoundingClientRect();
+        const p = pos.current;
+        p.w = r.width;
+        p.cw = card.current?.offsetWidth ?? 0;
+        p.cx = p.x = e.clientX - r.left;
+        p.cy = p.y = e.clientY - r.top;
+      }}
       onPointerMove={(e) => {
         if (e.pointerType !== "mouse") return;
         const r = e.currentTarget.getBoundingClientRect();
         pos.current.x = e.clientX - r.left;
         pos.current.y = e.clientY - r.top;
-        pos.current.w = r.width;
+        loop.current?.start();
       }}
-      onPointerLeave={() => setActive(null)}
+      onPointerLeave={() => {
+        setActive(null);
+        loop.current?.stop();
+      }}
     >
       <div aria-hidden="true" className="grid grid-cols-[3.5rem_1fr_auto] gap-4 border-b border-line pb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted sm:grid-cols-[4rem_1.2fr_1fr_1.4fr]">
         <span>pid</span>
@@ -70,7 +97,8 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
               onPointerEnter={(e) => {
                 setActive(i);
                 const name = e.currentTarget.querySelector<HTMLElement>("[data-name]");
-                if (name) scramble(name, { duration: 450 });
+                unscramble.current();
+                if (name) unscramble.current = scramble(name, { duration: 450 });
               }}
               onFocus={() => setActive(i)}
               className="group grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-4 border-b border-line py-5 transition-colors hover:bg-accent/[0.04] sm:grid-cols-[4rem_1.2fr_1fr_1.4fr] sm:py-7"
@@ -92,7 +120,7 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
       <div
         ref={card}
         aria-hidden="true"
-        className={`pointer-events-none absolute left-0 top-0 z-10 hidden w-80 border border-accent/40 bg-bg/90 p-5 backdrop-blur-md transition-[opacity,scale] duration-300 [@media(pointer:fine)_and_(min-width:768px)]:block ${row ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}
+        className={`pointer-events-none absolute left-0 top-0 z-10 hidden w-80 border border-accent/40 bg-bg/95 p-5 transition-[opacity,scale] duration-300 [@media(pointer:fine)_and_(min-width:768px)]:block ${row ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}
       >
         {row && (
           <>
