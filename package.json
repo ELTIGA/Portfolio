@@ -20,6 +20,8 @@
     "build:shell": "node scripts/build-shell.mjs",
     "build": "npm run build:shell && npm run build -w @portfolio/site",
     "lint": "npm run lint -w @portfolio/site",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "npm run typecheck -w @portfolio/site -w @portfolio/content && tsc --noEmit -p e2e/tsconfig.json",
     "audit:ci": "npm audit --omit=dev --audit-level=moderate && npm audit --omit=dev --audit-level=moderate --prefix apps/shell",
     "test:e2e": "playwright test -c e2e/playwright.config.ts",
@@ -34,6 +36,7 @@
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.64.0",
     "@types/node": "^22.20.5",
+    "prettier": "3.9.9",
     "typescript": "^5.9.3"
   },
   "overrides": {
