@@ -17,7 +17,7 @@ The framed prints on the back wall (`src/posters/`) are the album covers of
 _The Dark Side of the Moon_, _Eastern Sounds_ and _"Awaken, My Love!"_, plus a
 photo of a Porsche 911 GT3 RS model. They are shown as a personal tribute and
 remain the property of their respective rights holders. They are not covered by
-the license below.
+this project's MIT license or by the license below.
 
 ### MIT License
 

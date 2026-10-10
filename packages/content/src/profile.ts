@@ -2,6 +2,9 @@ import type { Profile } from "./types";
 
 // Bio, experience, credentials and headline metrics, used across the site, the résumé and
 // social metadata. Every claim is first-hand or documented in the project's own repository.
+//
+// The text in this file is © Ahmed Eltigani, all rights reserved. It is not covered by the
+// MIT license that applies to the code (see "License" in the README).
 export const profile: Profile = {
   name: "Ahmed Eltigani",
   handle: "ELTIGA",

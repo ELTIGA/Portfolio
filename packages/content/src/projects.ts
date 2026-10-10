@@ -2,6 +2,9 @@ import type { Project } from "./types";
 
 // One entry per project: home page reel, case study, desktop window and résumé.
 // Every claim is first-hand or documented in the project's own repository.
+//
+// The text in this file is © Ahmed Eltigani, all rights reserved. It is not covered by the
+// MIT license that applies to the code (see "License" in the README).
 export const projects: Project[] = [
   {
     slug: "express-ops",
