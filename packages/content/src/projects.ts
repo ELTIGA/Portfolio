@@ -1,7 +1,7 @@
 import type { Project } from "./types";
 
-// Every claim below was read from the repo's README/docs or stated by the owner.
-// TODO(owner): confirm permission to name Express Rafting publicly.
+// One entry per project: home page reel, case study, desktop window and résumé.
+// Every claim is first-hand or documented in the project's own repository.
 export const projects: Project[] = [
   {
     slug: "express-ops",

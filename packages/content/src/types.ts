@@ -1,31 +1,36 @@
+/** How a project's interactive preview is framed: browser window, terminal or macOS menu bar app. */
 export type PreviewKind = "web" | "terminal" | "menubar";
 
 export interface Project {
+  /** URL segment (`/work/[slug]`) and key in the demo and diagram registries. */
   slug: string;
   name: string;
   /** One line shown on cards. */
   tagline: string;
   /** Lower number = shown first. */
   order: number;
+  /** Featured projects get the home page reel; the rest are listed under "Also built". */
   featured: boolean;
+  /** My role on the project, e.g. "Sole developer". */
   role: string;
+  /** Current state in plain language, e.g. "In daily use by the operations team". */
   status: string;
   /** 2–3 sentences: what was built (and the problem, when `problem` is not set). */
   summary: string;
-  /** The situation that made this worth building. Facts from the repo docs or the owner only. */
+  /** The situation that made this worth building. */
   problem?: string;
-  /** What changed as a result. Only measured or owner-stated outcomes; no adoption claims. */
+  /** What changed as a result. Measured or first-hand outcomes only, no adoption claims. */
   outcome?: string;
-  /** Engineering decisions and trade-offs, each taken from repo docs. One sentence each. */
+  /** Engineering decisions and trade-offs, one sentence each. */
   decisions?: string[];
-  /** Documented roadmap items (from the repo's own backlog), never invented. */
+  /** Planned work, taken from the project's own backlog. */
   nextSteps?: string[];
   /** 2–3 concise bullets for the printable résumé. Falls back to the first highlights. */
   resume?: string[];
-  /** Concrete capabilities / outcomes. Facts only. */
+  /** Concrete capabilities and outcomes. */
   highlights: string[];
   stack: string[];
-  /** "How it's secured & shipped". Facts verified against the repo. */
+  /** Bullets for the "How it's secured & shipped" section. */
   security: string[];
   preview: PreviewKind;
   /** Public links only. Most repos are private, so this is usually empty. */
@@ -35,7 +40,7 @@ export interface Project {
 export interface Metric {
   value: string;
   label: string;
-  /** Source of the number; shown only in dev notes. */
+  /** Where the number comes from. Kept for reference; not rendered. */
   source: string;
 }
 
@@ -65,7 +70,7 @@ export interface Credential {
 
 export interface EventAttended {
   name: string;
-  /** What the owner actually did there. Never "speaker" unless true. */
+  /** My role at the event, e.g. "Attendee". */
   role: string;
   year: string;
   image: string;
@@ -77,6 +82,7 @@ export interface EventAttended {
 
 export interface Profile {
   name: string;
+  /** Short brand name: the header logo and the word the home page particle field assembles. */
   handle: string;
   headline: string;
   subheadline: string;
@@ -85,13 +91,15 @@ export interface Profile {
   github: string;
   linkedin: string;
   languages: string[];
+  /** Main photo: the hero, the desktop Notes window and structured data. */
   portrait: { src: string; alt: string; width: number; height: number };
+  /** Second, informal photo for the About section. */
   casual: { src: string; alt: string; width: number; height: number };
   education: Education;
   experience: Experience[];
   credentials: Credential[];
   events: EventAttended[];
-  /** Canonical origin, used for metadata. Replace once the domain is chosen. */
+  /** Canonical origin, used for metadata, the sitemap, structured data and the résumé. */
   siteUrl: string;
   about: string[];
   skills: { group: string; items: string[] }[];

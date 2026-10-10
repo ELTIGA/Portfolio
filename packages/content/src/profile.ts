@@ -1,7 +1,7 @@
 import type { Profile } from "./types";
 
-// Facts here come from the owner's own statements (interview) or the repos' READMEs.
-// Nothing is invented. TODO(owner) marks items awaiting confirmation.
+// Bio, experience, credentials and headline metrics, used across the site, the résumé and
+// social metadata. Every claim is first-hand or documented in the project's own repository.
 export const profile: Profile = {
   name: "Ahmed Eltigani",
   handle: "ELTIGA",
@@ -36,7 +36,7 @@ export const profile: Profile = {
       org: "Express Rafting",
       role: "Freelance developer",
       type: "Contract",
-      period: "Jul 2026 – present", // TODO(owner): owner will handle permission to name the company publicly
+      period: "Jul 2026 – present",
       summary:
         "Sole developer of Express Ops for a tour operator. Express Ops is used daily by the operations team and saves roughly 3–5 hours a day.",
       bullets: [
@@ -45,7 +45,7 @@ export const profile: Profile = {
       ],
     },
     {
-      org: "Fyluim", // TODO(owner): confirm it's fine to name Fyluim on the site
+      org: "Fyluim",
       role: "UI/UX & front-end developer",
       type: "Employee",
       period: "2023 – 2024",
@@ -58,7 +58,7 @@ export const profile: Profile = {
       name: "Certified Ethical Hacker (CEH)",
       issuer: "EC-Council",
       year: "2026",
-      status: "Earned 2026, currently valid", // TODO(owner): add credential ID / verification link if available
+      status: "Earned 2026, currently valid",
     },
     {
       name: "AWS Skill Builder training",
@@ -118,8 +118,8 @@ export const profile: Profile = {
   metrics: [
     {
       value: "3–5 hrs/day",
-      label: "saved for the operations team by Express Ops (owner's estimate)",
-      source: "Owner-stated range.",
+      label: "saved for the operations team by Express Ops (my estimate)",
+      source: "My own estimate, given as a range.",
     },
     {
       value: "5 LLM providers",
