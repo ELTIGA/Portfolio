@@ -2,6 +2,15 @@
   "name": "portfolio",
   "private": true,
   "version": "0.1.0",
+  "description": "Personal portfolio of Ahmed Eltigani: Next.js site, interactive case studies and an optional three.js intro.",
+  "homepage": "https://www.ahmedeltigani.com",
+  "bugs": "https://github.com/ELTIGA/Portfolio/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ELTIGA/Portfolio.git"
+  },
+  "license": "MIT",
+  "author": "Ahmed Eltigani (https://www.ahmedeltigani.com)",
   "workspaces": [
     "apps/site",
     "packages/*"
