@@ -1,93 +1,144 @@
-# Portfolio
+# Ahmed Eltigani · Portfolio
 
-Portfolio for Ahmed Eltigani (ahmedeltigani.com), built to get one thing done: an email from a hiring manager.
+[![CI](https://github.com/ELTIGA/Portfolio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ELTIGA/Portfolio/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ELTIGA/Portfolio/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/ELTIGA/Portfolio/actions/workflows/codeql.yml)
+[![Security](https://github.com/ELTIGA/Portfolio/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/ELTIGA/Portfolio/actions/workflows/security.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## What's in it
+Source code for **[ahmedeltigani.com](https://www.ahmedeltigani.com)**, my personal site: case studies with interactive previews of the products I've built, a macOS-style desktop, a printable résumé and an optional 3D intro. It is built and shipped like production software: typed content, accessibility and performance budgets, and a pipeline that deploys nothing until every check passes.
 
-- `/` — fast, server-rendered recruiter page: hero, proof, selected work, experience and credentials, security and delivery, toolbox, about, contact.
-- `/work/[slug]` — a case study per project: problem, what it does, an **interactive preview** on invented sample data, architecture diagram, engineering decisions, how it's secured and shipped.
-- `/desktop` — a macOS-style desktop (draggable windows, dock, terminal, mail, about) where every project opens as an interactive window.
-- `/resume` — printable, ATS-friendly résumé generated from the same content.
-- Optional 3D intro (`apps/shell`), shown only on capable desktop clients, always skippable; the plain page stays in the DOM underneath.
+![Home page: the particle field assembles the ELTIGA handle behind the hero](docs/images/home.jpg)
 
-## Layout
+<table>
+  <tr>
+    <td><img src="docs/images/case-study.jpg" alt="Express Ops case study with its server-rendered architecture diagram"></td>
+    <td><img src="docs/images/desktop.jpg" alt="The macOS-style desktop running the Express Ops preview on sample data"></td>
+  </tr>
+</table>
 
-| Path                      | What                                                                                                 |
-| ------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `apps/site`               | Next.js (App Router) + Tailwind. Pages, desktop, demos, diagrams                                     |
-| `apps/shell`              | Standalone Vite + three.js 3D intro (not an npm workspace). Built into `apps/site/public/experience` |
-| `packages/content`        | Typed single source of truth for profile and projects                                                |
-| `scripts/build-shell.mjs` | Builds the shell and copies it (and its licenses) into the site                                      |
+## Highlights
 
-Motion and visual effects live in `apps/site/components/fx/` and only run on the client after first paint:
+- **Interactive case studies.** Each project page (`/work/[slug]`) covers the problem, the build, an interactive preview that runs entirely in the browser on sample data, an architecture diagram, the main engineering decisions and how the project is secured and shipped.
+- **A desktop in the browser.** `/desktop` has draggable, resizable windows, a dock, a terminal, mail and notes, and every project opens as its own window.
+- **Optional 3D intro.** A procedural three.js office whose monitor shows the live desktop. It only appears on capable desktop browsers, can always be skipped, and the regular page stays underneath.
+- **Printable résumé.** `/resume` is an ATS-friendly résumé generated from the same content as the rest of the site.
+- **Motion with fallbacks.** A WebGL particle field and scroll-driven animation start after first paint, adapt their quality to the device and switch off for reduced motion, save-data and software renderers. All content is server-rendered and readable without JavaScript.
+- **Shipping discipline.** Every change passes a dependency audit, formatting, lint, type checks, a production build and end-to-end and accessibility tests before it deploys. Previews also get Lighthouse budgets, and CodeQL, gitleaks and dependency review run on every pull request.
 
-- `SignalField` + `signal-field/` — three.js particle field behind the homepage (~52k points; 20k on phones). Particles assemble the handle, become a globe past the hero and fold into a radar at the contact section; all morphing happens in the vertex shader. It falls back to a static CSS backdrop when WebGL2 is missing or software-rendered, on save-data, or with reduced motion. `?gl=1` forces it on (e.g. screenshots under SwiftShader), `?gl=0` forces it off.
-- `FxRoot` — Lenis smooth scrolling synced with GSAP ScrollTrigger, plus data-attribute hooks so sections stay server components: `data-reveal`, `data-scramble`, `data-draw`, `data-spine`.
-- `Cursor`, `Hud`, `Magnetic`, `HoloCard`, `Counter` — reticle cursor, viewport HUD, magnetic buttons, holographic tilt card, odometer numbers.
+## Tech stack
 
-Nothing in `fx/` runs under `prefers-reduced-motion`; content is server-rendered and fully visible without JS.
+| Area          | Tools                                                                |
+| ------------- | -------------------------------------------------------------------- |
+| Framework     | Next.js 16 (App Router), React 19, TypeScript in strict mode         |
+| Styling       | Tailwind CSS 4, `next/font` (self-hosted IBM Plex and Big Shoulders) |
+| Motion and 3D | three.js, GSAP with ScrollTrigger, Lenis                             |
+| 3D intro      | Standalone Vite and three.js app                                     |
+| Testing       | Playwright, axe-core, Lighthouse CI                                  |
+| Delivery      | GitHub Actions, Vercel, CodeQL, gitleaks, Dependabot                 |
 
-Interactive demos live in `apps/site/components/demos/<slug>/`. Each is client-only, self-contained, lazy-loaded and uses invented data, following the contract documented in `components/demos/registry.tsx`.
+## Getting started
 
-## Develop
+You need Node.js 22 (see `.nvmrc`) and npm.
 
 ```bash
+git clone https://github.com/ELTIGA/Portfolio.git
+cd Portfolio
 npm install
-npm run dev                 # site on http://localhost:3000 (3D intro needs `npm run build:shell` once)
-npm run lint && npm run typecheck
-npm run build               # shell + site
-npm run audit:ci
-npm run test:e2e            # Playwright + axe against `next start` (run `npx playwright install chromium` once)
-npm run lhci                # Lighthouse CI budgets against `next start`
+npm run dev
 ```
 
-E2E specs live in `e2e/tests` and read their route list from `/sitemap.xml`, so a new case study is covered automatically. Specs tagged `@smoke` are the subset that also runs against deployed URLs (`BASE_URL=https://… npm run test:smoke`).
+The site runs at <http://localhost:3000>. The 3D intro is a separate build: run `npm run build:shell` once to serve it in development. Local development needs no environment variables.
 
-## Content rules
+### Scripts
 
-`packages/content/src` holds only facts the owner confirmed or the project READMEs state. `TODO(owner)` marks items awaiting confirmation (company-name permissions, CEH verification link). Don't add claims that aren't backed.
+| Command               | What it does                                                                 |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `npm run dev`         | Start the Next.js dev server                                                 |
+| `npm run build`       | Build the 3D intro, then the site                                            |
+| `npm run build:shell` | Build only the 3D intro into `apps/site/public/experience`                   |
+| `npm run format`      | Format everything with Prettier (`format:check` only verifies)               |
+| `npm run lint`        | ESLint with the Next.js Core Web Vitals and TypeScript rules                 |
+| `npm run typecheck`   | Type-check the site, the content package and the E2E suite                   |
+| `npm run test:e2e`    | Playwright and axe against a local `next start` (run `npm run build` first)  |
+| `npm run test:smoke`  | Only the `@smoke` tests, e.g. against a deployment with `BASE_URL=https://…` |
+| `npm run lhci`        | Lighthouse CI budgets against a local `next start`                           |
+| `npm run audit:ci`    | `npm audit` of everything that ships                                         |
 
-## Dependency audit
+Before the first E2E run, install the browser with `npx playwright install chromium`.
 
-CI runs `npm audit --omit=dev --audit-level=moderate`, i.e. everything that ships. The full audit currently reports `braces` (GHSA-vfj7-8cjw-p6xm, ReDoS) pulled in only via `eslint-config-next → fast-glob → micromatch`: lint tooling that never reaches the build output and has no patched release. Re-check when `eslint-config-next` updates.
+## Project structure
 
-## Credits and licenses
+```text
+apps/
+  site/        Next.js app: pages, desktop, interactive previews, diagrams, motion layer
+  shell/       3D intro: standalone Vite and three.js app with its own lockfile
+packages/
+  content/     Typed profile and project data, the single source of truth for all copy
+e2e/           Playwright specs: routes, SEO, security headers, desktop, accessibility
+scripts/       Builds the 3D intro into the site; submits the sitemap to IndexNow
+docs/          Deployment guide and README images
+```
 
-The 3D intro engine is based on [henryjeff/portfolio-website](https://github.com/henryjeff/portfolio-website) (MIT, © 2024 Henry Heffernan). Only code ideas and structure are reused; the room is rebuilt procedurally and no assets were copied. See `apps/shell/LICENSE-THIRD-PARTY.md` (also served at `/experience/licenses.txt`).
+## How it works
+
+### Content
+
+All copy lives in `packages/content` as typed data: `profile.ts` for the bio, experience, credentials and metrics, and `projects.ts` with one entry per project. Pages, the desktop, the résumé, the sitemap and the social cards all read from it, so a project added there appears everywhere. Every claim is first-hand or documented in the project's own repository.
+
+### Interactive previews
+
+Each preview lives in `apps/site/components/demos/<slug>/` and follows the contract in `registry.tsx`: client-only, lazy-loaded and self-contained, with no network calls and only sample data. On case-study pages nothing loads until the visitor launches the preview.
+
+### Motion and effects
+
+The client-only motion layer lives in `apps/site/components/fx/`:
+
+- **`SignalField`** is a three.js particle field (up to 52,000 points, 20,000 on phones) that assembles the handle, becomes a globe past the hero and folds into a radar at the contact section, with all morphing done in the vertex shader. Quality tiers step down automatically when frames run late. It falls back to a static CSS backdrop without WebGL2, on software renderers and low-memory devices, with save-data or with reduced motion. `?gl=1` forces it on and `?gl=0` forces it off.
+- **`FxRoot`** syncs Lenis smooth scrolling with GSAP ScrollTrigger and drives data-attribute hooks (`data-reveal`, `data-scramble`, `data-draw`, `data-spine`), so sections stay server components.
+- **`Cursor`, `Hud`, `Magnetic`, `HoloCard` and `Counter`** add the reticle cursor, viewport HUD, magnetic buttons, holographic tilt card and odometer numbers.
+
+### 3D intro
+
+`apps/shell` is a standalone Vite and three.js app. `scripts/build-shell.mjs` builds it into `apps/site/public/experience`, and the `Intro3D` component opens it in a full-screen overlay once the page is idle. It only does so for visitors who haven't started scrolling or clicking, on desktop browsers with hardware WebGL2, enough memory and a fast connection. The room is procedural, and the monitor shows the live `/desktop` page.
+
+## Quality and security
+
+- **Tests.** The Playwright specs in `e2e/tests` read their route list from `/sitemap.xml`, so new case studies are covered automatically. They check every route, SEO metadata, security headers, the desktop and the 3D bundle, and run axe accessibility scans. Specs tagged `@smoke` also run against every deployment.
+- **Budgets.** Lighthouse CI fails a preview that scores below 95 for accessibility or SEO, or below 90 for best practices, and warns below 85 for performance.
+- **Headers.** `apps/site/next.config.ts` sets a strict Content Security Policy, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` and frame protection.
+- **Supply chain.** Third-party actions are pinned to commit SHAs, workflow tokens are read-only by default, and pull requests from forks or Dependabot never receive deploy secrets. `npm run audit:ci` must find no moderate or higher advisory in shipped dependencies. The full audit also lists advisories in dev-only tooling (`eslint-config-next`, `@lhci/cli`) that never reaches the build output.
+
+To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## CI/CD
 
-Hosting is Vercel. GitHub Actions is the only path to a deployment: the Vercel Git integration is off (`apps/site/vercel.json`), so nothing ships unless every gate passes.
+The site is hosted on Vercel, and GitHub Actions is the only way to deploy it: Vercel's Git integration is off (`apps/site/vercel.json`), so nothing ships unless every gate passes.
 
-```
-PR / push to main ─► check ─► e2e ───────────────────────────────┐
-  audit, lint,        Playwright + axe                            │
-  typecheck, build    vs `next start`                             │
-PR (same repo) ─► deploy-preview ─► verify-preview                │
-                  vercel build +    @smoke + Lighthouse CI        │
-                  deploy --prebuilt vs preview URL; PR comment    │
-push to main ─────────────────────────────────────────────────────┴─► deploy-production ─► verify-production
-                                                                         --prod, serialized    @smoke vs the new deployment
+```mermaid
+flowchart LR
+  check["check<br/>audit, format, lint,<br/>typecheck, build"] --> e2e["e2e<br/>Playwright and axe"]
+  check -- "pull request" --> preview["deploy-preview"] --> verifyPreview["verify-preview<br/>smoke tests, Lighthouse,<br/>PR comment"]
+  e2e -- "push to main" --> production["deploy-production"] --> verifyProduction["verify-production<br/>smoke tests"] --> notify["notify-search-engines<br/>IndexNow"]
 ```
 
-| Workflow         | Runs on               | What                                                                                                                                           |
-| ---------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci.yml`         | PRs, pushes to `main` | Gates, preview/production deploys, post-deploy smoke tests, Lighthouse budgets (a11y, SEO ≥ 95 and best practices ≥ 90 block; perf ≥ 85 warns) |
-| `codeql.yml`     | PRs, `main`, weekly   | CodeQL `security-extended` for JS/TS                                                                                                           |
-| `security.yml`   | PRs, `main`, weekly   | gitleaks over full history (checksum-pinned CLI); dependency review blocking moderate+ runtime advisories                                      |
-| `dependabot.yml` | weekly                | npm (root and `apps/shell`) and GitHub Actions, grouped; `next`/`react` move together                                                          |
+| Workflow         | Runs on               | What it does                                                                                         |
+| ---------------- | --------------------- | ---------------------------------------------------------------------------------------------------- |
+| `ci.yml`         | PRs, pushes to `main` | Quality gates, preview and production deploys, post-deploy smoke tests, Lighthouse budgets           |
+| `codeql.yml`     | PRs, `main`, weekly   | CodeQL `security-extended` analysis of the JavaScript and TypeScript code                            |
+| `security.yml`   | PRs, `main`, weekly   | gitleaks over the full history; dependency review that blocks moderate or higher runtime advisories  |
+| `dependabot.yml` | Weekly                | Grouped updates for npm (root and `apps/shell`) and GitHub Actions; `next` and `react` move together |
 
-Every third-party action is pinned to a commit SHA, `GITHUB_TOKEN` defaults to read-only, and only the PR-comment and CodeQL jobs get write scopes. Fork and Dependabot PRs run the gates but never receive deploy secrets.
+To deploy your own copy, follow [docs/deployment.md](docs/deployment.md).
 
-### One-time setup
+## License
 
-1. **Default branch.** The workflows deploy from `main`. Create `main` from the current default branch and make it the repo default (Settings → General).
-2. **Vercel project.** Import the repo on Vercel, set **Root Directory** to `apps/site` and keep "Include files outside the root directory" on. `apps/site/vercel.json` sets the framework, the install and build commands (the shell plus the site, from the repo root) and turns off Git deployments. Locally, run `npx vercel link` and copy `orgId`/`projectId` from `.vercel/project.json`.
-3. **Deployment Protection.** In the Vercel project → Settings → Deployment Protection, enable **Protection Bypass for Automation**. Smoke tests and Lighthouse use it to reach protected previews.
-4. **GitHub secrets** (Settings → Secrets and variables → Actions): `VERCEL_TOKEN` (an account token scoped to this project's team), `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` and `VERCEL_AUTOMATION_BYPASS_SECRET`. Until they exist, preview deploys are skipped with a warning and production deploys fail loudly.
-5. **Environments** (Settings → Environments): `preview` and `production` are created on first use. Optionally restrict `production` to the `main` branch.
-6. **Domain.** Add `www.ahmedeltigani.com` as the primary domain and `ahmedeltigani.com` as a 308 redirect to it, then point DNS at Vercel. `siteUrl` in `packages/content/src/profile.ts` must name the same host: canonicals, the sitemap and robots.txt all come from it, and a mismatch makes Google report "Redirect error". Once the domain is final, consider adding `preload` to HSTS in `next.config.ts`.
-   Search engines: add a Domain property in Google Search Console and submit `/sitemap.xml`. For Bing and Yandex, set `BING_SITE_VERIFICATION` / `YANDEX_VERIFICATION` (and optionally `GOOGLE_SITE_VERIFICATION`) as Vercel production env vars; they render as verification meta tags. After each production deploy, CI submits the sitemap to IndexNow (`scripts/indexnow.mjs`, key file in `apps/site/public`).
-7. **Branch protection on `main`.** Require the checks `check`, `e2e`, `analyze` (CodeQL), `gitleaks` and `dependency-review`, and require PRs before merging.
+The code is released under the [MIT License](LICENSE), with two exceptions:
 
-Vercel Analytics mounts automatically in Vercel builds (`vercel build` sets `VERCEL=1`). Hobby is free for a personal, non-commercial site; if the site ever earns money, move to Pro.
+- **Personal content.** The biography, résumé and case-study text in `packages/content/src/profile.ts` and `packages/content/src/projects.ts`, and the photographs and screenshots in `apps/site/public/images/`, `apps/site/app/og-portrait.jpg` and `docs/images/`, are © Ahmed Eltigani, all rights reserved.
+- **Third-party artwork.** The framed prints in `apps/shell/src/posters/` belong to their respective rights holders.
+
+If you build on this project, please replace the content and images with your own.
+
+## Credits
+
+The structure of the 3D intro (camera keyframes, loading screen and the iframe-on-monitor technique) is based on [henryjeff/portfolio-website](https://github.com/henryjeff/portfolio-website) (MIT, © 2024 Henry Heffernan). Only code ideas were reused: the room is built procedurally and no assets were copied. The full notices are in [`apps/shell/LICENSE-THIRD-PARTY.md`](apps/shell/LICENSE-THIRD-PARTY.md), which is also served at `/experience/licenses.txt`.
