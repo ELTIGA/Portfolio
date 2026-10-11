@@ -52,7 +52,8 @@ function store(tier: number) {
 export function initialTier(mobile: boolean): number {
   const remembered = stored();
   const floor = mobile ? 2 : 0;
-  if (remembered !== null && Number.isInteger(remembered)) return Math.min(Math.max(remembered, floor), TIERS.length - 1);
+  if (remembered !== null && Number.isInteger(remembered))
+    return Math.min(Math.max(remembered, floor), TIERS.length - 1);
   const nav = navigator as NavigatorExtras;
   let tier = floor;
   if ((nav.deviceMemory !== undefined && nav.deviceMemory <= 4) || (navigator.hardwareConcurrency || 8) <= 4) tier++;

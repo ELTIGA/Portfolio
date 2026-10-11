@@ -10,7 +10,11 @@ module.exports = {
       numberOfRuns: 3,
       ...(process.env.BASE_URL
         ? {}
-        : { startServerCommand: "npm run start -w @portfolio/site", startServerReadyPattern: "Ready", startServerReadyTimeout: 60000 }),
+        : {
+            startServerCommand: "npm run start -w @portfolio/site",
+            startServerReadyPattern: "Ready",
+            startServerReadyTimeout: 60000,
+          }),
       settings: {
         preset: "desktop",
         chromeFlags: "--no-sandbox --headless=new",
@@ -20,7 +24,13 @@ module.exports = {
         // The bypass cookie also covers requests Lighthouse makes outside the page load
         // (e.g. its /robots.txt fetch), which don't get the extra headers.
         ...(bypass
-          ? { extraHeaders: JSON.stringify({ "x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true", "x-vercel-skip-toolbar": "1" }) }
+          ? {
+              extraHeaders: JSON.stringify({
+                "x-vercel-protection-bypass": bypass,
+                "x-vercel-set-bypass-cookie": "true",
+                "x-vercel-skip-toolbar": "1",
+              }),
+            }
           : {}),
       },
     },

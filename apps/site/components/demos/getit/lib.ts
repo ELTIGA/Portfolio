@@ -11,7 +11,11 @@ export function hash32(s: string, seed = 2166136261): number {
 
 /** 64 hex chars that look like a SHA-256 digest. Purely cosmetic. */
 export function fakeSha(s: string): string {
-  return Array.from({ length: 8 }, (_, i) => hash32(s, 2166136261 + i * 7919).toString(16).padStart(8, "0")).join("");
+  return Array.from({ length: 8 }, (_, i) =>
+    hash32(s, 2166136261 + i * 7919)
+      .toString(16)
+      .padStart(8, "0"),
+  ).join("");
 }
 
 export interface HostInfo {
@@ -42,7 +46,8 @@ export function checkUrl(raw: string): UrlCheck {
   } catch {
     return { ok: false, error: "not a valid URL (try https://gofile.example.test/d/AbC123)" };
   }
-  if (url.protocol !== "https:" && url.protocol !== "http:") return { ok: false, error: "only http(s) links are supported" };
+  if (url.protocol !== "https:" && url.protocol !== "http:")
+    return { ok: false, error: "only http(s) links are supported" };
   const host = url.hostname.toLowerCase();
   if (!(host === "example.test" || host.endsWith(".example.test"))) {
     return { ok: false, error: "demo only resolves *.example.test links; nothing real is downloaded here" };

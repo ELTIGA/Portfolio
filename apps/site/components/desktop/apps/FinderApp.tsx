@@ -22,7 +22,9 @@ export function FinderApp() {
               }}
               className="flex h-full w-full flex-col items-start rounded-lg border border-line bg-surface p-3 text-left transition hover:border-accent/60"
             >
-              <span aria-hidden="true" className="text-2xl">{p.preview === "terminal" ? "⌨️" : p.preview === "menubar" ? "🖥️" : "🌐"}</span>
+              <span aria-hidden="true" className="text-2xl">
+                {p.preview === "terminal" ? "⌨️" : p.preview === "menubar" ? "🖥️" : "🌐"}
+              </span>
               <span className="mt-2 text-sm font-semibold">{p.name}</span>
               <span className="mt-1 line-clamp-3 text-xs text-muted">{p.tagline}</span>
             </button>

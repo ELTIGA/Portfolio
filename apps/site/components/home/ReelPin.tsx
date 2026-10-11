@@ -62,7 +62,21 @@ export function ReelPin({ children }: { children: ReactNode }) {
           // Parallax: the big numeral lags behind its panel.
           const num = panel.querySelector("[data-numeral]");
           if (num)
-            gsap.fromTo(num, { xPercent: 40 }, { xPercent: -40, ease: "none", scrollTrigger: { trigger: panel, containerAnimation: tween, start: "left right", end: "right left", scrub: true } });
+            gsap.fromTo(
+              num,
+              { xPercent: 40 },
+              {
+                xPercent: -40,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: panel,
+                  containerAnimation: tween,
+                  start: "left right",
+                  end: "right left",
+                  scrub: true,
+                },
+              },
+            );
         }
         const onFocus = (e: FocusEvent) => {
           const target = e.target as HTMLElement;
@@ -87,7 +101,8 @@ export function ReelPin({ children }: { children: ReactNode }) {
       });
 
       mm.add("(max-width: 1023px)", () => {
-        for (const fig of gsap.utils.toArray<HTMLElement>("[data-draw-reel]", tr)) drawIn(fig, { trigger: fig, start: "top 80%" });
+        for (const fig of gsap.utils.toArray<HTMLElement>("[data-draw-reel]", tr))
+          drawIn(fig, { trigger: fig, start: "top 80%" });
       });
 
       revert = () => mm.revert();
@@ -104,10 +119,16 @@ export function ReelPin({ children }: { children: ReactNode }) {
       ref={section}
       className={`relative lg:flex lg:h-dvh lg:flex-col lg:justify-center ${pinned ? "lg:overflow-hidden" : "lg:snap-x lg:snap-mandatory lg:overflow-x-auto"}`}
     >
-      <div ref={track} className="flex flex-col gap-6 px-5 sm:px-8 lg:w-max lg:flex-row lg:gap-10 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] lg:pr-[12vw]">
+      <div
+        ref={track}
+        className="flex flex-col gap-6 px-5 sm:px-8 lg:w-max lg:flex-row lg:gap-10 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] lg:pr-[12vw]"
+      >
         {children}
       </div>
-      <div aria-hidden="true" className="absolute bottom-10 left-1/2 hidden h-px w-48 -translate-x-1/2 bg-line lg:block">
+      <div
+        aria-hidden="true"
+        className="absolute bottom-10 left-1/2 hidden h-px w-48 -translate-x-1/2 bg-line lg:block"
+      >
         <div ref={bar} className="h-full origin-left scale-x-0 bg-accent" />
       </div>
     </div>

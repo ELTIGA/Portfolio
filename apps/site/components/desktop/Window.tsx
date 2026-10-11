@@ -50,7 +50,16 @@ export function Window({ win, active, children }: { win: WinState; active: boole
       role="group"
       aria-label={win.title}
       onPointerDown={() => !active && focus(win.id)}
-      style={{ left: win.x, top: win.y, width: win.w, height: win.h, zIndex: win.z, display: win.minimized ? "none" : undefined, minWidth: MIN_W, minHeight: MIN_H }}
+      style={{
+        left: win.x,
+        top: win.y,
+        width: win.w,
+        height: win.h,
+        zIndex: win.z,
+        display: win.minimized ? "none" : undefined,
+        minWidth: MIN_W,
+        minHeight: MIN_H,
+      }}
       className={`absolute flex flex-col overflow-hidden rounded-xl border bg-bg shadow-2xl ${active ? "border-white/20 shadow-black/60" : "border-line shadow-black/30"}`}
     >
       <div
@@ -64,14 +73,37 @@ export function Window({ win, active, children }: { win: WinState; active: boole
         className={`flex touch-none select-none items-center gap-3 border-b border-line px-3 py-2 ${win.maximized ? "" : "cursor-grab active:cursor-grabbing"} ${active ? "bg-surface" : "bg-bg"}`}
       >
         <span className="flex gap-2">
-          <button type="button" aria-label={`Close ${win.title}`} onClick={() => close(win.id)} className="h-3 w-3 rounded-full bg-[#ff5f57] hover:brightness-125" />
-          <button type="button" aria-label={`Minimize ${win.title}`} onClick={() => minimize(win.id)} className="h-3 w-3 rounded-full bg-[#febc2e] hover:brightness-125" />
-          <button type="button" aria-label={win.maximized ? `Restore ${win.title}` : `Maximize ${win.title}`} onClick={() => toggleMax(win.id)} className="h-3 w-3 rounded-full bg-[#28c840] hover:brightness-125" />
+          <button
+            type="button"
+            aria-label={`Close ${win.title}`}
+            onClick={() => close(win.id)}
+            className="h-3 w-3 rounded-full bg-[#ff5f57] hover:brightness-125"
+          />
+          <button
+            type="button"
+            aria-label={`Minimize ${win.title}`}
+            onClick={() => minimize(win.id)}
+            className="h-3 w-3 rounded-full bg-[#febc2e] hover:brightness-125"
+          />
+          <button
+            type="button"
+            aria-label={win.maximized ? `Restore ${win.title}` : `Maximize ${win.title}`}
+            onClick={() => toggleMax(win.id)}
+            className="h-3 w-3 rounded-full bg-[#28c840] hover:brightness-125"
+          />
         </span>
-        <h2 className={`flex-1 truncate text-center text-xs font-medium ${active ? "text-fg" : "text-muted"}`}>{win.title}</h2>
+        <h2 className={`flex-1 truncate text-center text-xs font-medium ${active ? "text-fg" : "text-muted"}`}>
+          {win.title}
+        </h2>
         <span className="w-12" aria-hidden="true" />
       </div>
-      <div tabIndex={0} data-win-content={win.id} className="min-h-0 flex-1 overflow-auto focus-visible:outline-offset-[-2px]">{children}</div>
+      <div
+        tabIndex={0}
+        data-win-content={win.id}
+        className="min-h-0 flex-1 overflow-auto focus-visible:outline-offset-[-2px]"
+      >
+        {children}
+      </div>
       {!win.maximized && (
         <div
           onPointerDown={onResizeDown}
@@ -81,7 +113,9 @@ export function Window({ win, active, children }: { win: WinState; active: boole
           aria-hidden="true"
           className="absolute bottom-0 right-0 h-4 w-4 cursor-nwse-resize touch-none"
         >
-          <svg viewBox="0 0 16 16" className="h-4 w-4 text-muted/60"><path d="M14 6L6 14M14 10l-4 4" stroke="currentColor" strokeWidth="1.5" fill="none" /></svg>
+          <svg viewBox="0 0 16 16" className="h-4 w-4 text-muted/60">
+            <path d="M14 6L6 14M14 10l-4 4" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          </svg>
         </div>
       )}
     </section>

@@ -36,7 +36,11 @@ export default function Demo() {
       }`}
     >
       {label}
-      {extra && <span className="ml-1.5 rounded-full bg-violet-300 px-1.5 py-px text-[10px] font-semibold text-violet-950">{extra}</span>}
+      {extra && (
+        <span className="ml-1.5 rounded-full bg-violet-300 px-1.5 py-px text-[10px] font-semibold text-violet-950">
+          {extra}
+        </span>
+      )}
     </button>
   );
 
@@ -45,7 +49,10 @@ export default function Demo() {
       <div className="mx-auto max-w-5xl p-3 @lg:p-5">
         <header className="flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-2 text-sm font-semibold">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-violet-300 text-violet-950" aria-hidden="true">
+            <span
+              className="grid h-7 w-7 place-items-center rounded-lg bg-violet-300 text-violet-950"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor">
                 <path d="M10 2.5 11.8 8l5.7 1.8-5.7 1.8L10 17.5l-1.8-5.9L2.5 9.8 8.2 8 10 2.5Z" />
               </svg>
@@ -62,7 +69,13 @@ export default function Demo() {
         <div className="mt-4">
           {screen === "library" && <Library onOpen={open} />}
           {screen === "reader" && <Reader key={book.id} book={book} quotes={quotes} onSave={save} />}
-          {screen === "memory" && <Memory quotes={quotes} onRemove={(id) => setQuotes((prev) => prev.filter((q) => q.id !== id))} onLibrary={() => setScreen("library")} />}
+          {screen === "memory" && (
+            <Memory
+              quotes={quotes}
+              onRemove={(id) => setQuotes((prev) => prev.filter((q) => q.id !== id))}
+              onLibrary={() => setScreen("library")}
+            />
+          )}
         </div>
       </div>
     </div>

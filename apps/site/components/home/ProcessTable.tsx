@@ -82,7 +82,10 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
         loop.current?.stop();
       }}
     >
-      <div aria-hidden="true" className="grid grid-cols-[3.5rem_1fr_auto] gap-4 border-b border-line pb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted sm:grid-cols-[4rem_1.2fr_1fr_1.4fr]">
+      <div
+        aria-hidden="true"
+        className="grid grid-cols-[3.5rem_1fr_auto] gap-4 border-b border-line pb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted sm:grid-cols-[4rem_1.2fr_1fr_1.4fr]"
+      >
         <span>pid</span>
         <span>process</span>
         <span className="hidden sm:block">role</span>
@@ -104,15 +107,22 @@ export function ProcessTable({ rows }: { rows: ProcessRow[] }) {
               className="group grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-4 border-b border-line py-5 transition-colors hover:bg-accent/[0.04] sm:grid-cols-[4rem_1.2fr_1fr_1.4fr] sm:py-7"
             >
               <span className="font-mono text-xs text-muted">{String(1024 + i * 97)}</span>
-              <span data-name className="font-display text-3xl font-bold uppercase leading-none transition-colors group-hover:text-accent sm:text-5xl">
+              <span
+                data-name
+                className="font-display text-3xl font-bold uppercase leading-none transition-colors group-hover:text-accent sm:text-5xl"
+              >
                 {r.name}
               </span>
               <span className="hidden font-mono text-xs leading-relaxed text-muted sm:block">{r.role}</span>
               <span className="text-right font-mono text-xs leading-relaxed text-muted sm:text-left">
-                <span className="text-signal" aria-hidden="true">● </span>
+                <span className="text-signal" aria-hidden="true">
+                  ●{" "}
+                </span>
                 <span className="hidden sm:inline">{r.status}</span>
               </span>
-              <span className="col-span-full max-w-2xl text-sm leading-relaxed text-muted sm:col-start-2 [@media(pointer:fine)_and_(min-width:768px)]:sr-only">{r.tagline}</span>
+              <span className="col-span-full max-w-2xl text-sm leading-relaxed text-muted sm:col-start-2 [@media(pointer:fine)_and_(min-width:768px)]:sr-only">
+                {r.tagline}
+              </span>
             </Link>
           </li>
         ))}

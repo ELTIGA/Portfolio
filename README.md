@@ -12,12 +12,12 @@ Portfolio for Ahmed Eltigani (ahmedeltigani.com), built to get one thing done: a
 
 ## Layout
 
-| Path | What |
-| --- | --- |
-| `apps/site` | Next.js (App Router) + Tailwind. Pages, desktop, demos, diagrams |
-| `apps/shell` | Standalone Vite + three.js 3D intro (not an npm workspace). Built into `apps/site/public/experience` |
-| `packages/content` | Typed single source of truth for profile and projects |
-| `scripts/build-shell.mjs` | Builds the shell and copies it (and its licenses) into the site |
+| Path                      | What                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `apps/site`               | Next.js (App Router) + Tailwind. Pages, desktop, demos, diagrams                                     |
+| `apps/shell`              | Standalone Vite + three.js 3D intro (not an npm workspace). Built into `apps/site/public/experience` |
+| `packages/content`        | Typed single source of truth for profile and projects                                                |
+| `scripts/build-shell.mjs` | Builds the shell and copies it (and its licenses) into the site                                      |
 
 Motion and visual effects live in `apps/site/components/fx/` and only run on the client after first paint:
 
@@ -70,12 +70,12 @@ push to main ──────────────────────�
                                                                          --prod, serialized    @smoke vs the new deployment
 ```
 
-| Workflow | Runs on | What |
-| --- | --- | --- |
-| `ci.yml` | PRs, pushes to `main` | Gates, preview/production deploys, post-deploy smoke tests, Lighthouse budgets (a11y, SEO ≥ 95 and best practices ≥ 90 block; perf ≥ 85 warns) |
-| `codeql.yml` | PRs, `main`, weekly | CodeQL `security-extended` for JS/TS |
-| `security.yml` | PRs, `main`, weekly | gitleaks over full history (checksum-pinned CLI); dependency review blocking moderate+ runtime advisories |
-| `dependabot.yml` | weekly | npm (root and `apps/shell`) and GitHub Actions, grouped; `next`/`react` move together |
+| Workflow         | Runs on               | What                                                                                                                                           |
+| ---------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ci.yml`         | PRs, pushes to `main` | Gates, preview/production deploys, post-deploy smoke tests, Lighthouse budgets (a11y, SEO ≥ 95 and best practices ≥ 90 block; perf ≥ 85 warns) |
+| `codeql.yml`     | PRs, `main`, weekly   | CodeQL `security-extended` for JS/TS                                                                                                           |
+| `security.yml`   | PRs, `main`, weekly   | gitleaks over full history (checksum-pinned CLI); dependency review blocking moderate+ runtime advisories                                      |
+| `dependabot.yml` | weekly                | npm (root and `apps/shell`) and GitHub Actions, grouped; `next`/`react` move together                                                          |
 
 Every third-party action is pinned to a commit SHA, `GITHUB_TOKEN` defaults to read-only, and only the PR-comment and CodeQL jobs get write scopes. Fork and Dependabot PRs run the gates but never receive deploy secrets.
 

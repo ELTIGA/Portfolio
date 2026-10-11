@@ -4,7 +4,15 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { finePointer, prefersReducedMotion } from "./gsap";
 
 /** Pulls its child toward the cursor while hovered, then springs back. */
-export function Magnetic({ children, strength = 0.35, className = "" }: { children: ReactNode; strength?: number; className?: string }) {
+export function Magnetic({
+  children,
+  strength = 0.35,
+  className = "",
+}: {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {

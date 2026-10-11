@@ -16,7 +16,13 @@ const spec: FlowSpec = {
         { label: ["Parse"], sub: ["docling, native_sheet,", "mistral_ocr, llamaparse;", "spreadsheet fast path"] },
         {
           label: ["LLM router"],
-          sub: ["default: minimax_m2_5_highspeed", "fallback chain:", "openai_gpt_4_1_mini,", "gemini_2_5_flash_lite,", "zai_glm, deepseek_chat"],
+          sub: [
+            "default: minimax_m2_5_highspeed",
+            "fallback chain:",
+            "openai_gpt_4_1_mini,",
+            "gemini_2_5_flash_lite,",
+            "zai_glm, deepseek_chat",
+          ],
           tone: "accent",
         },
       ],
@@ -25,7 +31,11 @@ const spec: FlowSpec = {
       title: "Operate · review, route, dispatch",
       nodes: [
         { label: ["Review"], sub: ["admin corrects", "rows; map pin", "for ambiguous", "places"] },
-        { label: ["Routes"], sub: ["blocked on missing,", "failed or ambiguous", "geocodes", "Google or MapLibre", "+ OSRM"], tone: "accent" },
+        {
+          label: ["Routes"],
+          sub: ["blocked on missing,", "failed or ambiguous", "geocodes", "Google or MapLibre", "+ OSRM"],
+          tone: "accent",
+        },
         { label: ["Dispatch"], sub: ["WhatsApp,", "Telegram,", "Slack driver DMs"] },
         { label: ["Driver replies"], sub: ["inbound webhooks", "resolved to tenant", "and dispatch"] },
       ],
@@ -34,7 +44,11 @@ const spec: FlowSpec = {
       title: "Tenant boundary",
       nodes: [
         { label: ["Clerk"], sub: ["organization", "context"] },
-        { label: ["Convex guards"], sub: ["tenant ownership", "validated before", "any read or write"], tone: "accent" },
+        {
+          label: ["Convex guards"],
+          sub: ["tenant ownership", "validated before", "any read or write"],
+          tone: "accent",
+        },
         { label: ["Tenant data"], sub: ["channel credentials", "encrypted before", "storage"] },
       ],
     },

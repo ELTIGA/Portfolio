@@ -47,7 +47,10 @@ export function useManifest(push: PushToast, dismiss: (id: number) => void) {
       const id = `${imageId}-n${counter.current++}`;
       patchImage(imageId, (img) => ({
         ...img,
-        rows: [...img.rows, { id, guest: "", pax: 1, hotel: "", service: img.rows[img.rows.length - 1]?.service ?? "Rafting day" }],
+        rows: [
+          ...img.rows,
+          { id, guest: "", pax: 1, hotel: "", service: img.rows[img.rows.length - 1]?.service ?? "Rafting day" },
+        ],
       }));
       return id;
     },
@@ -94,7 +97,9 @@ export function useManifest(push: PushToast, dismiss: (id: number) => void) {
         const current = imagesRef.current.find((i) => i.id === imageId);
         if (!current) return;
         const next = current.reprocessed;
-        const same = !next || (JSON.stringify(next.rows) === JSON.stringify(current.rows) && next.printedTotal === current.printedTotal);
+        const same =
+          !next ||
+          (JSON.stringify(next.rows) === JSON.stringify(current.rows) && next.printedTotal === current.printedTotal);
         if (same) {
           push(`${current.file}: the second pass matched the current rows. Nothing changed.`);
           return;
@@ -117,7 +122,21 @@ export function useManifest(push: PushToast, dismiss: (id: number) => void) {
     [busyId, patchImage, push, restore],
   );
 
-  return { images, selectedId, setSelectedId, history, busyId, grouped, setGrouped, updateRow, addRow, removeRow, setPrinted, reprocess, undoLatest };
+  return {
+    images,
+    selectedId,
+    setSelectedId,
+    history,
+    busyId,
+    grouped,
+    setGrouped,
+    updateRow,
+    addRow,
+    removeRow,
+    setPrinted,
+    reprocess,
+    undoLatest,
+  };
 }
 
 export type ManifestApi = ReturnType<typeof useManifest>;

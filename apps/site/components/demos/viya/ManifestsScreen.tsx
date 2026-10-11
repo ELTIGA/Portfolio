@@ -7,7 +7,8 @@ import type { Store } from "./store";
 import type { Manifest, Passenger } from "./types";
 import { Btn, Card, Chip, Icon, cx, labelCls } from "./ui";
 
-const GRID = "grid grid-cols-6 gap-x-2 gap-y-1.5 @2xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1.5fr)_4.5rem_3.25rem_3.25rem_3.25rem_8.5rem] @2xl:items-center";
+const GRID =
+  "grid grid-cols-6 gap-x-2 gap-y-1.5 @2xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1.5fr)_4.5rem_3.25rem_3.25rem_3.25rem_8.5rem] @2xl:items-center";
 const input =
   "h-8 w-full min-w-0 rounded-md border border-(--v-line) bg-white px-2 text-sm text-(--v-fg) @2xl:border-transparent @2xl:bg-transparent @2xl:hover:border-(--v-line) @2xl:focus:bg-white";
 
@@ -22,7 +23,17 @@ function Field({ label, span, children }: { label: string; span: string; childre
   );
 }
 
-function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; onEdit: (c: Partial<Passenger>) => void; onConfirm: () => void }) {
+function PassengerRow({
+  p,
+  n,
+  onEdit,
+  onConfirm,
+}: {
+  p: Passenger;
+  n: number;
+  onEdit: (c: Partial<Passenger>) => void;
+  onConfirm: () => void;
+}) {
   const [blank, setBlank] = useState<"adults" | "children" | "infants" | null>(null);
   const num = (key: "adults" | "children" | "infants", label: string) => (
     <input
@@ -44,13 +55,28 @@ function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; on
   return (
     <div className={cx(GRID, "border-t border-(--v-line) px-3 py-2.5", p.review && "bg-(--v-warn-soft)/50")}>
       <Field label="Guest" span="col-span-6 @2xl:col-span-1">
-        <input aria-label={`Guest name, row ${n}`} value={p.guest} onChange={(e) => onEdit({ guest: e.target.value })} className={cx(input, "font-semibold")} />
+        <input
+          aria-label={`Guest name, row ${n}`}
+          value={p.guest}
+          onChange={(e) => onEdit({ guest: e.target.value })}
+          className={cx(input, "font-semibold")}
+        />
       </Field>
       <Field label="Pickup hotel" span="col-span-4 @2xl:col-span-1">
-        <input aria-label={`${p.guest} pickup hotel`} value={p.hotel} onChange={(e) => onEdit({ hotel: e.target.value })} className={input} />
+        <input
+          aria-label={`${p.guest} pickup hotel`}
+          value={p.hotel}
+          onChange={(e) => onEdit({ hotel: e.target.value })}
+          className={input}
+        />
       </Field>
       <Field label="Time" span="col-span-2 @2xl:col-span-1">
-        <input aria-label={`${p.guest} pickup time`} value={p.time} onChange={(e) => onEdit({ time: e.target.value })} className={cx(input, "tabular-nums")} />
+        <input
+          aria-label={`${p.guest} pickup time`}
+          value={p.time}
+          onChange={(e) => onEdit({ time: e.target.value })}
+          className={cx(input, "tabular-nums")}
+        />
       </Field>
       <Field label="Adults" span="col-span-2 @2xl:col-span-1">
         {num("adults", "adults")}
@@ -68,7 +94,13 @@ function PassengerRow({ p, n, onEdit, onConfirm }: { p: Passenger; n: number; on
               <Icon name="alert" size={12} />
               <span className="truncate">{p.review}</span>
             </Chip>
-            <Btn size="sm" variant="neutral" onClick={onConfirm} aria-label={`OK, mark ${p.guest} row as reviewed`} className="shrink-0">
+            <Btn
+              size="sm"
+              variant="neutral"
+              onClick={onConfirm}
+              aria-label={`OK, mark ${p.guest} row as reviewed`}
+              className="shrink-0"
+            >
               OK
             </Btn>
           </>
@@ -93,11 +125,15 @@ function ManifestItem({ m, active, onSelect }: { m: Manifest; active: boolean; o
       aria-pressed={active}
       className={cx(
         "w-full rounded-xl border p-3 text-left transition-colors duration-150",
-        active ? "border-(--v-primary) bg-white shadow-[0_0_0_1px_var(--v-primary)]" : "border-(--v-line) bg-white hover:bg-(--v-bg)",
+        active
+          ? "border-(--v-primary) bg-white shadow-[0_0_0_1px_var(--v-primary)]"
+          : "border-(--v-line) bg-white hover:bg-(--v-bg)",
       )}
     >
       <span className="flex items-center gap-2">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-(--v-soft) font-mono text-[10px] font-bold uppercase">{m.kind}</span>
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-(--v-soft) font-mono text-[10px] font-bold uppercase">
+          {m.kind}
+        </span>
         <span className="min-w-0">
           <span className="block truncate text-sm font-semibold">{m.filename}</span>
           <span className="block truncate text-xs text-(--v-muted)">
@@ -107,7 +143,13 @@ function ManifestItem({ m, active, onSelect }: { m: Manifest; active: boolean; o
       </span>
       <span className="mt-2 flex flex-wrap items-center gap-1.5">
         <Chip mono>{m.parseProvider}</Chip>
-        {m.status === "approved" ? <Chip tone="ok">Approved</Chip> : flagged > 0 ? <Chip tone="warn">{flagged} to review</Chip> : <Chip tone="primary">Ready to approve</Chip>}
+        {m.status === "approved" ? (
+          <Chip tone="ok">Approved</Chip>
+        ) : flagged > 0 ? (
+          <Chip tone="warn">{flagged} to review</Chip>
+        ) : (
+          <Chip tone="primary">Ready to approve</Chip>
+        )}
         <span className="text-xs text-(--v-muted)">{cap.effective + cap.infants} pax</span>
       </span>
     </button>
@@ -138,7 +180,11 @@ export function ManifestsScreen({ store }: { store: Store }) {
           </ul>
         </aside>
 
-        <section key={m.id} className="@container flex min-w-0 flex-1 flex-col gap-3" aria-label={`Manifest ${m.filename}`}>
+        <section
+          key={m.id}
+          className="@container flex min-w-0 flex-1 flex-col gap-3"
+          aria-label={`Manifest ${m.filename}`}
+        >
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div className="min-w-0">
               <h2 className="truncate text-base font-bold">{m.tour}</h2>
@@ -164,13 +210,17 @@ export function ManifestsScreen({ store }: { store: Store }) {
             </p>
           )}
 
-          <ProviderPanel manifest={m} onResult={(passengers, extraction) => store.applyExtraction(m.id, passengers, extraction)} />
+          <ProviderPanel
+            manifest={m}
+            onResult={(passengers, extraction) => store.applyExtraction(m.id, passengers, extraction)}
+          />
 
           <Card className="overflow-hidden">
             <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5">
               <h3 className="text-sm font-bold">Extracted passengers</h3>
               <p className="text-xs text-(--v-muted) tabular-nums">
-                {cap.effective} seats needed · {cap.infants} {cap.infants === 1 ? "infant" : "infants"} not counted · cells are editable
+                {cap.effective} seats needed · {cap.infants} {cap.infants === 1 ? "infant" : "infants"} not counted ·
+                cells are editable
               </p>
             </div>
             <div aria-label="Extracted passengers">
@@ -185,7 +235,13 @@ export function ManifestsScreen({ store }: { store: Store }) {
               </div>
               <div>
                 {m.passengers.map((p, i) => (
-                  <PassengerRow key={p.id} p={p} n={i + 1} onEdit={(c) => store.editPassenger(m.id, p.id, c)} onConfirm={() => store.confirmPassenger(m.id, p.id)} />
+                  <PassengerRow
+                    key={p.id}
+                    p={p}
+                    n={i + 1}
+                    onEdit={(c) => store.editPassenger(m.id, p.id, c)}
+                    onConfirm={() => store.confirmPassenger(m.id, p.id)}
+                  />
                 ))}
               </div>
             </div>

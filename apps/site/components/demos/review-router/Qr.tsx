@@ -27,7 +27,13 @@ function Finder({ x, y }: { x: number; y: number }) {
 
 export function Qr({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox={`-2 -2 ${N + 4} ${N + 4}`} className={className} role="img" aria-label="Decorative QR code placeholder, not scannable" shapeRendering="crispEdges">
+    <svg
+      viewBox={`-2 -2 ${N + 4} ${N + 4}`}
+      className={className}
+      role="img"
+      aria-label="Decorative QR code placeholder, not scannable"
+      shapeRendering="crispEdges"
+    >
       <rect x="-2" y="-2" width={N + 4} height={N + 4} fill="#fff" />
       {dots.map(([x, y]) => (
         <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="#0f172a" />

@@ -81,7 +81,7 @@ export const books: Book[] = [
       {
         text: "On clear nights he would sit on the gallery rail and count the lights that were not his.",
         explain:
-          "He measures his solitary life against other lights, such as ships and villages. The phrase \"that were not his\" hints at gentle loneliness, and also at belonging to a wider network of lights.",
+          'He measures his solitary life against other lights, such as ships and villages. The phrase "that were not his" hints at gentle loneliness, and also at belonging to a wider network of lights.',
         simplify: "On clear nights he sat outside and counted the other lights he could see.",
       },
     ],
@@ -109,7 +109,7 @@ export const books: Book[] = [
       {
         text: "By evening the same road is a harbour, and the boats come home along it as if they had always known the way.",
         explain:
-          "The same stretch of ground is a road by day and water by night. The simile \"as if they had always known the way\" gives the boats a calm familiarity, like animals returning home.",
+          'The same stretch of ground is a road by day and water by night. The simile "as if they had always known the way" gives the boats a calm familiarity, like animals returning home.',
         simplify: "At night the sea comes back, and the boats sail home over the same path.",
       },
     ],
@@ -152,6 +152,16 @@ export interface SavedQuote {
 }
 
 export const seedQuotes: SavedQuote[] = [
-  { id: "seed-1", book: "The Lantern Keeper's Almanac", text: "It was not a grand duty, but a ship's captain somewhere in the dark was trusting it entirely.", when: "Saved earlier" },
-  { id: "seed-2", book: "Letters from the Salt Coast", text: "The tide here keeps no calendar, but the whole village runs by it.", when: "Saved earlier" },
+  {
+    id: "seed-1",
+    book: "The Lantern Keeper's Almanac",
+    text: "It was not a grand duty, but a ship's captain somewhere in the dark was trusting it entirely.",
+    when: "Saved earlier",
+  },
+  {
+    id: "seed-2",
+    book: "Letters from the Salt Coast",
+    text: "The tide here keeps no calendar, but the whole village runs by it.",
+    when: "Saved earlier",
+  },
 ];

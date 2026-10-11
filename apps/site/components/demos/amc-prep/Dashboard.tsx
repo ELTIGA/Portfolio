@@ -1,17 +1,38 @@
 "use client";
 
-import { DAILY_TARGET, STREAK_MILESTONE, accuracy, levelFor, levelProgress, titleFor, weakest, type Mode, type Progress } from "./progress";
+import {
+  DAILY_TARGET,
+  STREAK_MILESTONE,
+  accuracy,
+  levelFor,
+  levelProgress,
+  titleFor,
+  weakest,
+  type Mode,
+  type Progress,
+} from "./progress";
 
 const tile = "rounded-xl border border-line bg-surface p-4";
 const eyebrow = "font-mono text-[11px] uppercase tracking-widest text-sky-300";
 const primaryBtn =
   "rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-sky-300 focus-visible:outline-offset-2";
-const ghostBtn = "rounded-lg border border-line px-3.5 py-2 text-sm font-semibold text-fg transition hover:border-sky-300/60";
+const ghostBtn =
+  "rounded-lg border border-line px-3.5 py-2 text-sm font-semibold text-fg transition hover:border-sky-300/60";
 
 function Bar({ pct, label, tone = "bg-sky-400" }: { pct: number; label: string; tone?: string }) {
   return (
-    <div role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} className="h-2 overflow-hidden rounded-full bg-bg">
-      <div className={`h-full rounded-full transition-[width] duration-500 ${tone}`} style={{ width: `${Math.min(100, pct)}%` }} />
+    <div
+      role="progressbar"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={pct}
+      className="h-2 overflow-hidden rounded-full bg-bg"
+    >
+      <div
+        className={`h-full rounded-full transition-[width] duration-500 ${tone}`}
+        style={{ width: `${Math.min(100, pct)}%` }}
+      />
     </div>
   );
 }
@@ -46,14 +67,20 @@ export function Dashboard({
         </h2>
         {remaining > 0 ? (
           <p className="mt-1 text-sm text-muted">
-            {remaining} more {remaining === 1 ? "question" : "questions"} to unlock today&apos;s x1.5 bonus. Estimated time about {remaining * 2} minutes.
+            {remaining} more {remaining === 1 ? "question" : "questions"} to unlock today&apos;s x1.5 bonus. Estimated
+            time about {remaining * 2} minutes.
           </p>
         ) : (
-          <p className="mt-1 text-sm text-emerald-300">Shift target complete and today&apos;s x1.5 bonus is active. Keep going for extra points.</p>
+          <p className="mt-1 text-sm text-emerald-300">
+            Shift target complete and today&apos;s x1.5 bonus is active. Keep going for extra points.
+          </p>
         )}
         <div className="mt-3 flex items-center gap-3">
           <div className="flex-1">
-            <Bar pct={Math.round((Math.min(progress.answeredToday, DAILY_TARGET) / DAILY_TARGET) * 100)} label="Questions toward today's bonus" />
+            <Bar
+              pct={Math.round((Math.min(progress.answeredToday, DAILY_TARGET) / DAILY_TARGET) * 100)}
+              label="Questions toward today's bonus"
+            />
           </div>
           <span className="font-mono text-xs text-muted">
             {progress.answeredToday}/{DAILY_TARGET}
@@ -129,7 +156,9 @@ export function Dashboard({
           AI coach snapshot
         </h2>
         <p className="mt-2 text-sm leading-relaxed">{insight}</p>
-        <p className="mt-2 text-xs text-muted">Senior-registrar tone: this is a tricky area, and most candidates need a few passes.</p>
+        <p className="mt-2 text-xs text-muted">
+          Senior-registrar tone: this is a tricky area, and most candidates need a few passes.
+        </p>
         <p className="mt-3 text-xs text-muted">
           Revision deck: <span className="font-mono text-fg">{progress.deck.length}</span> flagged
         </p>
@@ -140,11 +169,19 @@ export function Dashboard({
         <h2 id="amc-poker" className="sr-only">
           Clinical Poker
         </h2>
-        <p className="mt-2 text-sm text-muted">Pattern recognition with diagnosis and symptom cards. Earns pattern XP, not base points.</p>
-        <p className="mt-2 text-xs">
-          <span className="font-mono">{progress.pokerLeft}</span> rounds remaining today, <span className="font-mono">{progress.patternXp}</span> pattern XP
+        <p className="mt-2 text-sm text-muted">
+          Pattern recognition with diagnosis and symptom cards. Earns pattern XP, not base points.
         </p>
-        <button type="button" onClick={onPoker} disabled={progress.pokerLeft === 0} className={`${ghostBtn} mt-3 disabled:opacity-50`}>
+        <p className="mt-2 text-xs">
+          <span className="font-mono">{progress.pokerLeft}</span> rounds remaining today,{" "}
+          <span className="font-mono">{progress.patternXp}</span> pattern XP
+        </p>
+        <button
+          type="button"
+          onClick={onPoker}
+          disabled={progress.pokerLeft === 0}
+          className={`${ghostBtn} mt-3 disabled:opacity-50`}
+        >
           Play Clinical Poker
         </button>
       </section>

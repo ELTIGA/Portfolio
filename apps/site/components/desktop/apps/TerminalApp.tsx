@@ -10,7 +10,15 @@ interface Line {
   text: string;
 }
 
-const HELP = ["help       list commands", "about      who I am", "projects   list projects", "open <name>  open a project window", "skills     what I work with", "contact    how to reach me", "clear      clear the screen"];
+const HELP = [
+  "help       list commands",
+  "about      who I am",
+  "projects   list projects",
+  "open <name>  open a project window",
+  "skills     what I work with",
+  "contact    how to reach me",
+  "clear      clear the screen",
+];
 
 export function TerminalApp() {
   const { open } = useWindows();
@@ -39,7 +47,11 @@ export function TerminalApp() {
         break;
       case "about":
       case "whoami":
-        out.push(profile.name, `${profile.education.degree}, ${profile.education.school} (${profile.education.year})`, ...profile.about);
+        out.push(
+          profile.name,
+          `${profile.education.degree}, ${profile.education.school} (${profile.education.year})`,
+          ...profile.about,
+        );
         break;
       case "projects":
       case "ls":
@@ -72,10 +84,20 @@ export function TerminalApp() {
   };
 
   return (
-    <div className="h-full cursor-text bg-[#07090c] p-3 font-mono text-[13px] leading-relaxed" onClick={() => inputRef.current?.focus()}>
+    <div
+      className="h-full cursor-text bg-[#07090c] p-3 font-mono text-[13px] leading-relaxed"
+      onClick={() => inputRef.current?.focus()}
+    >
       {lines.map((l, i) => (
         <div key={i} className={l.kind === "in" ? "text-fg" : "whitespace-pre-wrap text-muted"}>
-          {l.kind === "in" ? <><span className="text-accent">~/eltiga $ </span>{l.text}</> : l.text}
+          {l.kind === "in" ? (
+            <>
+              <span className="text-accent">~/eltiga $ </span>
+              {l.text}
+            </>
+          ) : (
+            l.text
+          )}
         </div>
       ))}
       <form
@@ -86,8 +108,19 @@ export function TerminalApp() {
         }}
         className="flex"
       >
-        <label htmlFor="term-input" className="text-accent">~/eltiga $&nbsp;</label>
-        <input id="term-input" ref={inputRef} value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" autoCapitalize="off" spellCheck={false} className="min-w-0 flex-1 bg-transparent text-fg outline-none" />
+        <label htmlFor="term-input" className="text-accent">
+          ~/eltiga $&nbsp;
+        </label>
+        <input
+          id="term-input"
+          ref={inputRef}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          autoComplete="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          className="min-w-0 flex-1 bg-transparent text-fg outline-none"
+        />
       </form>
       <div ref={endRef} />
     </div>

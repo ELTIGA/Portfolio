@@ -29,23 +29,39 @@ export function ManifestScreen({ m, contentW }: { m: ManifestApi; contentW: numb
           <p className="eo-eyebrow">Manifest extractor</p>
           <h1 className="text-[17px] font-semibold leading-tight">{SESSION.name}</h1>
           <p className="eo-muted mt-0.5 text-[12.5px]">
-            {m.images.length} images. {needReview === 0 ? "Every image reconciles with its footer." : `${needReview} ${needReview === 1 ? "needs" : "need"} review before export.`}
+            {m.images.length} images.{" "}
+            {needReview === 0
+              ? "Every image reconciles with its footer."
+              : `${needReview} ${needReview === 1 ? "needs" : "need"} review before export.`}
           </p>
         </div>
-        <button type="button" className="eo-btn" aria-pressed={onlyReview} onClick={() => setOnlyReview((v) => !v)} style={onlyReview ? { borderColor: "var(--warn-line)", color: "var(--warn)" } : undefined}>
+        <button
+          type="button"
+          className="eo-btn"
+          aria-pressed={onlyReview}
+          onClick={() => setOnlyReview((v) => !v)}
+          style={onlyReview ? { borderColor: "var(--warn-line)", color: "var(--warn)" } : undefined}
+        >
           <Icon name="alert" size={14} />
           Review queue ({needReview})
         </button>
       </header>
 
-      <div className={split ? "grid items-start gap-4" : "flex flex-col gap-3"} style={split ? { gridTemplateColumns: "232px minmax(0,1fr)" } : undefined}>
+      <div
+        className={split ? "grid items-start gap-4" : "flex flex-col gap-3"}
+        style={split ? { gridTemplateColumns: "232px minmax(0,1fr)" } : undefined}
+      >
         <nav aria-label="Images in this session">
           <ul
             className={split ? "flex flex-col gap-2" : "eo-scroll -m-1 flex gap-2 overflow-x-auto p-1"}
             style={split ? undefined : { scrollSnapType: "x proximity" }}
           >
             {visible.map((img) => (
-              <li key={img.id} className={split ? "" : "w-[206px] shrink-0"} style={split ? undefined : { scrollSnapAlign: "start" }}>
+              <li
+                key={img.id}
+                className={split ? "" : "w-[206px] shrink-0"}
+                style={split ? undefined : { scrollSnapAlign: "start" }}
+              >
                 <ThumbButton img={img} current={img.id === selected.id} onSelect={() => m.setSelectedId(img.id)} />
               </li>
             ))}
@@ -115,14 +131,28 @@ function Detail({ m, img, compact }: { m: ManifestApi; img: ManifestImage; compa
             <span className="mono">{img.file}</span>
             <StatusChip status={status} />
           </h2>
-          <p className="eo-muted text-[12px]">{img.title}, departs {img.time}</p>
+          <p className="eo-muted text-[12px]">
+            {img.title}, departs {img.time}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button" className="eo-btn quiet" disabled={!canUndo} onClick={() => m.undoLatest()} aria-keyshortcuts="Control+Z Meta+Z" title="Restore the last reprocessed image (Cmd/Ctrl+Z)">
+          <button
+            type="button"
+            className="eo-btn quiet"
+            disabled={!canUndo}
+            onClick={() => m.undoLatest()}
+            aria-keyshortcuts="Control+Z Meta+Z"
+            title="Restore the last reprocessed image (Cmd/Ctrl+Z)"
+          >
             <Icon name="undo" size={14} />
             Undo
           </button>
-          <button type="button" className="eo-btn primary" aria-disabled={m.busyId !== null} onClick={() => m.reprocess(img.id)}>
+          <button
+            type="button"
+            className="eo-btn primary"
+            aria-disabled={m.busyId !== null}
+            onClick={() => m.reprocess(img.id)}
+          >
             {busy ? <span className="eo-spin" aria-hidden="true" /> : <Icon name="refresh" size={14} />}
             {busy ? "Reprocessing" : "Reprocess"}
           </button>
@@ -139,23 +169,43 @@ function Detail({ m, img, compact }: { m: ManifestApi; img: ManifestImage; compa
       )}
 
       <div className={`eo-card ${tone} p-3`} aria-label="Footer reconciliation">
-        <p className="eo-eyebrow mb-2" style={{ color: status === "ready" ? "var(--ok)" : status === "failed" ? "var(--bad)" : "var(--warn)" }}>
+        <p
+          className="eo-eyebrow mb-2"
+          style={{ color: status === "ready" ? "var(--ok)" : status === "failed" ? "var(--bad)" : "var(--warn)" }}
+        >
           Footer reconciliation
         </p>
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <Stat label="Extracted sum">
-            <span className="mono text-[22px] font-semibold leading-none" data-testid="eo-extracted">{sum}</span>
+            <span className="mono text-[22px] font-semibold leading-none" data-testid="eo-extracted">
+              {sum}
+            </span>
           </Stat>
           <Stat label="Printed total" htmlFor={`pt-${img.id}`}>
-            <NumField id={`pt-${img.id}`} nullable value={img.printedTotal} onChange={(v) => m.setPrinted(img.id, v)} label="Printed footer total" invalid={status !== "ready"} className="!min-h-[34px] !text-[16px] font-semibold" />
+            <NumField
+              id={`pt-${img.id}`}
+              nullable
+              value={img.printedTotal}
+              onChange={(v) => m.setPrinted(img.id, v)}
+              label="Printed footer total"
+              invalid={status !== "ready"}
+              className="!min-h-[34px] !text-[16px] font-semibold"
+            />
           </Stat>
           <Stat label="Difference">
-            <span className="mono text-[22px] font-semibold leading-none" style={{ color: diff === 0 ? "var(--ok)" : "var(--warn)" }}>
+            <span
+              className="mono text-[22px] font-semibold leading-none"
+              style={{ color: diff === 0 ? "var(--ok)" : "var(--warn)" }}
+            >
               {diff === null ? "n/a" : diff > 0 ? `+${diff}` : diff}
             </span>
           </Stat>
         </div>
-        <p className="mt-2.5 flex items-start gap-1.5 text-[12.5px]" role="status" style={{ color: status === "ready" ? "var(--ok)" : "var(--warn)" }}>
+        <p
+          className="mt-2.5 flex items-start gap-1.5 text-[12.5px]"
+          role="status"
+          style={{ color: status === "ready" ? "var(--ok)" : "var(--warn)" }}
+        >
           <Icon name={status === "ready" ? "check" : "alert"} size={14} />
           <span>{reconcileMessage(sum, img.printedTotal)}</span>
         </p>
@@ -178,7 +228,11 @@ function Detail({ m, img, compact }: { m: ManifestApi; img: ManifestImage; compa
         </div>
 
         {!compact && img.rows.length > 0 && (
-          <div className="eo-th grid items-center gap-2 border-b px-0 pb-1.5" style={{ gridTemplateColumns: rowCols(!!groups), borderColor: "var(--line)" }} aria-hidden="true">
+          <div
+            className="eo-th grid items-center gap-2 border-b px-0 pb-1.5"
+            style={{ gridTemplateColumns: rowCols(!!groups), borderColor: "var(--line)" }}
+            aria-hidden="true"
+          >
             <span>Guest</span>
             <span className="text-right">Pax</span>
             <span>Hotel</span>
@@ -187,7 +241,9 @@ function Detail({ m, img, compact }: { m: ManifestApi; img: ManifestImage; compa
           </div>
         )}
 
-        {img.rows.length === 0 && <p className="eo-muted px-1 py-4 text-center text-[12.5px]">No rows yet. Reprocess the image or add a row.</p>}
+        {img.rows.length === 0 && (
+          <p className="eo-muted px-1 py-4 text-center text-[12.5px]">No rows yet. Reprocess the image or add a row.</p>
+        )}
 
         {groups
           ? groups.map((g) => {
@@ -195,7 +251,10 @@ function Detail({ m, img, compact }: { m: ManifestApi; img: ManifestImage; compa
               offset += g.rows.length;
               return (
                 <div key={g.service} role="group" aria-label={g.service}>
-                  <div className="mt-2 flex items-center justify-between gap-2 rounded-md px-2 py-1" style={{ background: "var(--raised)" }}>
+                  <div
+                    className="mt-2 flex items-center justify-between gap-2 rounded-md px-2 py-1"
+                    style={{ background: "var(--raised)" }}
+                  >
                     <span className="text-[12px] font-semibold">{g.service}</span>
                     <Chip tone="neutral" dot={false}>
                       Subtotal {g.subtotal} pax
@@ -207,13 +266,18 @@ function Detail({ m, img, compact }: { m: ManifestApi; img: ManifestImage; compa
             })
           : rows(img.rows, 0, true)}
 
-        <div className="mt-2 flex items-center justify-between border-t px-1 pt-2 text-[12.5px]" style={{ borderColor: "var(--line)" }}>
+        <div
+          className="mt-2 flex items-center justify-between border-t px-1 pt-2 text-[12.5px]"
+          style={{ borderColor: "var(--line)" }}
+        >
           <span className="eo-muted">Total passengers</span>
           <span className="mono font-semibold">{sum}</span>
         </div>
       </div>
       <p className="eo-muted text-[11.5px]">
-        Edits recompute the reconciliation live. Reprocessing replaces the rows; undo with the toast action or <span className="eo-kbd">Cmd</span>/<span className="eo-kbd">Ctrl</span>+<span className="eo-kbd">Z</span> when focus is outside a field.
+        Edits recompute the reconciliation live. Reprocessing replaces the rows; undo with the toast action or{" "}
+        <span className="eo-kbd">Cmd</span>/<span className="eo-kbd">Ctrl</span>+<span className="eo-kbd">Z</span> when
+        focus is outside a field.
       </p>
     </section>
   );
@@ -257,12 +321,33 @@ function RowEditor({
   onRemove: () => void;
 }) {
   const guest = (
-    <input className="eo-input" aria-label={`Guest, row ${n}`} placeholder="Guest" value={row.guest} autoFocus={autoFocus} onFocus={() => autoFocus && onFocused()} onChange={(e) => onChange({ guest: e.target.value })} />
+    <input
+      className="eo-input"
+      aria-label={`Guest, row ${n}`}
+      placeholder="Guest"
+      value={row.guest}
+      autoFocus={autoFocus}
+      onFocus={() => autoFocus && onFocused()}
+      onChange={(e) => onChange({ guest: e.target.value })}
+    />
   );
   const pax = <NumField value={row.pax} onChange={(v) => onChange({ pax: v ?? 0 })} label={`Passengers, row ${n}`} />;
-  const hotel = <input className="eo-input" aria-label={`Hotel, row ${n}`} placeholder="Hotel" value={row.hotel} onChange={(e) => onChange({ hotel: e.target.value })} />;
+  const hotel = (
+    <input
+      className="eo-input"
+      aria-label={`Hotel, row ${n}`}
+      placeholder="Hotel"
+      value={row.hotel}
+      onChange={(e) => onChange({ hotel: e.target.value })}
+    />
+  );
   const service = (
-    <select className="eo-input" aria-label={`Service, row ${n}`} value={row.service} onChange={(e) => onChange({ service: e.target.value })}>
+    <select
+      className="eo-input"
+      aria-label={`Service, row ${n}`}
+      value={row.service}
+      onChange={(e) => onChange({ service: e.target.value })}
+    >
       {SERVICES.map((s) => (
         <option key={s} value={s}>
           {s}
@@ -271,18 +356,30 @@ function RowEditor({
     </select>
   );
   const remove = (
-    <button type="button" className="eo-btn quiet icon" style={{ minHeight: 30, minWidth: 30 }} aria-label={`Remove row ${n}${row.guest ? `, ${row.guest}` : ""}`} onClick={onRemove}>
+    <button
+      type="button"
+      className="eo-btn quiet icon"
+      style={{ minHeight: 30, minWidth: 30 }}
+      aria-label={`Remove row ${n}${row.guest ? `, ${row.guest}` : ""}`}
+      onClick={onRemove}
+    >
       <Icon name="x" size={14} />
     </button>
   );
 
   if (compact) {
     return (
-      <div className="grid gap-1.5 border-b py-2" style={{ gridTemplateColumns: "minmax(0,1fr) 64px 32px", borderColor: "var(--line)" }}>
+      <div
+        className="grid gap-1.5 border-b py-2"
+        style={{ gridTemplateColumns: "minmax(0,1fr) 64px 32px", borderColor: "var(--line)" }}
+      >
         {guest}
         {pax}
         {remove}
-        <div className="grid gap-1.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: showService ? "1fr 1fr" : "1fr" }}>
+        <div
+          className="grid gap-1.5"
+          style={{ gridColumn: "1 / -1", gridTemplateColumns: showService ? "1fr 1fr" : "1fr" }}
+        >
           {hotel}
           {showService && service}
         </div>
@@ -290,7 +387,10 @@ function RowEditor({
     );
   }
   return (
-    <div className="grid items-center gap-2 border-b py-1.5" style={{ gridTemplateColumns: rowCols(!showService), borderColor: "var(--line)" }}>
+    <div
+      className="grid items-center gap-2 border-b py-1.5"
+      style={{ gridTemplateColumns: rowCols(!showService), borderColor: "var(--line)" }}
+    >
       {guest}
       {pax}
       {hotel}

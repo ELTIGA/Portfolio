@@ -4,8 +4,20 @@ import { HoloCard } from "@/components/fx/HoloCard";
 /** Experience, education and credentials as one log whose spine lights up on scroll. */
 export function Record() {
   const entries = [
-    ...profile.experience.map((e) => ({ when: e.period, title: `${e.role}`, org: e.org, meta: e.type, body: e.summary })),
-    { when: profile.education.year, title: profile.education.degree, org: profile.education.school, meta: "Education", body: "" },
+    ...profile.experience.map((e) => ({
+      when: e.period,
+      title: `${e.role}`,
+      org: e.org,
+      meta: e.type,
+      body: e.summary,
+    })),
+    {
+      when: profile.education.year,
+      title: profile.education.degree,
+      org: profile.education.school,
+      meta: "Education",
+      body: "",
+    },
   ];
   const [ceh, ...otherCreds] = profile.credentials;
 
@@ -13,11 +25,17 @@ export function Record() {
     <div className="grid gap-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
       <ol className="relative pl-8">
         <span aria-hidden="true" className="absolute bottom-2 left-[3px] top-2 w-px bg-line">
-          <span data-spine="" className="block h-full w-full origin-top bg-gradient-to-b from-accent via-accent to-signal" />
+          <span
+            data-spine=""
+            className="block h-full w-full origin-top bg-gradient-to-b from-accent via-accent to-signal"
+          />
         </span>
         {entries.map((e) => (
           <li key={e.title + e.org} data-reveal="up" className="relative pb-14 last:pb-0">
-            <span aria-hidden="true" className="absolute -left-8 top-1.5 h-[7px] w-[7px] bg-accent shadow-[0_0_14px_2px_rgb(255_181_71/0.6)]" />
+            <span
+              aria-hidden="true"
+              className="absolute -left-8 top-1.5 h-[7px] w-[7px] bg-accent shadow-[0_0_14px_2px_rgb(255_181_71/0.6)]"
+            />
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">{e.when}</p>
             <h3 className="font-display mt-3 text-4xl font-bold uppercase leading-[0.9] sm:text-5xl">{e.org}</h3>
             <p className="mt-2 font-mono text-xs uppercase tracking-[0.15em] text-muted">

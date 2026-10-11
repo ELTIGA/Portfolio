@@ -30,7 +30,11 @@ const spec: FlowSpec = {
       title: "Server path · internal network",
       nodes: [
         { label: ["Next.js server"], sub: ["auth, queries,", "preloads, uploads"] },
-        { label: ["Docker network"], sub: ["backend:3230 and", "backend:3231", "no Cloudflare challenge"], tone: "accent" },
+        {
+          label: ["Docker network"],
+          sub: ["backend:3230 and", "backend:3231", "no Cloudflare challenge"],
+          tone: "accent",
+        },
         { label: ["Convex"], sub: ["same backend,", "internal URL"] },
       ],
     },

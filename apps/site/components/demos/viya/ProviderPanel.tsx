@@ -11,15 +11,36 @@ const TICK = 80;
 function phases(requested: ExtractProvider): string[] {
   const chain = chainFor(requested);
   if (PROVIDERS[requested].flaky) {
-    return ["Queueing extraction job", `Calling ${requested}`, `${requested} timed out (8s), falling back`, `Calling ${chain[1]}`, "Validating against passenger schema", "Normalizing hotels and pickup times"];
+    return [
+      "Queueing extraction job",
+      `Calling ${requested}`,
+      `${requested} timed out (8s), falling back`,
+      `Calling ${chain[1]}`,
+      "Validating against passenger schema",
+      "Normalizing hotels and pickup times",
+    ];
   }
-  return ["Queueing extraction job", `Calling ${requested}`, "Validating against passenger schema", "Normalizing hotels and pickup times", "Scoring row confidence"];
+  return [
+    "Queueing extraction job",
+    `Calling ${requested}`,
+    "Validating against passenger schema",
+    "Normalizing hotels and pickup times",
+    "Scoring row confidence",
+  ];
 }
 
-export function ProviderPanel({ manifest, onResult }: { manifest: Manifest; onResult: (passengers: Passenger[], extraction: Extraction) => void }) {
+export function ProviderPanel({
+  manifest,
+  onResult,
+}: {
+  manifest: Manifest;
+  onResult: (passengers: Passenger[], extraction: Extraction) => void;
+}) {
   const selectId = useId();
   const { extraction } = manifest;
-  const [choice, setChoice] = useState<ExtractProvider>(() => PROVIDER_ORDER.find((p) => p !== extraction.provider) ?? "deepseek_chat");
+  const [choice, setChoice] = useState<ExtractProvider>(
+    () => PROVIDER_ORDER.find((p) => p !== extraction.provider) ?? "deepseek_chat",
+  );
   const [progress, setProgress] = useState<number | null>(null);
   const [requested, setRequested] = useState<ExtractProvider>(choice);
   const timer = useRef<number | null>(null);
@@ -82,7 +103,9 @@ export function ProviderPanel({ manifest, onResult }: { manifest: Manifest; onRe
         </div>
         <div>
           <dt className={labelCls}>Flagged rows</dt>
-          <dd className={cx("mt-0.5 text-sm font-semibold tabular-nums", flagged > 0 && "text-(--v-warn)")}>{flagged}</dd>
+          <dd className={cx("mt-0.5 text-sm font-semibold tabular-nums", flagged > 0 && "text-(--v-warn)")}>
+            {flagged}
+          </dd>
         </div>
       </dl>
 
@@ -90,7 +113,10 @@ export function ProviderPanel({ manifest, onResult }: { manifest: Manifest; onRe
         <p className={labelCls}>Fallback chain</p>
         <ol className="mt-1.5 grid gap-1.5 @lg:grid-cols-3">
           {extraction.attempts.map((a, i) => (
-            <li key={a.provider} className="flex min-w-0 items-start gap-2 rounded-lg border border-(--v-line) bg-(--v-bg) p-2">
+            <li
+              key={a.provider}
+              className="flex min-w-0 items-start gap-2 rounded-lg border border-(--v-line) bg-(--v-bg) p-2"
+            >
               <span
                 className={cx(
                   "mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-bold text-white",
@@ -142,7 +168,9 @@ export function ProviderPanel({ manifest, onResult }: { manifest: Manifest; onRe
         </Btn>
       </div>
       <p id={`${selectId}-hint`} className="mt-1.5 text-xs text-(--v-muted)">
-        {PROVIDERS[choice].label}: {PROVIDERS[choice].blurb}.{PROVIDERS[choice].flaky ? " Simulates a timeout so the fallback chain kicks in." : ""} Re-running replaces edits with fresh output.
+        {PROVIDERS[choice].label}: {PROVIDERS[choice].blurb}.
+        {PROVIDERS[choice].flaky ? " Simulates a timeout so the fallback chain kicks in." : ""} Re-running replaces
+        edits with fresh output.
       </p>
 
       {running && (
@@ -155,7 +183,10 @@ export function ProviderPanel({ manifest, onResult }: { manifest: Manifest; onRe
             aria-valuenow={Math.round((progress ?? 0) * 100)}
             className="h-1.5 overflow-hidden rounded-full bg-(--v-soft)"
           >
-            <div className="h-full rounded-full bg-(--v-primary)" style={{ width: `${Math.round((progress ?? 0) * 100)}%` }} />
+            <div
+              className="h-full rounded-full bg-(--v-primary)"
+              style={{ width: `${Math.round((progress ?? 0) * 100)}%` }}
+            />
           </div>
           <p className="mt-1 font-mono text-xs text-(--v-muted)">{stepLabel}…</p>
         </div>

@@ -101,7 +101,14 @@ export const profile: Profile = {
     },
     {
       group: "DevSecOps",
-      items: ["GitHub Actions", "Docker / Compose", "Dependency auditing", "Sentry", "Clerk / RBAC", "Ethical hacking (CEH)"],
+      items: [
+        "GitHub Actions",
+        "Docker / Compose",
+        "Dependency auditing",
+        "Sentry",
+        "Clerk / RBAC",
+        "Ethical hacking (CEH)",
+      ],
     },
     {
       group: "AI & automation",

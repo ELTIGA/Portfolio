@@ -33,7 +33,11 @@ const personLd = {
   alumniOf: { "@type": "CollegeOrUniversity", name: profile.education.school },
   hasCredential: profile.credentials
     .filter((c) => !c.status.includes("not an AWS certification"))
-    .map((c) => ({ "@type": "EducationalOccupationalCredential", name: c.name, recognizedBy: { "@type": "Organization", name: c.issuer } })),
+    .map((c) => ({
+      "@type": "EducationalOccupationalCredential",
+      name: c.name,
+      recognizedBy: { "@type": "Organization", name: c.issuer },
+    })),
   sameAs: [profile.github, profile.linkedin],
 };
 
@@ -63,7 +67,10 @@ const navLink = "relative font-mono text-[11px] uppercase tracking-[0.2em] text-
 export default function Home() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }}
+      />
       <Intro3D />
       <FxRoot />
       <SignalField word={profile.handle} heroId="hero" radarId="contact" frostIds={["work", "record"]} />
@@ -71,7 +78,10 @@ export default function Home() {
       <Cursor />
       <div aria-hidden="true" className="atmosphere" />
 
-      <a href="#top" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[95] focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-ink">
+      <a
+        href="#top"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[95] focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-ink"
+      >
         Skip to content
       </a>
       <header className="fixed inset-x-0 top-0 z-50 bg-gradient-to-b from-bg via-bg/70 to-transparent">
@@ -81,9 +91,15 @@ export default function Home() {
             <span className="text-accent">.</span>
           </a>
           <nav aria-label="Primary" className="flex items-center gap-7">
-            <a className={`${navLink} hidden sm:inline`} href="#work">Work</a>
-            <a className={`${navLink} hidden sm:inline`} href="#record">Record</a>
-            <a className={`${navLink} hidden sm:inline`} href="#about">About</a>
+            <a className={`${navLink} hidden sm:inline`} href="#work">
+              Work
+            </a>
+            <a className={`${navLink} hidden sm:inline`} href="#record">
+              Record
+            </a>
+            <a className={`${navLink} hidden sm:inline`} href="#about">
+              About
+            </a>
             <OfficeButton className={navLink} />
             <Magnetic>
               <EmailCta className="!px-4 !py-2.5" label="Email" surface="header" />
@@ -98,11 +114,18 @@ export default function Home() {
 
         <section id="work" aria-labelledby="work-title" className="relative pt-24 sm:pt-32">
           <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
-            <div data-reveal="wipe" className="flex items-center gap-4 border-t border-line pt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+            <div
+              data-reveal="wipe"
+              className="flex items-center gap-4 border-t border-line pt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted"
+            >
               <span className="text-accent">selected work</span>
               <span className="ml-auto">{featured.length} featured · scroll to advance</span>
             </div>
-            <h2 id="work-title" data-scramble className="font-display mt-6 text-5xl font-extrabold uppercase leading-[0.88] tracking-tight sm:text-7xl lg:text-8xl">
+            <h2
+              id="work-title"
+              data-scramble
+              className="font-display mt-6 text-5xl font-extrabold uppercase leading-[0.88] tracking-tight sm:text-7xl lg:text-8xl"
+            >
               Case files
             </h2>
           </div>
@@ -116,12 +139,22 @@ export default function Home() {
         </section>
 
         <Section id="more" code="processes" readout={`${more.length} more builds`} title="Also built">
-          <ProcessTable rows={more.map(({ slug, name, role, status, tagline, stack }) => ({ slug, name, role, status, tagline, stack }))} />
+          <ProcessTable
+            rows={more.map(({ slug, name, role, status, tagline, stack }) => ({
+              slug,
+              name,
+              role,
+              status,
+              tagline,
+              stack,
+            }))}
+          />
         </Section>
 
         <Section id="shipping" code="release path" readout="express ops ci/cd" title="Nothing ships red">
           <p data-reveal="up" className="max-w-2xl text-lg leading-relaxed text-muted">
-            Every push to Express Ops runs the same gates. Only the commit that passes all of them reaches the production host.
+            Every push to Express Ops runs the same gates. Only the commit that passes all of them reaches the
+            production host.
           </p>
           <div className="mt-16">
             <Pipeline stages={stages} />
@@ -143,11 +176,21 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section id="record" code="experience" readout={`${profile.experience.length} roles · ${profile.credentials.length} credentials`} title="Service record">
+        <Section
+          id="record"
+          code="experience"
+          readout={`${profile.experience.length} roles · ${profile.credentials.length} credentials`}
+          title="Service record"
+        >
           <Record />
         </Section>
 
-        <Section id="loadout" code="toolbox" readout={`${profile.skills.reduce((n, g) => n + g.items.length, 0)} tools`} title="Loadout">
+        <Section
+          id="loadout"
+          code="toolbox"
+          readout={`${profile.skills.reduce((n, g) => n + g.items.length, 0)} tools`}
+          title="Loadout"
+        >
           <Loadout />
         </Section>
 
@@ -160,7 +203,9 @@ export default function Home() {
 
       <footer className="relative z-10 border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-8 font-mono text-[11px] uppercase tracking-[0.2em] text-muted sm:px-8">
-          <span>© {new Date().getFullYear()} {profile.name}</span>
+          <span>
+            © {new Date().getFullYear()} {profile.name}
+          </span>
           <span>Built with Next.js, three.js and GSAP</span>
         </div>
       </footer>

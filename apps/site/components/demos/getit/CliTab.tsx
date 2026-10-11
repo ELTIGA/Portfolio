@@ -85,7 +85,8 @@ function parseDownload(args: string[]): { opts: Opts } | { error: string } | { h
       opts.out = v;
     } else if (a === "-c" || a === "--concurrency") {
       const n = parseInt(val() ?? "", 10);
-      if (!Number.isInteger(n) || n < 1 || n > 8) return { error: `Invalid value for '${a}': must be an integer between 1 and 8.` };
+      if (!Number.isInteger(n) || n < 1 || n > 8)
+        return { error: `Invalid value for '${a}': must be an integer between 1 and 8.` };
       opts.conns = n;
     } else if (a === "-p" || a === "--password") {
       const v = val();
@@ -172,13 +173,20 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
         if (job.t < 0.7) return;
         job.phase = "download";
         job.t = 0;
-        const resumed = opts.resume ? partials.current.get(opts.url) ?? 0 : 0;
+        const resumed = opts.resume ? (partials.current.get(opts.url) ?? 0) : 0;
         job.pct = resumed;
         job.startPct = resumed;
         print("ok", `✓ resolved · 1 file · ${fmtSize(job.sizeMb)} · ${job.name}`);
         if (resumed > 0) print("out", `↻ resume: found partial file at ${resumed.toFixed(0)}%, continuing`);
-        else print("dim", opts.resume ? "resume: no partial file found" : "resume disabled (--no-resume), starting from 0%");
-        print("out", `→ saving to ${opts.out.replace(/\/$/, "")}/${job.name} · ${opts.conns} connection${opts.conns > 1 ? "s" : ""}${opts.limit ? ` · limit ${opts.limit} MB/s` : ""}`);
+        else
+          print(
+            "dim",
+            opts.resume ? "resume: no partial file found" : "resume disabled (--no-resume), starting from 0%",
+          );
+        print(
+          "out",
+          `→ saving to ${opts.out.replace(/\/$/, "")}/${job.name} · ${opts.conns} connection${opts.conns > 1 ? "s" : ""}${opts.limit ? ` · limit ${opts.limit} MB/s` : ""}`,
+        );
         return;
       }
       if (job.phase === "download") {
@@ -187,8 +195,10 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
         if (opts.limit) speed = Math.min(speed, opts.limit);
         job.pct = Math.min(100, job.pct + ((speed * dt) / job.sizeMb) * 100 * 9);
         partials.current.set(opts.url, job.pct);
-        const eta = ((100 - job.pct) / 100) * job.sizeMb / (speed * 9);
-        const parts = Array.from({ length: Math.min(opts.conns, 4) }, (_, i) => Math.max(0, Math.min(100, job.pct + (i % 2 ? -2.5 : 2) * Math.sin(job.elapsed + i))));
+        const eta = (((100 - job.pct) / 100) * job.sizeMb) / (speed * 9);
+        const parts = Array.from({ length: Math.min(opts.conns, 4) }, (_, i) =>
+          Math.max(0, Math.min(100, job.pct + (i % 2 ? -2.5 : 2) * Math.sin(job.elapsed + i))),
+        );
         setLive({ name: job.name, pct: job.pct, speed, eta, conns: opts.conns, parts });
         if (job.pct >= 100) {
           job.phase = "verify";
@@ -203,7 +213,10 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
       partials.current.delete(opts.url);
       downloaded.current.push(`${opts.out.replace(/\/$/, "")}/${job.name}`);
       print("ok", `✓ sha256 verified  ${sha.slice(0, 16)}…`);
-      print("ok", `✓ saved ${opts.out.replace(/\/$/, "")}/${job.name} (${fmtSize(job.sizeMb)}) in ${job.elapsed.toFixed(1)}s`);
+      print(
+        "ok",
+        `✓ saved ${opts.out.replace(/\/$/, "")}/${job.name} (${fmtSize(job.sizeMb)}) in ${job.elapsed.toFixed(1)}s`,
+      );
       finish();
     },
     [finish, print],
@@ -222,8 +235,10 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
       const chk = checkUrl(opts.url);
       if (!chk.ok) return print("err", `Error: ${chk.error}`);
       if (chk.host?.key === "1fichier") {
-        if (!opts.password) return print("err", "Error: this link is password protected. Pass the password with -p PASSWORD.");
-        if (opts.password !== DEMO_PASSWORD) return print("err", `Error: wrong password (the demo password is "${DEMO_PASSWORD}").`);
+        if (!opts.password)
+          return print("err", "Error: this link is password protected. Pass the password with -p PASSWORD.");
+        if (opts.password !== DEMO_PASSWORD)
+          return print("err", `Error: wrong password (the demo password is "${DEMO_PASSWORD}").`);
         print("ok", "✓ password accepted");
       }
       print("dim", `→ resolving ${opts.url}${chk.host ? ` (${chk.host.label})` : ""}`);
@@ -260,7 +275,8 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
       if (bin === "ls") {
         return print("out", downloaded.current.length ? downloaded.current.join("\n") : "(nothing downloaded yet)");
       }
-      if (bin !== "getit") return print("err", `${bin}: command not found (this demo shell only knows \`getit\`, ls, clear)`);
+      if (bin !== "getit")
+        return print("err", `${bin}: command not found (this demo shell only knows \`getit\`, ls, clear)`);
       const [sub, ...args] = rest;
       if (!sub || sub === "--help" || sub === "-h") return print("out", HELP);
       if (sub !== "download") return print("err", `Error: No such command '${sub}'.`);
@@ -279,7 +295,12 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
       // ArrowDown before any ArrowUp has nothing newer to show.
       if (e.key === "ArrowDown" && histPos.current < 0) return;
       e.preventDefault();
-      histPos.current = e.key === "ArrowUp" ? (histPos.current < 0 ? h.length - 1 : Math.max(0, histPos.current - 1)) : Math.min(h.length, histPos.current + 1);
+      histPos.current =
+        e.key === "ArrowUp"
+          ? histPos.current < 0
+            ? h.length - 1
+            : Math.max(0, histPos.current - 1)
+          : Math.min(h.length, histPos.current + 1);
       setValue(h[histPos.current] ?? "");
     } else if (e.key === "c" && e.ctrlKey) {
       const el = e.currentTarget;
@@ -296,7 +317,11 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex flex-wrap gap-1.5 border-b border-line px-3 py-2" aria-label="Suggested commands" role="group">
+      <div
+        className="flex flex-wrap gap-1.5 border-b border-line px-3 py-2"
+        aria-label="Suggested commands"
+        role="group"
+      >
         {SUGGESTIONS.map((s) => (
           <Chip
             key={s.cmd}
@@ -314,13 +339,25 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
         ))}
       </div>
 
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto px-3 py-2 text-[13px]" onClick={() => active && inputRef.current?.focus({ preventScroll: true })}>
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 overflow-auto px-3 py-2 text-[13px]"
+        onClick={() => active && inputRef.current?.focus({ preventScroll: true })}
+      >
         <div role="log" aria-label="getit shell output">
           {lines.map((l) => (
             <div
               key={l.id}
               className={`whitespace-pre-wrap break-words ${
-                l.kind === "cmd" ? "text-fg" : l.kind === "ok" ? "text-accent" : l.kind === "err" ? "text-[#ff6b6b]" : l.kind === "dim" ? "text-muted" : "text-fg/90"
+                l.kind === "cmd"
+                  ? "text-fg"
+                  : l.kind === "ok"
+                    ? "text-accent"
+                    : l.kind === "err"
+                      ? "text-[#ff6b6b]"
+                      : l.kind === "dim"
+                        ? "text-muted"
+                        : "text-fg/90"
               }`}
             >
               {l.kind === "cmd" && <span className="text-accent">$ </span>}
@@ -337,7 +374,8 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
                 </div>
               ))}
             <div className="break-words">
-              {live.name} {textBar(live.pct, 20)} {live.pct.toFixed(0).padStart(3)}% · {live.speed.toFixed(1)} MB/s · eta {fmtEta(live.eta)}
+              {live.name} {textBar(live.pct, 20)} {live.pct.toFixed(0).padStart(3)}% · {live.speed.toFixed(1)} MB/s ·
+              eta {fmtEta(live.eta)}
             </div>
           </div>
         )}
@@ -349,8 +387,7 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
           }}
         >
           <label htmlFor="getit-cli-input" className="text-accent">
-            $
-            <span className="sr-only"> command</span>
+            $<span className="sr-only"> command</span>
           </label>
           <input
             id="getit-cli-input"
@@ -364,15 +401,24 @@ export const CliTab = memo(function CliTab({ active, reduced }: { active: boolea
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}
-            placeholder={running ? "downloading… (Ctrl+C to interrupt)" : "getit download https://example.test/f/abc123 -c 2"}
+            placeholder={
+              running ? "downloading… (Ctrl+C to interrupt)" : "getit download https://example.test/f/abc123 -c 2"
+            }
             className="min-w-0 flex-1 bg-transparent py-1 text-[13px] text-fg placeholder:text-muted/60 focus:outline-none read-only:opacity-60"
           />
           {running ? (
-            <button type="button" onClick={interrupt} className="rounded border border-line px-2 py-1 text-[12px] text-[#ff6b6b] hover:border-[#ff6b6b]/60">
+            <button
+              type="button"
+              onClick={interrupt}
+              className="rounded border border-line px-2 py-1 text-[12px] text-[#ff6b6b] hover:border-[#ff6b6b]/60"
+            >
               ^C Stop
             </button>
           ) : (
-            <button type="submit" className="rounded border border-line px-2 py-1 text-[12px] text-muted hover:border-accent/60 hover:text-fg">
+            <button
+              type="submit"
+              className="rounded border border-line px-2 py-1 text-[12px] text-muted hover:border-accent/60 hover:text-fg"
+            >
               Run
             </button>
           )}

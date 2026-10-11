@@ -1,7 +1,15 @@
 import type { ReactNode } from "react";
 
 /** Browser-style chrome for interactive previews. The content slot fills the remaining height. */
-export function DemoFrame({ title, host = "demo.local", children }: { title: string; host?: string; children: ReactNode }) {
+export function DemoFrame({
+  title,
+  host = "demo.local",
+  children,
+}: {
+  title: string;
+  host?: string;
+  children: ReactNode;
+}) {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-line bg-[#0f1318]">
       <div className="flex items-center gap-3 border-b border-line bg-surface px-3 py-2">

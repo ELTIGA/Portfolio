@@ -88,7 +88,10 @@ export function Hud({ sectors }: { sectors: { id: string; label: string }[] }) {
 
   const pad2 = (n: number) => String(n).padStart(2, "0");
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-3 z-40 hidden font-mono text-[10px] uppercase tracking-[0.18em] text-muted md:block">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-3 z-40 hidden font-mono text-[10px] uppercase tracking-[0.18em] text-muted md:block"
+    >
       <div className="brackets absolute inset-0 opacity-60 [--s:22px]" />
       <div className="absolute bottom-3 left-4 flex items-center gap-4">
         <span className="flex items-center gap-2">

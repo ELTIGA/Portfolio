@@ -27,11 +27,18 @@ export function Dock() {
               >
                 <span aria-hidden="true">{app.glyph}</span>
               </button>
-              {win && <span aria-hidden="true" className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-fg" />}
+              {win && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-fg"
+                />
+              )}
             </li>
           );
         })}
-        {wins.filter((w) => w.id.startsWith("project:")).length > 0 && <li aria-hidden="true" className="mx-1 h-10 w-px self-center bg-white/15" />}
+        {wins.filter((w) => w.id.startsWith("project:")).length > 0 && (
+          <li aria-hidden="true" className="mx-1 h-10 w-px self-center bg-white/15" />
+        )}
         {wins
           .filter((w) => w.id.startsWith("project:"))
           .map((w) => (
@@ -43,9 +50,15 @@ export function Dock() {
                 className={`grid h-12 w-12 place-items-center rounded-xl border border-white/15 bg-surface font-mono text-sm font-semibold transition hover:-translate-y-1 hover:brightness-125 ${w.minimized ? "opacity-60" : ""}`}
               >
                 <span aria-hidden="true">{w.title.slice(0, 2)}</span>
-                <span className="sr-only">{w.title}{w.minimized ? " (minimized)" : ""}</span>
+                <span className="sr-only">
+                  {w.title}
+                  {w.minimized ? " (minimized)" : ""}
+                </span>
               </button>
-              <span aria-hidden="true" className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-fg" />
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-fg"
+              />
             </li>
           ))}
       </ul>

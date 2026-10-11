@@ -80,7 +80,8 @@ export function Quiz({
   };
 
   const inDeck = progress.deck.includes(q.id);
-  const toggleDeck = () => onProgress({ ...progress, deck: inDeck ? progress.deck.filter((id) => id !== q.id) : [...progress.deck, q.id] });
+  const toggleDeck = () =>
+    onProgress({ ...progress, deck: inDeck ? progress.deck.filter((id) => id !== q.id) : [...progress.deck, q.id] });
 
   const summary = useMemo(() => {
     const right = history.filter((h) => h.correct).length;
@@ -114,9 +115,15 @@ export function Quiz({
             ? `Weakest topic this session: ${summary.missed}. It stays in your focus list for the next shift.`
             : "A clean session. The coach will raise the difficulty next time."}
         </p>
-        <p className="mt-1 text-sm text-muted">Takeaway: re-read the memory hooks for anything you missed, then flag them for revision.</p>
+        <p className="mt-1 text-sm text-muted">
+          Takeaway: re-read the memory hooks for anything you missed, then flag them for revision.
+        </p>
         <div className="mt-4 flex gap-2">
-          <button type="button" onClick={onExit} className="rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-300">
+          <button
+            type="button"
+            onClick={onExit}
+            className="rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-300"
+          >
             Return to home
           </button>
         </div>
@@ -130,7 +137,11 @@ export function Quiz({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3 text-sm">
-        <button type="button" onClick={onExit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-fg">
+        <button
+          type="button"
+          onClick={onExit}
+          className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-fg"
+        >
           Exit session
         </button>
         <span className="font-mono text-xs text-muted">
@@ -144,7 +155,10 @@ export function Quiz({
           aria-valuenow={index + (answered ? 1 : 0)}
           className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface"
         >
-          <div className="h-full bg-sky-400 transition-[width] duration-300" style={{ width: `${((index + (answered ? 1 : 0)) / session.length) * 100}%` }} />
+          <div
+            className="h-full bg-sky-400 transition-[width] duration-300"
+            style={{ width: `${((index + (answered ? 1 : 0)) / session.length) * 100}%` }}
+          />
         </div>
       </div>
 
@@ -176,7 +190,9 @@ export function Quiz({
                 aria-pressed={confidence === c.id}
                 onClick={() => setConfidence(confidence === c.id ? null : c.id)}
                 className={`rounded-full border px-3 py-1 text-xs transition ${
-                  confidence === c.id ? "border-sky-300 bg-sky-400/20 text-sky-100" : "border-line text-muted hover:text-fg"
+                  confidence === c.id
+                    ? "border-sky-300 bg-sky-400/20 text-sky-100"
+                    : "border-line text-muted hover:text-fg"
                 } disabled:opacity-60`}
               >
                 {c.label}
@@ -258,7 +274,10 @@ export function Quiz({
                 {deepOpen ? "Hide deep dive" : "Show deep dive"}
               </button>
               {deepOpen && (
-                <div id="amc-deep" className="mt-2 space-y-2 border-l-2 border-sky-400/40 pl-3 text-sm leading-relaxed text-fg/90">
+                <div
+                  id="amc-deep"
+                  className="mt-2 space-y-2 border-l-2 border-sky-400/40 pl-3 text-sm leading-relaxed text-fg/90"
+                >
                   {q.deep.map((p) => (
                     <p key={p.slice(0, 24)}>{p}</p>
                   ))}
@@ -267,7 +286,9 @@ export function Quiz({
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-sky-300">Why the other options are weaker</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-sky-300">
+                Why the other options are weaker
+              </h3>
               <ul className="mt-1 space-y-1.5 text-sm">
                 {distractors.map((o) => (
                   <li key={o.id} className="flex gap-2">
@@ -285,7 +306,11 @@ export function Quiz({
             </p>
 
             <div className="flex flex-wrap items-center gap-2">
-              <button type="button" onClick={next} className="rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-300">
+              <button
+                type="button"
+                onClick={next}
+                className="rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-300"
+              >
                 {index + 1 >= session.length ? "See session summary" : "Next question"}
               </button>
               <button
@@ -296,9 +321,7 @@ export function Quiz({
               >
                 {inDeck ? "In revision deck" : "Add to revision deck"}
               </button>
-              <span className="font-mono text-xs text-muted">
-                {topicLine(progress, q)}
-              </span>
+              <span className="font-mono text-xs text-muted">{topicLine(progress, q)}</span>
             </div>
           </section>
         )}

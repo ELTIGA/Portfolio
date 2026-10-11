@@ -47,8 +47,30 @@ export interface State {
 
 export const DEMO_PASSWORD = "demo";
 
-function mk(id: number, url: string, name: string, host: string, sizeMb: number, base: number, extra: Partial<Item> = {}): Item {
-  return { id, url, name, host, sizeMb, doneMb: 0, speed: 0, base, status: "queued", files: 1, verifyLeft: 0, encrypted: false, ...extra };
+function mk(
+  id: number,
+  url: string,
+  name: string,
+  host: string,
+  sizeMb: number,
+  base: number,
+  extra: Partial<Item> = {},
+): Item {
+  return {
+    id,
+    url,
+    name,
+    host,
+    sizeMb,
+    doneMb: 0,
+    speed: 0,
+    base,
+    status: "queued",
+    files: 1,
+    verifyLeft: 0,
+    encrypted: false,
+    ...extra,
+  };
 }
 
 const SEED: Item[] = [
@@ -150,7 +172,9 @@ export function reducer(s: State, a: Action): State {
       const push = (text: string, tone: Tone = "info") => {
         log = [...log, { id: nextLogId(log), at: clock, text, tone }].slice(-40);
       };
-      const raw = s.items.map((i) => (i.status === "downloading" ? i.base * (0.82 + 0.28 * Math.sin(clock * 1.3 + i.id * 1.7)) : 0));
+      const raw = s.items.map((i) =>
+        i.status === "downloading" ? i.base * (0.82 + 0.28 * Math.sin(clock * 1.3 + i.id * 1.7)) : 0,
+      );
       const sum = raw.reduce((x, y) => x + y, 0);
       const scale = s.limit > 0 && sum > s.limit ? s.limit / sum : 1;
       let items = s.items.map((i, idx) => {
@@ -158,7 +182,11 @@ export function reducer(s: State, a: Action): State {
           const speed = raw[idx] * scale;
           const doneMb = Math.min(i.sizeMb, i.doneMb + speed * a.dt);
           if (doneMb >= i.sizeMb) {
-            push(i.encrypted ? `${i.name}: downloaded, decrypting (AES-CTR) and checking sha256` : `${i.name}: downloaded, checking sha256`);
+            push(
+              i.encrypted
+                ? `${i.name}: downloaded, decrypting (AES-CTR) and checking sha256`
+                : `${i.name}: downloaded, checking sha256`,
+            );
             return { ...i, doneMb, speed: 0, status: "verifying" as const, verifyLeft: i.encrypted ? 2.4 : 1.4 };
           }
           return { ...i, doneMb, speed };
@@ -175,7 +203,10 @@ export function reducer(s: State, a: Action): State {
         return { ...i, speed: 0 };
       });
       items = fillSlots(items, s.concurrency);
-      if (items.every((i) => i.status === "done" || i.status === "cancelled") && s.items.some((i) => i.status !== "done" && i.status !== "cancelled")) {
+      if (
+        items.every((i) => i.status === "done" || i.status === "cancelled") &&
+        s.items.some((i) => i.status !== "done" && i.status !== "cancelled")
+      ) {
         push("queue finished: all downloads verified", "ok");
       }
       let prompt = s.prompt;
@@ -199,7 +230,11 @@ export function reducer(s: State, a: Action): State {
       const it = s.items.find((i) => i.id === s.selectedId);
       if (!it) return s;
       if (it.status === "downloading") {
-        return { ...s, items: withItem(s, it.id, { status: "paused", speed: 0 }), log: say(s, `${it.name}: paused at ${fmtSize(it.doneMb)} (partial file kept)`, "warn") };
+        return {
+          ...s,
+          items: withItem(s, it.id, { status: "paused", speed: 0 }),
+          log: say(s, `${it.name}: paused at ${fmtSize(it.doneMb)} (partial file kept)`, "warn"),
+        };
       }
       if (it.status === "paused") {
         const items = fillSlots(withItem(s, it.id, { status: "queued" }), s.concurrency);
@@ -236,7 +271,14 @@ export function reducer(s: State, a: Action): State {
         encrypted: chk.host?.key === "mega",
       });
       const items = fillSlots([...s.items, item], s.concurrency);
-      return { ...s, items, selectedId: item.id, nextId: s.nextId + 1, prompt: null, log: say(s, `added ${item.name} (${host})`, "info") };
+      return {
+        ...s,
+        items,
+        selectedId: item.id,
+        nextId: s.nextId + 1,
+        prompt: null,
+        log: say(s, `added ${item.name} (${host})`, "info"),
+      };
     }
     case "submitPassword": {
       if (!s.prompt || s.prompt.kind !== "password") return s;
@@ -244,7 +286,11 @@ export function reducer(s: State, a: Action): State {
       const it = s.items.find((i) => i.id === id);
       if (!it) return { ...s, prompt: null };
       if (a.value !== DEMO_PASSWORD) {
-        return { ...s, prompt: { kind: "password", id, error: "wrong password, try again" }, log: say(s, `${it.host}: wrong password`, "err") };
+        return {
+          ...s,
+          prompt: { kind: "password", id, error: "wrong password, try again" },
+          log: say(s, `${it.host}: wrong password`, "err"),
+        };
       }
       const items = fillSlots(withItem(s, id, { status: "queued" }), s.concurrency);
       return { ...s, items, prompt: null, log: say(s, `${it.host}: password accepted, queued ${it.name}`, "ok") };
@@ -257,10 +303,27 @@ export function reducer(s: State, a: Action): State {
       for (const url of urls) {
         const chk = checkUrl(url);
         if (!chk.ok || s.items.some((i) => i.url === url)) continue;
-        added.push(mk(nextId++, url, nameFromUrl(chk.url), chk.host?.label ?? "Direct", sizeFromUrl(chk.url), 8 + (hash32(url) % 22), { encrypted: chk.host?.key === "mega" }));
+        added.push(
+          mk(
+            nextId++,
+            url,
+            nameFromUrl(chk.url),
+            chk.host?.label ?? "Direct",
+            sizeFromUrl(chk.url),
+            8 + (hash32(url) % 22),
+            { encrypted: chk.host?.key === "mega" },
+          ),
+        );
       }
       const items = fillSlots([...s.items, ...added], s.concurrency);
-      return { ...s, items, nextId, batchIdx: s.batchIdx + 3, selectedId: added[0]?.id ?? s.selectedId, log: say(s, `batch import: ${added.length} links from urls.txt`, "info") };
+      return {
+        ...s,
+        items,
+        nextId,
+        batchIdx: s.batchIdx + 3,
+        selectedId: added[0]?.id ?? s.selectedId,
+        log: say(s, `batch import: ${added.length} links from urls.txt`, "info"),
+      };
     }
     case "toggleSettings":
       return { ...s, settingsOpen: !s.settingsOpen, prompt: null };

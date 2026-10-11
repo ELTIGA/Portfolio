@@ -227,7 +227,8 @@ export function Intro3D() {
       // Left via a link to a section (e.g. "Case files" on the monitor): land there.
       const target = returnHash.current && document.getElementById(returnHash.current.slice(1));
       returnHash.current = "";
-      if (target) window.requestAnimationFrame(() => scrollToY(target.getBoundingClientRect().top + window.scrollY - 64, true));
+      if (target)
+        window.requestAnimationFrame(() => scrollToY(target.getBoundingClientRect().top + window.scrollY - 64, true));
     };
   }, [open, close]);
 
@@ -256,7 +257,10 @@ export function Intro3D() {
         className="absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-ink shadow-lg transition hover:brightness-110"
       >
         Skip to portfolio
-        <kbd aria-hidden="true" className="rounded border border-accent-ink/30 px-1.5 py-0.5 font-mono text-[10px] leading-none">
+        <kbd
+          aria-hidden="true"
+          className="rounded border border-accent-ink/30 px-1.5 py-0.5 font-mono text-[10px] leading-none"
+        >
           Esc
         </kbd>
       </button>

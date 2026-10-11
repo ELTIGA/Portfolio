@@ -59,16 +59,34 @@ export default function Demo() {
       <Tabs tabs={TABS} value={tab} onChange={select} idBase={ID_BASE} />
 
       <div className="relative min-h-0 flex-1 overflow-auto">
-        <div id={`${ID_BASE}-panel-tui`} role="tabpanel" aria-labelledby={`${ID_BASE}-tab-tui`} hidden={tab !== "tui"} className="min-h-full">
+        <div
+          id={`${ID_BASE}-panel-tui`}
+          role="tabpanel"
+          aria-labelledby={`${ID_BASE}-tab-tui`}
+          hidden={tab !== "tui"}
+          className="min-h-full"
+        >
           <TuiTab state={state} dispatch={dispatch} compact={compact} rootRef={rootRef} />
         </div>
         {visited.cli && (
-          <div id={`${ID_BASE}-panel-cli`} role="tabpanel" aria-labelledby={`${ID_BASE}-tab-cli`} hidden={tab !== "cli"} className="h-full min-h-[22rem]">
+          <div
+            id={`${ID_BASE}-panel-cli`}
+            role="tabpanel"
+            aria-labelledby={`${ID_BASE}-tab-cli`}
+            hidden={tab !== "cli"}
+            className="h-full min-h-[22rem]"
+          >
             <CliTab active={tab === "cli"} reduced={reduced} />
           </div>
         )}
         {visited.mcp && (
-          <div id={`${ID_BASE}-panel-mcp`} role="tabpanel" aria-labelledby={`${ID_BASE}-tab-mcp`} hidden={tab !== "mcp"} className="h-full min-h-[22rem]">
+          <div
+            id={`${ID_BASE}-panel-mcp`}
+            role="tabpanel"
+            aria-labelledby={`${ID_BASE}-tab-mcp`}
+            hidden={tab !== "mcp"}
+            className="h-full min-h-[22rem]"
+          >
             <McpTab reduced={reduced} />
           </div>
         )}
@@ -76,7 +94,10 @@ export default function Demo() {
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 border-t border-line bg-surface px-3 py-1 text-[11px] text-muted">
         <span className="flex items-center gap-1.5">
-          <span aria-hidden="true" className={`inline-block h-1.5 w-1.5 rounded-full ${focused ? "bg-accent" : "bg-muted/50"}`} />
+          <span
+            aria-hidden="true"
+            className={`inline-block h-1.5 w-1.5 rounded-full ${focused ? "bg-accent" : "bg-muted/50"}`}
+          />
           {focused ? "hotkeys active" : "click inside to enable hotkeys"}
         </span>
         {tab === "tui" && <span>↑/↓ select · p pause · c cancel · a add · b batch · s settings · q quit</span>}

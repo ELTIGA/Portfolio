@@ -29,10 +29,16 @@ export function ProjectApp({ slug }: { slug: string }) {
     <div className="flex h-full flex-col gap-2 p-2">
       <div className="flex items-center justify-between gap-3 px-1 text-xs text-muted">
         <span className="truncate">{project.tagline}</span>
-        <Link href={`/work/${project.slug}`} className="shrink-0 text-accent hover:underline">Case study →</Link>
+        <Link href={`/work/${project.slug}`} className="shrink-0 text-accent hover:underline">
+          Case study →
+        </Link>
       </div>
       <div className="min-h-0 flex-1">
-        {project.preview === "terminal" ? <TerminalFrame title={`${project.name}: interactive preview`}>{body}</TerminalFrame> : <DemoFrame title={project.name}>{body}</DemoFrame>}
+        {project.preview === "terminal" ? (
+          <TerminalFrame title={`${project.name}: interactive preview`}>{body}</TerminalFrame>
+        ) : (
+          <DemoFrame title={project.name}>{body}</DemoFrame>
+        )}
       </div>
     </div>
   );

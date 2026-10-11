@@ -88,7 +88,14 @@ function Arrow({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: num
     : `${x2},${y2} ${x2 - 4.5},${y2 - 7} ${x2 + 4.5},${y2 - 7}`;
   return (
     <g aria-hidden="true">
-      <line x1={x1} y1={y1} x2={horizontal ? x2 - 6 : x2} y2={horizontal ? y2 : y2 - 6} className="stroke-muted" strokeWidth={1.5} />
+      <line
+        x1={x1}
+        y1={y1}
+        x2={horizontal ? x2 - 6 : x2}
+        y2={horizontal ? y2 : y2 - 6}
+        className="stroke-muted"
+        strokeWidth={1.5}
+      />
       <polygon points={head} className="fill-muted" />
     </g>
   );
@@ -107,8 +114,24 @@ function build(spec: FlowSpec, mode: Mode): { W: number; H: number; children: Re
     const laneY = y;
 
     children.push(
-      <rect key={`lane-${li}`} x={1} y={laneY} width={W - 2} height={laneH} rx={10} className="fill-surface stroke-line" strokeWidth={1} />,
-      <text key={`lt-${li}`} x={pad + 2} y={laneY + 22} className="fill-muted font-mono uppercase" fontSize={TITLE_FS} letterSpacing={1}>
+      <rect
+        key={`lane-${li}`}
+        x={1}
+        y={laneY}
+        width={W - 2}
+        height={laneH}
+        rx={10}
+        className="fill-surface stroke-line"
+        strokeWidth={1}
+      />,
+      <text
+        key={`lt-${li}`}
+        x={pad + 2}
+        y={laneY + 22}
+        className="fill-muted font-mono uppercase"
+        fontSize={TITLE_FS}
+        letterSpacing={1}
+      >
         {lane.title}
       </text>,
     );
@@ -139,14 +162,29 @@ function build(spec: FlowSpec, mode: Mode): { W: number; H: number; children: Re
       const cx = nx + nw / 2;
       n.label.forEach((line, i) =>
         children.push(
-          <text key={`l-${li}-${ni}-${i}`} x={cx} y={ty + 10 + LABEL_FS + i * LABEL_LH} textAnchor="middle" fontSize={LABEL_FS} fontWeight={600} className={accent ? "fill-accent" : "fill-fg"}>
+          <text
+            key={`l-${li}-${ni}-${i}`}
+            x={cx}
+            y={ty + 10 + LABEL_FS + i * LABEL_LH}
+            textAnchor="middle"
+            fontSize={LABEL_FS}
+            fontWeight={600}
+            className={accent ? "fill-accent" : "fill-fg"}
+          >
             {line}
           </text>,
         ),
       );
       n.sub.forEach((line, i) =>
         children.push(
-          <text key={`s-${li}-${ni}-${i}`} x={cx} y={ty + 10 + LABEL_LH * n.label.length + 4 + SUB_FS + i * SUB_LH} textAnchor="middle" fontSize={SUB_FS} className="fill-muted">
+          <text
+            key={`s-${li}-${ni}-${i}`}
+            x={cx}
+            y={ty + 10 + LABEL_LH * n.label.length + 4 + SUB_FS + i * SUB_LH}
+            textAnchor="middle"
+            fontSize={SUB_FS}
+            className="fill-muted"
+          >
             {line}
           </text>,
         ),

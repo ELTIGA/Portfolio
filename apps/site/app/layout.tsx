@@ -15,7 +15,12 @@ const display = Big_Shoulders({
   fallback: ["Arial Narrow", "Impact", "sans-serif"],
 });
 const sans = IBM_Plex_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-plex-sans", display: "swap" });
-const mono = IBM_Plex_Mono({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "600"], variable: "--font-plex-mono", display: "swap" });
+const mono = IBM_Plex_Mono({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
 
 const title = `${profile.name}: DevSecOps & AI-enabled full-stack engineer`;
 const description =

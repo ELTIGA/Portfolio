@@ -59,7 +59,9 @@ export function Pipeline({ stages }: { stages: { name: string; detail: string }[
               {i + 1}
             </span>
             <span className="block md:mt-5">
-              <span className="block font-display text-3xl font-bold uppercase leading-none transition-colors duration-300 group-data-[state=wait]:text-muted">{s.name}</span>
+              <span className="block font-display text-3xl font-bold uppercase leading-none transition-colors duration-300 group-data-[state=wait]:text-muted">
+                {s.name}
+              </span>
               <span className="mt-2 block font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
                 <span className="group-data-[state=wait]:hidden text-accent">[pass] </span>
                 <span className="hidden group-data-[state=wait]:inline">[wait] </span>

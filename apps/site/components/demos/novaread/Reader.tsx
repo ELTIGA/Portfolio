@@ -23,7 +23,8 @@ const btn =
  */
 function revealInDemo(el: HTMLElement | null, reduced: boolean) {
   let box = el?.parentElement ?? null;
-  while (box && !(/(auto|scroll)/.test(getComputedStyle(box).overflowY) && box.scrollHeight > box.clientHeight)) box = box.parentElement;
+  while (box && !(/(auto|scroll)/.test(getComputedStyle(box).overflowY) && box.scrollHeight > box.clientHeight))
+    box = box.parentElement;
   if (!el || !box || box === document.scrollingElement || box === document.body) return;
   const r = el.getBoundingClientRect();
   const b = box.getBoundingClientRect();
@@ -31,7 +32,15 @@ function revealInDemo(el: HTMLElement | null, reduced: boolean) {
   if (delta) box.scrollBy({ top: delta, behavior: reduced ? "auto" : "smooth" });
 }
 
-export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuote[]; onSave: (q: Omit<SavedQuote, "id" | "when">) => boolean }) {
+export function Reader({
+  book,
+  quotes,
+  onSave,
+}: {
+  book: Book;
+  quotes: SavedQuote[];
+  onSave: (q: Omit<SavedQuote, "id" | "when">) => boolean;
+}) {
   const reduced = useReducedMotion();
   const articleRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -98,7 +107,8 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
     window.getSelection()?.removeAllRanges();
   };
 
-  const step = (delta: number) => choose(active === null ? (delta > 0 ? 0 : count - 1) : (active + delta + count) % count);
+  const step = (delta: number) =>
+    choose(active === null ? (delta > 0 ? 0 : count - 1) : (active + delta + count) % count);
 
   const push = (m: Omit<Msg, "id">) => {
     seq.current += 1;
@@ -130,7 +140,12 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
   const save = () => {
     if (!quote) return;
     const added = onSave({ book: book.title, text: quote });
-    push({ kind: "note", quote: "", text: added ? "Saved to your Memory." : "That quote is already in your Memory.", voice: false });
+    push({
+      kind: "note",
+      quote: "",
+      text: added ? "Saved to your Memory." : "That quote is already in your Memory.",
+      voice: false,
+    });
     setTyping(null);
     revealInDemo(panelRef.current, reduced);
   };
@@ -145,21 +160,50 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
         <h2 className="mt-1 text-xl font-semibold">{book.title}</h2>
         <p className="text-sm text-muted">{book.author}</p>
 
-        <div role="toolbar" aria-label="Reading tools" className="sticky top-0 z-10 mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface/95 p-2 backdrop-blur">
-          <button type="button" onClick={() => step(-1)} className={`${btn} border-line hover:border-violet-300/60`} aria-label="Previous sentence">
+        <div
+          role="toolbar"
+          aria-label="Reading tools"
+          className="sticky top-0 z-10 mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface/95 p-2 backdrop-blur"
+        >
+          <button
+            type="button"
+            onClick={() => step(-1)}
+            className={`${btn} border-line hover:border-violet-300/60`}
+            aria-label="Previous sentence"
+          >
             &larr;
           </button>
-          <button type="button" onClick={() => step(1)} className={`${btn} border-line hover:border-violet-300/60`} aria-label="Next sentence">
+          <button
+            type="button"
+            onClick={() => step(1)}
+            className={`${btn} border-line hover:border-violet-300/60`}
+            aria-label="Next sentence"
+          >
             &rarr;
           </button>
           <span className="mx-1 hidden h-5 w-px bg-line @sm:block" aria-hidden="true" />
-          <button type="button" disabled={active === null || pending} onClick={() => ask("explain")} className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}>
+          <button
+            type="button"
+            disabled={active === null || pending}
+            onClick={() => ask("explain")}
+            className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}
+          >
             Explain
           </button>
-          <button type="button" disabled={active === null || pending} onClick={() => ask("simplify")} className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}>
+          <button
+            type="button"
+            disabled={active === null || pending}
+            onClick={() => ask("simplify")}
+            className={`${btn} border-violet-300/60 bg-violet-400/15 text-violet-100 hover:bg-violet-400/25`}
+          >
             Simplify
           </button>
-          <button type="button" disabled={active === null} onClick={save} className={`${btn} border-amber-300/60 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20`}>
+          <button
+            type="button"
+            disabled={active === null}
+            onClick={save}
+            className={`${btn} border-amber-300/60 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20`}
+          >
             Save quote
           </button>
           <p className="basis-full truncate text-xs text-muted" aria-live="polite">
@@ -169,7 +213,11 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
           </p>
         </div>
 
-        <article ref={articleRef} aria-label={`${book.title}, sample passage`} className="mt-3 rounded-xl border border-line bg-[#14110f] p-5 font-serif text-[17px] leading-8 text-stone-100 @lg:p-7">
+        <article
+          ref={articleRef}
+          aria-label={`${book.title}, sample passage`}
+          className="mt-3 rounded-xl border border-line bg-[#14110f] p-5 font-serif text-[17px] leading-8 text-stone-100 @lg:p-7"
+        >
           <p>
             {book.sentences.map((s, i) => {
               const saved = quotes.some((q) => q.text === s.text);
@@ -191,7 +239,9 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
             })}
           </p>
         </article>
-        <p className="mt-2 text-xs text-muted">Original sample text written for this demo. Underlined sentences are saved to Memory.</p>
+        <p className="mt-2 text-xs text-muted">
+          Original sample text written for this demo. Underlined sentences are saved to Memory.
+        </p>
       </div>
 
       <div ref={panelRef} className="@3xl:sticky @3xl:top-3 @3xl:self-start">
@@ -208,7 +258,15 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
                 voice ? "border-rose-300 bg-rose-400/15 text-rose-100" : "border-line text-muted hover:text-fg"
               }`}
             >
-              <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">
+              <svg
+                viewBox="0 0 20 20"
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
                 <rect x="7" y="2.5" width="6" height="10" rx="3" />
                 <path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5" />
               </svg>
@@ -219,7 +277,11 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
             <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-xs text-rose-100">
               <span className="flex h-4 items-end gap-0.5" aria-hidden="true">
                 {[0, 1, 2, 3, 4].map((b) => (
-                  <span key={b} className="w-0.5 rounded bg-rose-300 motion-safe:animate-pulse" style={{ height: `${6 + ((b * 5) % 9)}px`, animationDelay: `${b * 120}ms` }} />
+                  <span
+                    key={b}
+                    className="w-0.5 rounded bg-rose-300 motion-safe:animate-pulse"
+                    style={{ height: `${6 + ((b * 5) % 9)}px`, animationDelay: `${b * 120}ms` }}
+                  />
                 ))}
               </span>
               Visual state only: no microphone is used.
@@ -227,17 +289,27 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
           )}
           <ol ref={listRef} className="max-h-72 min-h-40 space-y-3 overflow-y-auto p-3" aria-label="Conversation">
             {messages.length === 0 && !pending && (
-              <li className="text-sm text-muted">Pick a sentence, then choose Explain or Simplify. Replies in this demo are pre-written, not live model calls.</li>
+              <li className="text-sm text-muted">
+                Pick a sentence, then choose Explain or Simplify. Replies in this demo are pre-written, not live model
+                calls.
+              </li>
             )}
             {messages.map((m) => (
               <li key={m.id} className={m.quote ? "ml-6" : ""}>
                 {m.quote ? (
                   <div className="rounded-lg bg-bg p-2.5 text-sm">
-                    <p className="text-xs font-semibold text-muted">{m.text}{m.voice ? " (voice)" : ""}</p>
-                    <p className="mt-1 line-clamp-3 border-l-2 border-violet-300/60 pl-2 font-serif text-[13px] italic text-fg/85">{m.quote}</p>
+                    <p className="text-xs font-semibold text-muted">
+                      {m.text}
+                      {m.voice ? " (voice)" : ""}
+                    </p>
+                    <p className="mt-1 line-clamp-3 border-l-2 border-violet-300/60 pl-2 font-serif text-[13px] italic text-fg/85">
+                      {m.quote}
+                    </p>
                   </div>
                 ) : (
-                  <div className={`rounded-lg p-2.5 text-sm leading-relaxed ${m.kind === "note" ? "bg-amber-400/10 text-amber-100" : "bg-violet-400/10"}`}>
+                  <div
+                    className={`rounded-lg p-2.5 text-sm leading-relaxed ${m.kind === "note" ? "bg-amber-400/10 text-amber-100" : "bg-violet-400/10"}`}
+                  >
                     {m.kind !== "note" && (
                       <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-violet-300">
                         {m.kind === "explain" ? "Explanation" : "Simpler version"}
@@ -245,7 +317,12 @@ export function Reader({ book, quotes, onSave }: { book: Book; quotes: SavedQuot
                       </p>
                     )}
                     <span aria-hidden={typingNow(m)}>{typingNow(m) ? m.text.slice(0, typed) : m.text}</span>
-                    {typingNow(m) && <span className="ml-0.5 inline-block h-3.5 w-1 translate-y-0.5 bg-violet-300 motion-safe:animate-pulse" aria-hidden="true" />}
+                    {typingNow(m) && (
+                      <span
+                        className="ml-0.5 inline-block h-3.5 w-1 translate-y-0.5 bg-violet-300 motion-safe:animate-pulse"
+                        aria-hidden="true"
+                      />
+                    )}
                   </div>
                 )}
               </li>

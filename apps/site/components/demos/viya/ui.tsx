@@ -15,18 +15,38 @@ const TONES: Record<Tone, string> = {
   bad: "bg-(--v-bad-soft) text-(--v-bad)",
 };
 
-export function Chip({ tone = "neutral", mono, children, title, className }: { tone?: Tone; mono?: boolean; children: ReactNode; title?: string; className?: string }) {
+export function Chip({
+  tone = "neutral",
+  mono,
+  children,
+  title,
+  className,
+}: {
+  tone?: Tone;
+  mono?: boolean;
+  children: ReactNode;
+  title?: string;
+  className?: string;
+}) {
   return (
     <span
       title={title}
-      className={cx("inline-flex max-w-full items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-4 font-semibold whitespace-nowrap", mono && "font-mono font-medium", TONES[tone], className)}
+      className={cx(
+        "inline-flex max-w-full items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-4 font-semibold whitespace-nowrap",
+        mono && "font-mono font-medium",
+        TONES[tone],
+        className,
+      )}
     >
       {children}
     </span>
   );
 }
 
-type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "neutral" | "primary" | "ghost"; size?: "sm" | "md" };
+type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: "neutral" | "primary" | "ghost";
+  size?: "sm" | "md";
+};
 
 export function Btn({ variant = "neutral", size = "md", className, type = "button", ...props }: BtnProps) {
   return (
@@ -36,8 +56,10 @@ export function Btn({ variant = "neutral", size = "md", className, type = "butto
       className={cx(
         "inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold transition-[transform,box-shadow,background-color] duration-150 select-none active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0",
         size === "sm" ? "min-h-8 px-2.5 text-xs" : "min-h-9 px-3.5 text-sm",
-        variant === "primary" && "bg-(--v-primary) text-white shadow-[0_1px_0_rgba(7,60,85,.5),0_2px_4px_rgba(10,124,165,.25)] hover:bg-(--v-primary-hover) active:shadow-none",
-        variant === "neutral" && "border border-(--v-line) bg-white text-(--v-fg) shadow-[0_1px_0_rgba(34,51,74,.1)] hover:bg-(--v-soft) active:shadow-none",
+        variant === "primary" &&
+          "bg-(--v-primary) text-white shadow-[0_1px_0_rgba(7,60,85,.5),0_2px_4px_rgba(10,124,165,.25)] hover:bg-(--v-primary-hover) active:shadow-none",
+        variant === "neutral" &&
+          "border border-(--v-line) bg-white text-(--v-fg) shadow-[0_1px_0_rgba(34,51,74,.1)] hover:bg-(--v-soft) active:shadow-none",
         variant === "ghost" && "text-(--v-fg) hover:bg-(--v-soft)",
         className,
       )}
@@ -46,7 +68,16 @@ export function Btn({ variant = "neutral", size = "md", className, type = "butto
 }
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cx("rounded-xl border border-(--v-line) bg-(--v-card) shadow-[0_1px_0_rgba(255,255,255,.9)_inset,0_1px_3px_rgba(34,51,74,.07),0_8px_20px_-12px_rgba(34,51,74,.18)]", className)}>{children}</div>;
+  return (
+    <div
+      className={cx(
+        "rounded-xl border border-(--v-line) bg-(--v-card) shadow-[0_1px_0_rgba(255,255,255,.9)_inset,0_1px_3px_rgba(34,51,74,.07),0_8px_20px_-12px_rgba(34,51,74,.18)]",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
 }
 
 /** Click, hover or focus tooltip. Escape closes it. */
@@ -71,7 +102,11 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
         <Icon name="info" size={14} />
       </button>
       {open && (
-        <span id={id} role="tooltip" className="absolute top-full right-0 z-30 mt-1 w-60 rounded-lg bg-(--v-fg) p-2.5 text-xs leading-snug font-normal text-white shadow-lg">
+        <span
+          id={id}
+          role="tooltip"
+          className="absolute top-full right-0 z-30 mt-1 w-60 rounded-lg bg-(--v-fg) p-2.5 text-xs leading-snug font-normal text-white shadow-lg"
+        >
           {children}
         </span>
       )}
@@ -115,13 +150,26 @@ const PATHS: Record<string, ReactNode> = {
     </>
   ),
   refresh: <path d="M20 11a8 8 0 0 0-14-4L4 9M4 4v5h5M4 13a8 8 0 0 0 14 4l2-2M20 20v-5h-5" />,
-  wand: <path d="m4 20 11-11M14 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1zM19 12l.7 1.3L21 14l-1.3.7L19 16l-.7-1.3L17 14l1.3-.7z" />,
+  wand: (
+    <path d="m4 20 11-11M14 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1zM19 12l.7 1.3L21 14l-1.3.7L19 16l-.7-1.3L17 14l1.3-.7z" />
+  ),
   building: <path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M14 10h5a1 1 0 0 1 1 1v10M3 21h18M8 8h2M8 12h2M8 16h2" />,
 };
 
 export function Icon({ name, size = 16 }: { name: keyof typeof PATHS | string; size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="shrink-0"
+    >
       {PATHS[name]}
     </svg>
   );
@@ -131,7 +179,14 @@ export function Logo({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className="shrink-0">
       <rect width="32" height="32" rx="9" fill="#0A7CA5" />
-      <path d="M8 9l8 15 8-15" fill="none" stroke="#fff" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M8 9l8 15 8-15"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <circle cx="16" cy="24" r="2.2" fill="#F59E42" />
     </svg>
   );

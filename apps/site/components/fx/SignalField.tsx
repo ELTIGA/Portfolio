@@ -16,7 +16,8 @@ function canRun() {
   if (isFramed()) return false;
   if (prefersReducedMotion()) return false;
   const nav = navigator as NavigatorExtras;
-  if (force !== "1" && (nav.connection?.saveData || (nav.deviceMemory !== undefined && nav.deviceMemory < 4))) return false;
+  if (force !== "1" && (nav.connection?.saveData || (nav.deviceMemory !== undefined && nav.deviceMemory < 4)))
+    return false;
   try {
     const gl = document.createElement("canvas").getContext("webgl2", { failIfMajorPerformanceCaveat: force !== "1" });
     if (!gl) return false;
@@ -40,7 +41,17 @@ function canRun() {
  * low frame rate while dimmed behind content, and it releases its GPU context entirely
  * while the 3D intro covers the page, then re-assembles when the visitor comes back.
  */
-export function SignalField({ word, heroId, radarId, frostIds = [] }: { word: string; heroId: string; radarId: string; frostIds?: string[] }) {
+export function SignalField({
+  word,
+  heroId,
+  radarId,
+  frostIds = [],
+}: {
+  word: string;
+  heroId: string;
+  radarId: string;
+  frostIds?: string[];
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dimRef = useRef<HTMLDivElement>(null);
   const [live, setLive] = useState(false);
@@ -56,14 +67,15 @@ export function SignalField({ word, heroId, radarId, frostIds = [] }: { word: st
 
     const start = async () => {
       await document.fonts?.ready;
-      const [{ buildSceneData, createSignalScene }, { createGovernor, initialTier, qualityFor }, { gsap, ScrollTrigger }] = await Promise.all([
-        import("./signal-field/scene"),
-        import("./signal-field/quality"),
-        loadGsap(),
-      ]);
+      const [
+        { buildSceneData, createSignalScene },
+        { createGovernor, initialTier, qualityFor },
+        { gsap, ScrollTrigger },
+      ] = await Promise.all([import("./signal-field/scene"), import("./signal-field/quality"), loadGsap()]);
       if (disposed) return;
       const mobile = window.innerWidth < 768;
-      const family = getComputedStyle(document.documentElement).getPropertyValue("--font-shoulders").trim() || "Impact, sans-serif";
+      const family =
+        getComputedStyle(document.documentElement).getPropertyValue("--font-shoulders").trim() || "Impact, sans-serif";
       const tier0 = initialTier(mobile);
       let data: SceneData | null = null;
 
@@ -108,7 +120,9 @@ export function SignalField({ word, heroId, radarId, frostIds = [] }: { word: st
 
       // Only one WebGL scene at a time: while the 3D intro covers the page, give the GPU
       // memory back. Coming back, the name assembles again from the particle cloud.
-      const offIntro = onIntro((open) => (open ? unmount() : window.requestAnimationFrame(() => window.requestAnimationFrame(mount))));
+      const offIntro = onIntro((open) =>
+        open ? unmount() : window.requestAnimationFrame(() => window.requestAnimationFrame(mount)),
+      );
       const onVisibility = () => scene?.setRunning(!document.hidden);
       const onScroll = () => scene?.poke();
       document.addEventListener("visibilitychange", onVisibility);
@@ -183,10 +197,19 @@ export function SignalField({ word, heroId, radarId, frostIds = [] }: { word: st
         gsap.fromTo(
           dim,
           { opacity: 1 },
-          { opacity: 0.22, ease: "none", scrollTrigger: { trigger: hero ?? document.body, start: "bottom 80%", end: "bottom top", scrub: true } },
+          {
+            opacity: 0.22,
+            ease: "none",
+            scrollTrigger: { trigger: hero ?? document.body, start: "bottom 80%", end: "bottom top", scrub: true },
+          },
         );
         if (radar)
-          gsap.to(dim, { opacity: 0.85, ease: "none", immediateRender: false, scrollTrigger: { trigger: radar, start: "top bottom", end: "top 30%", scrub: true } });
+          gsap.to(dim, {
+            opacity: 0.85,
+            ease: "none",
+            immediateRender: false,
+            scrollTrigger: { trigger: radar, start: "top bottom", end: "top 30%", scrub: true },
+          });
       });
       cleanups.push(() => ctx.revert());
     };
@@ -205,12 +228,18 @@ export function SignalField({ word, heroId, radarId, frostIds = [] }: { word: st
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
       {/* Static backdrop: visible until (or instead of) the live scene. */}
-      <div className={`absolute inset-0 transition-[opacity,visibility] duration-1000 ${live ? "invisible opacity-0" : "visible opacity-100"}`}>
+      <div
+        className={`absolute inset-0 transition-[opacity,visibility] duration-1000 ${live ? "invisible opacity-0" : "visible opacity-100"}`}
+      >
         <div className="bg-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_50%_30%,black,transparent_70%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_50%_25%,rgb(255_181_71/0.16),transparent_70%),radial-gradient(ellipse_40%_35%_at_80%_80%,rgb(94_225_255/0.08),transparent_70%)]" />
       </div>
       <div ref={dimRef} className="absolute inset-0">
-        <canvas key={generation} ref={canvasRef} className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${live ? "opacity-100" : "opacity-0"}`} />
+        <canvas
+          key={generation}
+          ref={canvasRef}
+          className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${live ? "opacity-100" : "opacity-0"}`}
+        />
       </div>
     </div>
   );

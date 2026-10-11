@@ -33,11 +33,28 @@ export function Chip({ children, className = "", ...rest }: ButtonHTMLAttributes
   );
 }
 
-export function Bar({ pct, label, tone = "accent", width = "w-full" }: { pct: number; label: string; tone?: "accent" | "amber" | "blue" | "muted"; width?: string }) {
+export function Bar({
+  pct,
+  label,
+  tone = "accent",
+  width = "w-full",
+}: {
+  pct: number;
+  label: string;
+  tone?: "accent" | "amber" | "blue" | "muted";
+  width?: string;
+}) {
   const color = { accent: "bg-accent", amber: "bg-[#f5c542]", blue: "bg-[#6cb6ff]", muted: "bg-muted/50" }[tone];
   const clamped = Math.max(0, Math.min(100, pct));
   return (
-    <div role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(clamped)} className={`h-2.5 overflow-hidden rounded-sm bg-line ${width}`}>
+    <div
+      role="progressbar"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(clamped)}
+      className={`h-2.5 overflow-hidden rounded-sm bg-line ${width}`}
+    >
       <div className={`h-full ${color} transition-[width] duration-200 ease-linear`} style={{ width: `${clamped}%` }} />
     </div>
   );
@@ -50,7 +67,17 @@ export interface TabDef<T extends string> {
 }
 
 /** WAI-ARIA tabs with arrow-key navigation. */
-export function Tabs<T extends string>({ tabs, value, onChange, idBase }: { tabs: TabDef<T>[]; value: T; onChange: (id: T) => void; idBase: string }) {
+export function Tabs<T extends string>({
+  tabs,
+  value,
+  onChange,
+  idBase,
+}: {
+  tabs: TabDef<T>[];
+  value: T;
+  onChange: (id: T) => void;
+  idBase: string;
+}) {
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const i = tabs.findIndex((t) => t.id === value);
     let n = -1;
@@ -64,7 +91,12 @@ export function Tabs<T extends string>({ tabs, value, onChange, idBase }: { tabs
     document.getElementById(`${idBase}-tab-${tabs[n].id}`)?.focus();
   };
   return (
-    <div role="tablist" aria-label="getit interface" onKeyDown={onKey} className="flex gap-1 border-b border-line bg-surface/60 px-2 pt-2">
+    <div
+      role="tablist"
+      aria-label="getit interface"
+      onKeyDown={onKey}
+      className="flex gap-1 border-b border-line bg-surface/60 px-2 pt-2"
+    >
       {tabs.map((t) => {
         const on = t.id === value;
         return (

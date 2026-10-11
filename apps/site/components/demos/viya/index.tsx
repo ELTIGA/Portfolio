@@ -62,7 +62,10 @@ export default function Demo() {
   };
 
   return (
-    <div className="viya-root @container h-full min-h-0 text-(--v-fg)" style={{ ...THEME, background: "var(--v-bg)", fontSize: 14 }}>
+    <div
+      className="viya-root @container h-full min-h-0 text-(--v-fg)"
+      style={{ ...THEME, background: "var(--v-bg)", fontSize: 14 }}
+    >
       <style>{CSS}</style>
       <div className="grid h-full min-h-0 [grid-template-areas:'brand_tenant'_'nav_nav'_'main_main'] grid-cols-[auto_1fr] grid-rows-[auto_auto_minmax(0,1fr)] @3xl:[grid-template-areas:'brand_tenant'_'nav_main'] @3xl:grid-cols-[12.5rem_minmax(0,1fr)] @3xl:grid-rows-[auto_minmax(0,1fr)]">
         <div className="flex items-center gap-2.5 border-b border-(--v-line) bg-white px-3 py-2.5 [grid-area:brand] @3xl:border-r">
@@ -80,7 +83,10 @@ export default function Demo() {
             </Chip>
           </span>
           <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5 @2xl:flex-none">
-            <label htmlFor={tenantSelect} className="sr-only @2xl:not-sr-only @2xl:text-xs @2xl:font-semibold @2xl:text-(--v-muted)">
+            <label
+              htmlFor={tenantSelect}
+              className="sr-only @2xl:not-sr-only @2xl:text-xs @2xl:font-semibold @2xl:text-(--v-muted)"
+            >
               Tenant
             </label>
             <div className="relative min-w-0 flex-1 @2xl:flex-none">
@@ -103,12 +109,19 @@ export default function Demo() {
               </select>
             </div>
           </div>
-          <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-(--v-primary-soft) text-xs font-bold text-(--v-primary-ink) @2xl:grid" title="Signed in as a demo dispatcher" aria-label="Signed in as demo dispatcher">
+          <span
+            className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-(--v-primary-soft) text-xs font-bold text-(--v-primary-ink) @2xl:grid"
+            title="Signed in as a demo dispatcher"
+            aria-label="Signed in as demo dispatcher"
+          >
             DD
           </span>
         </header>
 
-        <nav aria-label="Viya sections" className="flex gap-1 border-b border-(--v-line) bg-white px-2 pb-2 [grid-area:nav] @3xl:flex-col @3xl:border-r @3xl:px-2.5 @3xl:py-3">
+        <nav
+          aria-label="Viya sections"
+          className="flex gap-1 border-b border-(--v-line) bg-white px-2 pb-2 [grid-area:nav] @3xl:flex-col @3xl:border-r @3xl:px-2.5 @3xl:py-3"
+        >
           <p className={cx(labelCls, "mb-1 hidden px-2 @3xl:block")}>Workspace</p>
           {NAV.map((n) => {
             const active = screen === n.id;
@@ -121,7 +134,9 @@ export default function Demo() {
                 onClick={() => setScreen(n.id)}
                 className={cx(
                   "flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-1.5 py-2 text-[13px] font-semibold @sm:gap-2 @sm:px-2.5 @sm:text-sm transition-colors duration-150 @3xl:flex-none @3xl:justify-start",
-                  active ? "bg-(--v-soft) text-(--v-fg) shadow-[0_1px_2px_rgba(34,51,74,.15)]" : "text-(--v-muted) hover:bg-(--v-bg) hover:text-(--v-fg)",
+                  active
+                    ? "bg-(--v-soft) text-(--v-fg) shadow-[0_1px_2px_rgba(34,51,74,.15)]"
+                    : "text-(--v-muted) hover:bg-(--v-bg) hover:text-(--v-fg)",
                 )}
               >
                 <span className="hidden @sm:inline-flex @3xl:inline-flex">
@@ -130,7 +145,10 @@ export default function Demo() {
                 {n.label}
                 {b.n > 0 && (
                   <span
-                    className={cx("grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-bold @3xl:ml-auto", b.warn ? "bg-(--v-warn-soft) text-(--v-warn)" : "bg-(--v-ok-soft) text-(--v-ok)")}
+                    className={cx(
+                      "grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-bold @3xl:ml-auto",
+                      b.warn ? "bg-(--v-warn-soft) text-(--v-warn)" : "bg-(--v-ok-soft) text-(--v-ok)",
+                    )}
                     aria-label={`${b.n} ${b.warn ? "need attention" : "delivered"}`}
                   >
                     {b.n}

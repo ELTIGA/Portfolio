@@ -13,7 +13,11 @@ const spec: FlowSpec = {
       linkToNext: "approved requests only",
       nodes: [
         { label: ["Agent"], sub: ["model backend", "proposes a", "tool call"] },
-        { label: ["Scope check"], sub: ["targets extracted", "from arguments;", "allow and block", "lists, CIDR"], tone: "accent" },
+        {
+          label: ["Scope check"],
+          sub: ["targets extracted", "from arguments;", "allow and block", "lists, CIDR"],
+          tone: "accent",
+        },
         { label: ["Operator", "approval"], sub: ["queued in the", "TUI overlay;", "approve or deny"], tone: "accent" },
         { label: ["Signed token"], sub: ["issued on", "approval"] },
       ],
