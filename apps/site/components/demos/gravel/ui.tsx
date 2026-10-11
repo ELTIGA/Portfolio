@@ -5,9 +5,24 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 export const RED = "#ff6b6b";
 export const AMBER = "#f5c542";
 
-export function Pane({ id, title, right, children, className = "" }: { id: string; title: string; right?: ReactNode; children: ReactNode; className?: string }) {
+export function Pane({
+  id,
+  title,
+  right,
+  children,
+  className = "",
+}: {
+  id: string;
+  title: string;
+  right?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <section aria-labelledby={id} className={`flex min-h-0 flex-col overflow-hidden rounded-md border border-line bg-surface/40 ${className}`}>
+    <section
+      aria-labelledby={id}
+      className={`flex min-h-0 flex-col overflow-hidden rounded-md border border-line bg-surface/40 ${className}`}
+    >
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-surface px-3 py-1.5">
         <h3 id={id} className="text-[11px] font-semibold uppercase tracking-widest text-muted">
           {title}
@@ -26,7 +41,11 @@ export function KeyButton({
   tone = "default",
   className = "",
   ...rest
-}: { k?: string; children: ReactNode; tone?: "default" | "accent" | "danger" } & ButtonHTMLAttributes<HTMLButtonElement>) {
+}: {
+  k?: string;
+  children: ReactNode;
+  tone?: "default" | "accent" | "danger";
+} & ButtonHTMLAttributes<HTMLButtonElement>) {
   const toneCls =
     tone === "accent"
       ? "border-accent/50 bg-accent/10 text-accent hover:bg-accent/20"
@@ -47,7 +66,10 @@ export function KeyButton({
 
 export function Badge({ children, color }: { children: ReactNode; color: string }) {
   return (
-    <span className="inline-block shrink-0 rounded-sm border px-1.5 text-[10px] font-semibold uppercase tracking-wider" style={{ color, borderColor: `${color}66`, background: `${color}14` }}>
+    <span
+      className="inline-block shrink-0 rounded-sm border px-1.5 text-[10px] font-semibold uppercase tracking-wider"
+      style={{ color, borderColor: `${color}66`, background: `${color}14` }}
+    >
       {children}
     </span>
   );

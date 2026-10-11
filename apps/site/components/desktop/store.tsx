@@ -99,7 +99,15 @@ function reducer(state: State, a: Action): State {
         wins: state.wins.map((w) => {
           if (w.id !== a.id) return w;
           if (w.maximized && w.restore) return { ...w, ...w.restore, maximized: false, restore: undefined };
-          return { ...w, restore: { x: w.x, y: w.y, w: w.w, h: w.h }, x: 0, y: MENU, w: a.viewport.w, h: a.viewport.h - MENU - DOCK, maximized: true };
+          return {
+            ...w,
+            restore: { x: w.x, y: w.y, w: w.w, h: w.h },
+            x: 0,
+            y: MENU,
+            w: a.viewport.w,
+            h: a.viewport.h - MENU - DOCK,
+            maximized: true,
+          };
         }),
       };
     case "move":
@@ -146,7 +154,10 @@ export function WindowProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const open = useCallback<Api["open"]>((id, title, size = { w: 720, h: 480 }) => dispatch({ type: "open", id, title, size, viewport: vp() }), []);
+  const open = useCallback<Api["open"]>(
+    (id, title, size = { w: 720, h: 480 }) => dispatch({ type: "open", id, title, size, viewport: vp() }),
+    [],
+  );
   const close = useCallback((id: string) => dispatch({ type: "close", id }), []);
   const focus = useCallback((id: string) => dispatch({ type: "focus", id }), []);
   const minimize = useCallback((id: string) => dispatch({ type: "minimize", id }), []);

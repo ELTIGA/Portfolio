@@ -26,9 +26,7 @@ export function AnalyticsPanel({
           review_channel_click
         </h2>
         <p className="mt-2 flex items-baseline gap-2">
-          <span className="text-4xl font-semibold tabular-nums">
-            {total}
-          </span>
+          <span className="text-4xl font-semibold tabular-nums">{total}</span>
           <span className="text-sm text-muted">{total === 1 ? "click" : "clicks"} this session</span>
         </p>
         <ul className="mt-3 space-y-2">
@@ -41,7 +39,10 @@ export function AnalyticsPanel({
                   <span className="font-mono text-xs text-muted">{n}</span>
                 </div>
                 <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-bg">
-                  <div className="h-full rounded-full bg-accent transition-[width] duration-300" style={{ width: `${(n / max) * 100}%` }} />
+                  <div
+                    className="h-full rounded-full bg-accent transition-[width] duration-300"
+                    style={{ width: `${(n / max) * 100}%` }}
+                  />
                 </div>
               </li>
             );
@@ -61,7 +62,12 @@ export function AnalyticsPanel({
             </ol>
           )}
         </div>
-        <button type="button" onClick={onReset} disabled={total === 0} className="mt-3 rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-fg disabled:opacity-40">
+        <button
+          type="button"
+          onClick={onReset}
+          disabled={total === 0}
+          className="mt-3 rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-fg disabled:opacity-40"
+        >
           Reset counter
         </button>
       </section>
@@ -72,7 +78,9 @@ export function AnalyticsPanel({
           <h2 id="rr-qr" className="text-sm font-semibold">
             Printed at the end of the tour
           </h2>
-          <p className="mt-1 text-xs text-muted">Decorative placeholder, not scannable. Guests arrive via QR code or a WhatsApp message.</p>
+          <p className="mt-1 text-xs text-muted">
+            Decorative placeholder, not scannable. Guests arrive via QR code or a WhatsApp message.
+          </p>
           <fieldset className="mt-2">
             <legend className="sr-only">Simulate entry channel</legend>
             <div className="inline-flex overflow-hidden rounded-md border border-line text-xs">
@@ -91,7 +99,9 @@ export function AnalyticsPanel({
           </fieldset>
         </div>
       </section>
-      <p className="text-xs text-muted">Clicks stay on this page. In production each tap records the event, then opens the channel.</p>
+      <p className="text-xs text-muted">
+        Clicks stay on this page. In production each tap records the event, then opens the channel.
+      </p>
     </aside>
   );
 }

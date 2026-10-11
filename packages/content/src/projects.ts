@@ -1,12 +1,16 @@
 import type { Project } from "./types";
 
-// Every claim below was read from the repo's README/docs or stated by the owner.
-// TODO(owner): confirm permission to name Express Rafting publicly.
+// One entry per project: home page reel, case study, desktop window and résumé.
+// Every claim is first-hand or documented in the project's own repository.
+//
+// The text in this file is © Ahmed Eltigani, all rights reserved. It is not covered by the
+// MIT license that applies to the code (see "License" in the README).
 export const projects: Project[] = [
   {
     slug: "express-ops",
     name: "Express Ops",
-    tagline: "Operations platform that turns manifest photos into driver lists, double-booking checks and customer documents.",
+    tagline:
+      "Operations platform that turns manifest photos into driver lists, double-booking checks and customer documents.",
     order: 1,
     featured: true,
     role: "Sole developer",
@@ -15,8 +19,7 @@ export const projects: Project[] = [
       "I built a role-based web app that reads the photographed manifests, reconciles each one against the totals printed on the page, flags double bookings, and produces the finished driver lists and customer documents.",
     problem:
       "Tour-transfer teams were rebuilding daily driver lists and customer documents by hand from photographed manifests, against a departure clock. A miscount or a double booking has to be caught before a vehicle leaves, not after.",
-    outcome:
-      "In daily use by the operations team. I estimate it saves them roughly 3–5 hours a day.",
+    outcome: "In daily use by the operations team. I estimate it saves them roughly 3–5 hours a day.",
     decisions: [
       "Check every OCR result against the totals printed in the image footer, and send mismatches to an editable review queue instead of exporting them. Wrong counts surface before a vehicle leaves.",
       "Keep a person in control of corrections: rows and footer totals are editable in place, and the last reprocess can be undone with Cmd/Ctrl+Z, even after a reload.",
@@ -53,7 +56,8 @@ export const projects: Project[] = [
   {
     slug: "viya",
     name: "Viya",
-    tagline: "Multi-tenant B2B SaaS that turns raw manifests into reviewed passenger data, optimized routes and driver dispatch.",
+    tagline:
+      "Multi-tenant B2B SaaS that turns raw manifests into reviewed passenger data, optimized routes and driver dispatch.",
     order: 2,
     featured: true,
     role: "Builder",
@@ -157,8 +161,7 @@ export const projects: Project[] = [
       "One command downloads from GoFile, PixelDrain, MediaFire, 1Fichier, UploadFlix, Mega.nz and Anonfile.de, with a dashboard-style TUI for queue management.",
     problem:
       "Each file host has its own flow: guest tokens and rate limits, wait times, captchas, passwords, client-side encryption. getit puts seven hosts behind one command, a terminal UI and an MCP server, so a person or an AI agent can run the queue.",
-    outcome:
-      "Published on PyPI as getit-cli with a Homebrew tap. A personal-use tool; no adoption claims.",
+    outcome: "Published on PyPI as getit-cli with a Homebrew tap. A personal-use tool; no adoption claims.",
     decisions: [
       "Put one DownloadService facade behind the CLI, the TUI and the MCP server, so all three get identical behaviour.",
       "Make hosts self-registering extractors: adding one is a single file and a decorator, and the registry routes URLs to it.",
@@ -167,9 +170,7 @@ export const projects: Project[] = [
       "Persist tasks in SQLite so MCP tools can poll status and cancel; the changelog notes WAL mode with a busy timeout.",
       "Read tokens from environment variables rather than config files; the changelog lists restrictive 600 permissions on config and history files and secret redaction in structured logs.",
     ],
-    nextSteps: [
-      "A download-history view; the SQLite task registry was built to support it.",
-    ],
+    nextSteps: ["A download-history view; the SQLite task registry was built to support it."],
     resume: [
       "Author of an async Python downloader for seven file hosts with a Textual TUI, a scripting CLI and an MCP server; published on PyPI (getit-cli) with a Homebrew tap.",
       "Concurrent downloads with resume and speed limits, MD5/SHA256 verification and client-side Mega.nz AES-CTR decryption.",
@@ -250,7 +251,10 @@ export const projects: Project[] = [
       "Native Swift macOS menu-bar app that detects active calls and manages audio devices.",
       "Distributed with a Makefile and a Homebrew cask.",
     ],
-    highlights: ["Active call detection and audio device management.", "Menu-bar UI; Makefile and Homebrew cask for distribution."],
+    highlights: [
+      "Active call detection and audio device management.",
+      "Menu-bar UI; Makefile and Homebrew cask for distribution.",
+    ],
     stack: ["Swift", "macOS", "Xcode"],
     security: [],
     preview: "menubar",

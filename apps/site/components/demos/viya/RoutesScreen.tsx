@@ -10,7 +10,19 @@ import { Btn, Card, Chip, Icon, InfoTip, cx, labelCls } from "./ui";
 const paxText = (s: { adults: number; children: number; infants: number }) =>
   `${s.adults + s.children} pax${s.infants ? ` + ${s.infants} infant${s.infants > 1 ? "s" : ""}` : ""}`;
 
-function CapacityBar({ label, seats, effective, infants, color }: { label: string; seats: number; effective: number; infants: number; color: string }) {
+function CapacityBar({
+  label,
+  seats,
+  effective,
+  infants,
+  color,
+}: {
+  label: string;
+  seats: number;
+  effective: number;
+  infants: number;
+  color: string;
+}) {
   const over = effective > seats;
   const fill = Math.min(1, effective / seats) * 100;
   const ghost = over ? 0 : Math.min((infants / seats) * 100, 100 - fill);
@@ -24,7 +36,8 @@ function CapacityBar({ label, seats, effective, infants, color }: { label: strin
         <span className="flex items-center gap-1 text-(--v-muted)">
           {infants > 0 ? `+${infants} infant${infants > 1 ? "s" : ""} (not counted)` : "No infants"}
           <InfoTip label="Why are infants not counted?">
-            Infants travel on a lap and do not take a seat, so they are shown but excluded from effective capacity. Effective capacity = adults + children.
+            Infants travel on a lap and do not take a seat, so they are shown but excluded from effective capacity.
+            Effective capacity = adults + children.
           </InfoTip>
         </span>
       </div>
@@ -37,8 +50,16 @@ function CapacityBar({ label, seats, effective, infants, color }: { label: strin
         aria-valuetext={text}
         className="mt-1 flex h-3 overflow-hidden rounded-full border border-(--v-line) bg-(--v-soft)"
       >
-        <div className="h-full motion-safe:transition-[width] motion-safe:duration-200" style={{ width: `${fill}%`, background: over ? "#A61B1B" : color }} />
-        {ghost > 0 && <div className="viya-hatch h-full border-l border-white motion-safe:transition-[width] motion-safe:duration-200" style={{ width: `${ghost}%` }} />}
+        <div
+          className="h-full motion-safe:transition-[width] motion-safe:duration-200"
+          style={{ width: `${fill}%`, background: over ? "#A61B1B" : color }}
+        />
+        {ghost > 0 && (
+          <div
+            className="viya-hatch h-full border-l border-white motion-safe:transition-[width] motion-safe:duration-200"
+            style={{ width: `${ghost}%` }}
+          />
+        )}
       </div>
       {over && (
         <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-(--v-bad)">
@@ -96,7 +117,14 @@ export function RoutesScreen({ store }: { store: Store }) {
               {seed.tour} · {seed.date} · {vehicles.length} vehicles · {totalPax} pax · departs {fmtTime(seed.startMin)}
             </p>
           </div>
-          <RouteMap decor={seed.map} vehicles={vehicles} selected={selVehicle.v.id} dest={seed.destination} onSelect={setSelected} summary={summary} />
+          <RouteMap
+            decor={seed.map}
+            vehicles={vehicles}
+            selected={selVehicle.v.id}
+            dest={seed.destination}
+            onSelect={setSelected}
+            summary={summary}
+          />
           <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-(--v-muted)" aria-label="Map legend">
             {vehicles.map(({ v }) => (
               <li key={v.id} className="flex items-center gap-1.5">
@@ -105,7 +133,10 @@ export function RoutesScreen({ store }: { store: Store }) {
               </li>
             ))}
             <li className="flex items-center gap-1.5">
-              <span className="grid h-4 w-4 place-items-center rounded bg-(--v-fg) text-[9px] font-bold text-white" aria-hidden="true">
+              <span
+                className="grid h-4 w-4 place-items-center rounded bg-(--v-fg) text-[9px] font-bold text-white"
+                aria-hidden="true"
+              >
                 D
               </span>
               Depot
@@ -128,7 +159,11 @@ export function RoutesScreen({ store }: { store: Store }) {
                     onClick={() => setSelected(v.id)}
                     className="flex w-full items-center gap-2.5 p-3 text-left"
                   >
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-xs font-bold text-white" style={{ background: v.color }} aria-hidden="true">
+                    <span
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-xs font-bold text-white"
+                      style={{ background: v.color }}
+                      aria-hidden="true"
+                    >
                       {v.label.split(" ")[0][0]}
                       {v.label.split(" ")[1]}
                     </span>
@@ -137,7 +172,8 @@ export function RoutesScreen({ store }: { store: Store }) {
                         {v.label} <span className="font-normal text-(--v-muted)">· {v.model}</span>
                       </span>
                       <span className="block truncate text-xs text-(--v-muted)">
-                        {v.driver.name} · {stops.length} stops · {Math.round(plan.minutes)} min · {plan.km.toFixed(1)} km
+                        {v.driver.name} · {stops.length} stops · {Math.round(plan.minutes)} min · {plan.km.toFixed(1)}{" "}
+                        km
                       </span>
                     </span>
                     <span className="text-right text-xs">
@@ -146,7 +182,13 @@ export function RoutesScreen({ store }: { store: Store }) {
                     </span>
                   </button>
                   <div className="px-3 pb-3">
-                    <CapacityBar label={v.label} seats={v.seats} effective={cap.effective} infants={cap.infants} color={v.color} />
+                    <CapacityBar
+                      label={v.label}
+                      seats={v.seats}
+                      effective={cap.effective}
+                      infants={cap.infants}
+                      color={v.color}
+                    />
                   </div>
 
                   {open && (
@@ -200,7 +242,10 @@ export function RoutesScreen({ store }: { store: Store }) {
                               <span className="cursor-grab text-(--v-muted)" title="Drag to reorder" aria-hidden="true">
                                 <Icon name="grip" size={16} />
                               </span>
-                              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold text-white" style={{ background: v.color }}>
+                              <span
+                                className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold text-white"
+                                style={{ background: v.color }}
+                              >
                                 {i + 1}
                               </span>
                               <span className="min-w-0 flex-1">
@@ -254,10 +299,15 @@ export function RoutesScreen({ store }: { store: Store }) {
                             </div>
                           </li>
                         ))}
-                        {stops.length === 0 && <li className="rounded-lg border border-dashed border-(--v-line) p-3 text-center text-xs text-(--v-muted)">No stops assigned.</li>}
+                        {stops.length === 0 && (
+                          <li className="rounded-lg border border-dashed border-(--v-line) p-3 text-center text-xs text-(--v-muted)">
+                            No stops assigned.
+                          </li>
+                        )}
                       </ol>
                       <p className="mt-2 flex items-center gap-1.5 px-0.5 text-xs text-(--v-muted)">
-                        <Chip tone="neutral">Drop-off</Chip> {seed.destination.name} at <strong className="tabular-nums text-(--v-fg)">{fmtTime(plan.arrive)}</strong>
+                        <Chip tone="neutral">Drop-off</Chip> {seed.destination.name} at{" "}
+                        <strong className="tabular-nums text-(--v-fg)">{fmtTime(plan.arrive)}</strong>
                       </p>
                     </div>
                   )}

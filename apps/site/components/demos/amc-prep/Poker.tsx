@@ -13,7 +13,15 @@ const tone = {
   misleading: "border-rose-400 bg-rose-400/10 text-rose-200",
 } as const;
 
-export function Poker({ progress, onProgress, onExit }: { progress: Progress; onProgress: (p: Progress) => void; onExit: () => void }) {
+export function Poker({
+  progress,
+  onProgress,
+  onExit,
+}: {
+  progress: Progress;
+  onProgress: (p: Progress) => void;
+  onExit: () => void;
+}) {
   const [roundIdx, setRoundIdx] = useState(0);
   const [picked, setPicked] = useState<string[]>([]);
   const [revealed, setRevealed] = useState(false);
@@ -50,7 +58,11 @@ export function Poker({ progress, onProgress, onExit }: { progress: Progress; on
   return (
     <section className="space-y-3" aria-labelledby="poker-title">
       <div className="flex items-center gap-3">
-        <button type="button" onClick={onExit} className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-fg">
+        <button
+          type="button"
+          onClick={onExit}
+          className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:text-fg"
+        >
           Back to home
         </button>
         <span className="font-mono text-xs text-muted">
@@ -64,7 +76,11 @@ export function Poker({ progress, onProgress, onExit }: { progress: Progress; on
           Central diagnosis: {round.diagnosis}
         </h2>
         <p className="mt-1 text-sm text-muted">
-          {round.prompt} <span className="font-mono text-fg">{picked.length}/{PICKS}</span> selected. No base points; this round earns pattern XP.
+          {round.prompt}{" "}
+          <span className="font-mono text-fg">
+            {picked.length}/{PICKS}
+          </span>{" "}
+          selected. No base points; this round earns pattern XP.
         </p>
 
         <ul className="mt-3 grid grid-cols-1 gap-2 @lg:grid-cols-2">
@@ -78,13 +94,21 @@ export function Poker({ progress, onProgress, onExit }: { progress: Progress; on
                   onClick={() => toggle(c.id)}
                   disabled={revealed || (!on && picked.length >= PICKS)}
                   className={`flex h-full w-full flex-col items-start gap-1 rounded-lg border px-3 py-2.5 text-left text-sm transition ${
-                    revealed ? tone[c.kind] : on ? "border-sky-300 bg-sky-400/15" : "border-line bg-bg hover:border-sky-300/60"
+                    revealed
+                      ? tone[c.kind]
+                      : on
+                        ? "border-sky-300 bg-sky-400/15"
+                        : "border-line bg-bg hover:border-sky-300/60"
                   } ${!on && !revealed && picked.length >= PICKS ? "opacity-50" : ""}`}
                 >
                   <span>{c.text}</span>
                   {revealed && (
                     <span className="text-xs">
-                      <span className="font-semibold">{label[c.kind]}{on ? " (your pick)" : ""}.</span> {c.note}
+                      <span className="font-semibold">
+                        {label[c.kind]}
+                        {on ? " (your pick)" : ""}.
+                      </span>{" "}
+                      {c.note}
                     </span>
                   )}
                 </button>
@@ -117,10 +141,19 @@ export function Poker({ progress, onProgress, onExit }: { progress: Progress; on
                 : "Misleading cards pull toward other diagnoses, and non-specific findings add less than specific ones. Replay to see the contrast."}
             </p>
             <div className="mt-3 flex gap-2">
-              <button type="button" onClick={again} disabled={progress.pokerLeft === 0} className="rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-300 disabled:opacity-50">
+              <button
+                type="button"
+                onClick={again}
+                disabled={progress.pokerLeft === 0}
+                className="rounded-lg bg-sky-400 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-300 disabled:opacity-50"
+              >
                 {progress.pokerLeft === 0 ? "No rounds left today" : "Next round"}
               </button>
-              <button type="button" onClick={onExit} className="rounded-lg border border-line px-3.5 py-2 text-sm hover:border-sky-300/60">
+              <button
+                type="button"
+                onClick={onExit}
+                className="rounded-lg border border-line px-3.5 py-2 text-sm hover:border-sky-300/60"
+              >
                 Back to home
               </button>
             </div>

@@ -10,7 +10,13 @@ export const metadata: Metadata = {
   title: "Résumé",
   description,
   alternates: { canonical: "/resume" },
-  openGraph: { title: `Résumé · ${profile.name}`, description, url: "/resume", type: "profile", siteName: profile.name },
+  openGraph: {
+    title: `Résumé · ${profile.name}`,
+    description,
+    url: "/resume",
+    type: "profile",
+    siteName: profile.name,
+  },
   twitter: { card: "summary_large_image", title: `Résumé · ${profile.name}`, description },
 };
 
@@ -24,8 +30,13 @@ export default function Resume() {
 
   return (
     <div className="px-3 py-6 sm:px-6 sm:py-10 print:p-0">
-      <nav aria-label="Résumé tools" className="mx-auto mb-5 flex max-w-[210mm] flex-wrap items-center justify-between gap-3 print:hidden">
-        <Link href="/" className="font-mono text-xs text-muted hover:text-fg">← Back to portfolio</Link>
+      <nav
+        aria-label="Résumé tools"
+        className="mx-auto mb-5 flex max-w-[210mm] flex-wrap items-center justify-between gap-3 print:hidden"
+      >
+        <Link href="/" className="font-mono text-xs text-muted hover:text-fg">
+          ← Back to portfolio
+        </Link>
         <PrintButton />
       </nav>
 
@@ -35,9 +46,15 @@ export default function Resume() {
             <h1 id="resume-name">{profile.name}</h1>
             <p className="resume-title">DevSecOps &amp; AI-enabled full-stack engineer</p>
             <p className="resume-contact">
-              <a href={`mailto:${profile.email}`} data-cta="email" data-surface="resume">{profile.email}</a>
-              <a href={profile.github} rel="noopener noreferrer">{bare(profile.github)}</a>
-              <a href={profile.linkedin} rel="noopener noreferrer">{bare(profile.linkedin)}</a>
+              <a href={`mailto:${profile.email}`} data-cta="email" data-surface="resume">
+                {profile.email}
+              </a>
+              <a href={profile.github} rel="noopener noreferrer">
+                {bare(profile.github)}
+              </a>
+              <a href={profile.linkedin} rel="noopener noreferrer">
+                {bare(profile.linkedin)}
+              </a>
               <a href={profile.siteUrl}>{bare(profile.siteUrl)}</a>
             </p>
           </header>
@@ -52,7 +69,9 @@ export default function Resume() {
             {profile.experience.map((e) => (
               <div key={e.org} className="resume-entry">
                 <div className="resume-row">
-                  <h3>{e.role}, {e.org}</h3>
+                  <h3>
+                    {e.role}, {e.org}
+                  </h3>
                   <span className="resume-meta">{e.period}</span>
                 </div>
                 <p className="resume-meta">{e.type}</p>
@@ -81,7 +100,9 @@ export default function Resume() {
                 <p className="resume-stack">Stack: {p.stack.join(", ")}</p>
               </div>
             ))}
-            <p className="resume-meta mt-2">Source code for most projects is private; case studies at {bare(profile.siteUrl)}/work.</p>
+            <p className="resume-meta mt-2">
+              Source code for most projects is private; case studies at {bare(profile.siteUrl)}/work.
+            </p>
           </section>
 
           <section aria-labelledby="r-skills">
@@ -124,7 +145,9 @@ export default function Resume() {
 
           <section aria-labelledby="r-events">
             <h2 id="r-events">Events</h2>
-            <p className="mt-1.5">{profile.events.map((e) => `${e.name} ${e.year} (${e.role.toLowerCase()})`).join("; ")}.</p>
+            <p className="mt-1.5">
+              {profile.events.map((e) => `${e.name} ${e.year} (${e.role.toLowerCase()})`).join("; ")}.
+            </p>
           </section>
 
           <section aria-labelledby="r-languages">

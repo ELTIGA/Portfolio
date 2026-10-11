@@ -43,7 +43,11 @@ function DeviceList({
                   {chosen && <span className="h-1.5 w-1.5 rounded-full bg-slate-950" />}
                 </span>
                 <span className="min-w-0 flex-1 truncate">{d}</span>
-                {inUse && <span className="shrink-0 rounded-full bg-emerald-400/20 px-1.5 py-px text-[10px] font-semibold text-emerald-200">In use</span>}
+                {inUse && (
+                  <span className="shrink-0 rounded-full bg-emerald-400/20 px-1.5 py-px text-[10px] font-semibold text-emerald-200">
+                    In use
+                  </span>
+                )}
               </label>
             </li>
           );
@@ -53,7 +57,15 @@ function DeviceList({
   );
 }
 
-export function Popover({ state, onSelect, onToggle }: { state: GuardState; onSelect: (kind: Kind, device: string) => void; onToggle: () => void }) {
+export function Popover({
+  state,
+  onSelect,
+  onToggle,
+}: {
+  state: GuardState;
+  onSelect: (kind: Kind, device: string) => void;
+  onToggle: () => void;
+}) {
   const outputs: string[] = state.headphones ? [HEADPHONES, ...outputBase] : [...outputBase];
   const inputs: string[] = state.headphones ? [...inputBase, HEADPHONES] : [...inputBase];
 
@@ -72,7 +84,10 @@ export function Popover({ state, onSelect, onToggle }: { state: GuardState; onSe
             state.callActive ? "bg-emerald-400/20 text-emerald-200" : "bg-white/10 text-slate-200"
           }`}
         >
-          <span aria-hidden="true" className={`h-2 w-2 rounded-full ${state.callActive ? "motion-safe:animate-pulse bg-emerald-400" : "bg-slate-400"}`} />
+          <span
+            aria-hidden="true"
+            className={`h-2 w-2 rounded-full ${state.callActive ? "motion-safe:animate-pulse bg-emerald-400" : "bg-slate-400"}`}
+          />
           {state.callActive ? "Call detected" : "Idle"}
         </p>
       </div>

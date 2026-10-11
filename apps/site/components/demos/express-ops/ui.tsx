@@ -55,13 +55,32 @@ const ICONS: Record<string, ReactNode> = {
 
 export function Icon({ name, size = 16 }: { name: keyof typeof ICONS | string; size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="shrink-0"
+    >
       {ICONS[name]}
     </svg>
   );
 }
 
-export function Chip({ tone = "neutral", children, dot = true }: { tone?: "ok" | "warn" | "bad" | "info" | "brand" | "neutral"; children: ReactNode; dot?: boolean }) {
+export function Chip({
+  tone = "neutral",
+  children,
+  dot = true,
+}: {
+  tone?: "ok" | "warn" | "bad" | "info" | "brand" | "neutral";
+  children: ReactNode;
+  dot?: boolean;
+}) {
   return (
     <span className={`eo-chip ${tone === "neutral" ? "" : tone}`}>
       {dot && <span className="eo-dot" aria-hidden="true" />}
@@ -76,7 +95,15 @@ export function StatusChip({ status }: { status: ImageStatus }) {
   return <Chip tone={STATUS_TONE[status]}>{STATUS_LABEL[status]}</Chip>;
 }
 
-export function Switch({ checked, onChange, children }: { checked: boolean; onChange: (v: boolean) => void; children: ReactNode }) {
+export function Switch({
+  checked,
+  onChange,
+  children,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  children: ReactNode;
+}) {
   return (
     <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className="eo-switch">
       <span className="track" aria-hidden="true" />
@@ -142,7 +169,11 @@ export function PaperThumb({ image, width = 44 }: { image: ManifestImage; width?
       role="img"
       aria-label={`Thumbnail of ${image.file}`}
       className="shrink-0 rounded-[3px]"
-      style={{ transform: `rotate(${rot}deg)`, filter: failed ? "blur(0.9px)" : undefined, boxShadow: "0 1px 4px rgba(0,0,0,.5)" }}
+      style={{
+        transform: `rotate(${rot}deg)`,
+        filter: failed ? "blur(0.9px)" : undefined,
+        boxShadow: "0 1px 4px rgba(0,0,0,.5)",
+      }}
     >
       <rect width="60" height="76" fill="#f3efe4" />
       <rect x="6" y="6" width="26" height="3" rx="1" fill="#2d2a24" />
@@ -157,7 +188,15 @@ export function PaperThumb({ image, width = 44 }: { image: ManifestImage; width?
       ))}
       <rect x="6" y="62" width="48" height="0.8" fill="#8d877a" />
       <rect x="6" y="66" width="12" height="2.4" rx="1" fill="#2d2a24" />
-      <text x="54" y="69" textAnchor="end" fontSize="8" fontWeight="700" fill="#17140f" fontFamily="ui-monospace, Menlo, monospace">
+      <text
+        x="54"
+        y="69"
+        textAnchor="end"
+        fontSize="8"
+        fontWeight="700"
+        fill="#17140f"
+        fontFamily="ui-monospace, Menlo, monospace"
+      >
         {image.paperTotal}
       </text>
       {failed && <path d="M4 4 56 72M56 4 4 72" stroke="#b3423c" strokeWidth="1.2" opacity="0.55" />}
@@ -167,7 +206,12 @@ export function PaperThumb({ image, width = 44 }: { image: ManifestImage; width?
 
 export function ToastRegion({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
   return (
-    <div role="status" aria-live="polite" aria-atomic="false" className="pointer-events-none absolute inset-x-0 bottom-3 z-30 flex flex-col items-center gap-2 px-3">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="false"
+      className="pointer-events-none absolute inset-x-0 bottom-3 z-30 flex flex-col items-center gap-2 px-3"
+    >
       {toasts.map((t) => (
         <div
           key={t.id}
@@ -191,7 +235,13 @@ export function ToastRegion({ toasts, onDismiss }: { toasts: Toast[]; onDismiss:
               {t.action.label}
             </button>
           )}
-          <button type="button" className="eo-btn quiet icon" style={{ minHeight: 26, minWidth: 26 }} aria-label="Dismiss notification" onClick={() => onDismiss(t.id)}>
+          <button
+            type="button"
+            className="eo-btn quiet icon"
+            style={{ minHeight: 26, minWidth: 26 }}
+            aria-label="Dismiss notification"
+            onClick={() => onDismiss(t.id)}
+          >
             <Icon name="x" size={13} />
           </button>
         </div>

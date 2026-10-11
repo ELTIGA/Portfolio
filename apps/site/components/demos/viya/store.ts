@@ -3,7 +3,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TENANTS } from "./data";
 import { capacityOf, optimizeOrder, runExtraction, vehicleStops, flaggedCount } from "./calc";
-import type { Channel, DispatchState, DriverRun, Extraction, LogEntry, Manifest, Passenger, ReplyKind, TenantSeed, TenantState } from "./types";
+import type {
+  Channel,
+  DispatchState,
+  DriverRun,
+  Extraction,
+  LogEntry,
+  Manifest,
+  Passenger,
+  ReplyKind,
+  TenantSeed,
+  TenantState,
+} from "./types";
 
 const clock = () => new Date().toLocaleTimeString([], { hour12: false });
 
@@ -37,7 +48,9 @@ export type Store = ReturnType<typeof useStore>;
 
 export function useStore() {
   const [tenantId, setTenantId] = useState(TENANTS[0].id);
-  const [states, setStates] = useState<Record<string, TenantState>>(() => Object.fromEntries(TENANTS.map((t) => [t.id, initTenant(t)])));
+  const [states, setStates] = useState<Record<string, TenantState>>(() =>
+    Object.fromEntries(TENANTS.map((t) => [t.id, initTenant(t)])),
+  );
   const [announcement, setAnnouncement] = useState("");
   const timers = useRef<Record<string, number[]>>({});
   const seq = useRef(1);
@@ -56,14 +69,25 @@ export function useStore() {
 
   const say = useCallback((msg: string) => setAnnouncement(msg), []);
 
-  const entry = useCallback((dir: LogEntry["dir"], text: string, extra: Partial<LogEntry> = {}): LogEntry => ({ id: seq.current++, dir, text, at: clock(), ...extra }), []);
+  const entry = useCallback(
+    (dir: LogEntry["dir"], text: string, extra: Partial<LogEntry> = {}): LogEntry => ({
+      id: seq.current++,
+      dir,
+      text,
+      at: clock(),
+      ...extra,
+    }),
+    [],
+  );
 
   /* ---- tenant ---- */
   const switchTenant = (id: string) => {
     const next = TENANTS.find((t) => t.id === id);
     if (!next || id === tenantId) return;
     setTenantId(id);
-    say(`Switched to ${next.name}. ${next.manifests.length} manifests and ${next.vehicles.length} vehicles loaded for this tenant only.`);
+    say(
+      `Switched to ${next.name}. ${next.manifests.length} manifests and ${next.vehicles.length} vehicles loaded for this tenant only.`,
+    );
   };
 
   /* ---- manifests ---- */
@@ -71,29 +95,44 @@ export function useStore() {
     patch(seed.id, (s) => ({
       ...s,
       manifests: s.manifests.map((m) =>
-        m.id !== mid ? m : { ...m, status: "needs_review", passengers: m.passengers.map((p) => (p.id === pid ? { ...p, ...change, review: null, edited: true } : p)) },
+        m.id !== mid
+          ? m
+          : {
+              ...m,
+              status: "needs_review",
+              passengers: m.passengers.map((p) => (p.id === pid ? { ...p, ...change, review: null, edited: true } : p)),
+            },
       ),
     }));
 
   const confirmPassenger = (mid: string, pid: string) =>
     patch(seed.id, (s) => ({
       ...s,
-      manifests: s.manifests.map((m) => (m.id !== mid ? m : { ...m, passengers: m.passengers.map((p) => (p.id === pid ? { ...p, review: null } : p)) })),
+      manifests: s.manifests.map((m) =>
+        m.id !== mid ? m : { ...m, passengers: m.passengers.map((p) => (p.id === pid ? { ...p, review: null } : p)) },
+      ),
     }));
 
   const approveManifest = (mid: string) => {
-    patch(seed.id, (s) => ({ ...s, manifests: s.manifests.map((m) => (m.id === mid ? { ...m, status: "approved" } : m)) }));
+    patch(seed.id, (s) => ({
+      ...s,
+      manifests: s.manifests.map((m) => (m.id === mid ? { ...m, status: "approved" } : m)),
+    }));
     say("Manifest approved and ready for route planning.");
   };
 
   const applyExtraction = (mid: string, passengers: Passenger[], extraction: Extraction, tid: string = seed.id) => {
-    patch(tid, (s) => ({ ...s, manifests: s.manifests.map((m) => (m.id === mid ? { ...m, passengers, extraction, status: "needs_review" } : m)) }));
+    patch(tid, (s) => ({
+      ...s,
+      manifests: s.manifests.map((m) => (m.id === mid ? { ...m, passengers, extraction, status: "needs_review" } : m)),
+    }));
     const n = flaggedCount(passengers);
     say(`Extraction finished with ${extraction.provider}. ${n} ${n === 1 ? "row needs" : "rows need"} review.`);
   };
 
   /* ---- routes ---- */
-  const setOrder = (vid: string, order: string[]) => patch(seed.id, (s) => ({ ...s, routes: { ...s.routes, [vid]: order } }));
+  const setOrder = (vid: string, order: string[]) =>
+    patch(seed.id, (s) => ({ ...s, routes: { ...s.routes, [vid]: order } }));
 
   const moveStop = (vid: string, from: number, to: number) => {
     const order = [...state.routes[vid]];
@@ -122,7 +161,10 @@ export function useStore() {
     const v = seed.vehicles.find((x) => x.id === vid);
     if (!v) return;
     const ordered = optimizeOrder(v.depot, vehicleStops(v, state.routes[vid], seed.stops));
-    setOrder(vid, ordered.map((x) => x.id));
+    setOrder(
+      vid,
+      ordered.map((x) => x.id),
+    );
     say(`${v.label} stops re-ordered by nearest neighbour.`);
   };
 
@@ -146,12 +188,16 @@ export function useStore() {
     const chLabel = channel === "whatsapp" ? "WhatsApp" : channel === "telegram" ? "Telegram" : "Slack";
     clearTimers(tid);
     const started = entry("sys", `Dispatch started: ${seed.vehicles.length} drivers via ${chLabel}`);
-    const queued = seed.vehicles.map((v) => entry("out", `Queued route message for ${v.driver.name} via ${chLabel}`, { note: v.label }));
+    const queued = seed.vehicles.map((v) =>
+      entry("out", `Queued route message for ${v.driver.name} via ${chLabel}`, { note: v.label }),
+    );
     patch(tid, (s) => ({
       ...s,
       dispatch: {
         channel,
-        runs: Object.fromEntries(seed.vehicles.map((v) => [v.id, { status: "queued", reply: null } satisfies DriverRun])),
+        runs: Object.fromEntries(
+          seed.vehicles.map((v) => [v.id, { status: "queued", reply: null } satisfies DriverRun]),
+        ),
         log: [started, ...queued],
       },
     }));
@@ -185,7 +231,8 @@ export function useStore() {
     if (!v) return { ok: false, message: "Unknown driver." };
     const run = state.dispatch.runs[vid];
     const text = raw.trim();
-    const add = (entries: LogEntry[]) => patch(tid, (s) => ({ ...s, dispatch: { ...s.dispatch, log: [...s.dispatch.log, ...entries] } }));
+    const add = (entries: LogEntry[]) =>
+      patch(tid, (s) => ({ ...s, dispatch: { ...s.dispatch, log: [...s.dispatch.log, ...entries] } }));
 
     if (run.status !== "delivered") {
       const message = `${v.driver.name} has not received the dispatch yet.`;
@@ -196,7 +243,10 @@ export function useStore() {
     const inbound = entry("in", text || "(empty)", { note: `${v.driver.name}` });
     if (!m) {
       const message = "Could not parse. Valid replies: 1, 2, or 3 N.";
-      add([inbound, entry("sys", `Unparsed reply from ${v.driver.name}. Asked to resend.`, { ok: false, note: message })]);
+      add([
+        inbound,
+        entry("sys", `Unparsed reply from ${v.driver.name}. Asked to resend.`, { ok: false, note: message }),
+      ]);
       return { ok: false, message };
     }
     const code = m[1];
@@ -209,7 +259,8 @@ export function useStore() {
       kind = "no_show";
       n = m[2] ? Number(m[2]) : undefined;
       if (n === undefined || n < 1 || n > pax) {
-        const message = n === undefined ? "No-show needs a count, for example 3 2." : `No-show count must be between 1 and ${pax}.`;
+        const message =
+          n === undefined ? "No-show needs a count, for example 3 2." : `No-show count must be between 1 and ${pax}.`;
         add([inbound, entry("sys", `Rejected: ${message}`, { ok: false })]);
         return { ok: false, message };
       }
@@ -220,7 +271,11 @@ export function useStore() {
       return { ok: false, message };
     }
     const parsed =
-      kind === "confirm" ? "confirm → route accepted" : kind === "issue" ? "issue → flagged for dispatcher" : `no_show(${n}) → ${n} pax removed from manifest count`;
+      kind === "confirm"
+        ? "confirm → route accepted"
+        : kind === "issue"
+          ? "issue → flagged for dispatcher"
+          : `no_show(${n}) → ${n} pax removed from manifest count`;
     const parsedLine = entry("sys", `Parsed: ${parsed}`, { ok: true });
     patch(tid, (s) => ({
       ...s,
@@ -230,7 +285,12 @@ export function useStore() {
         log: [...s.dispatch.log, inbound, parsedLine],
       },
     }));
-    const message = kind === "confirm" ? `${v.label} confirmed.` : kind === "issue" ? `${v.label} reported an issue.` : `${v.label}: ${n} no-show.`;
+    const message =
+      kind === "confirm"
+        ? `${v.label} confirmed.`
+        : kind === "issue"
+          ? `${v.label} reported an issue.`
+          : `${v.label}: ${n} no-show.`;
     say(message);
     return { ok: true, message };
   };

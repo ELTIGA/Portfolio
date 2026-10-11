@@ -9,7 +9,9 @@ import type { ComponentType } from "react";
  *  - self-contained: sample data lives inside the demo directory, never real data
  *  - no network calls; no outer window chrome (frames are added by DemoSlot / the desktop)
  */
-const loading = () => <div className="grid h-full min-h-48 place-items-center text-sm text-muted">Loading preview…</div>;
+const loading = () => (
+  <div className="grid h-full min-h-48 place-items-center text-sm text-muted">Loading preview…</div>
+);
 
 const lazy = (loader: () => Promise<{ default: ComponentType }>) => dynamic(loader, { ssr: false, loading });
 

@@ -24,7 +24,13 @@ export type ManifestImage = {
 
 export const SERVICES = ["Rafting day", "Canyon trek", "Airport transfer", "City tour"] as const;
 
-const r = (id: string, guest: string, pax: number, hotel: string, service: string): Row => ({ id, guest, pax, hotel, service });
+const r = (id: string, guest: string, pax: number, hotel: string, service: string): Row => ({
+  id,
+  guest,
+  pax,
+  hotel,
+  service,
+});
 
 export const SESSION = { name: "Session 07", meta: "5 images" };
 
@@ -81,7 +87,8 @@ export const manifestSeed: ManifestImage[] = [
     printedTotal: null,
     paperLines: 6,
     rows: [],
-    failure: "The photo is blurred and the table edge is cut off, so no rows could be read. Reprocess, or add rows by hand.",
+    failure:
+      "The photo is blurred and the table edge is cut off, so no rows could be read. Reprocess, or add rows by hand.",
     reprocessed: {
       printedTotal: 11,
       rows: [
@@ -139,7 +146,13 @@ export const manifestSeed: ManifestImage[] = [
 // ---------- Driver's List ----------
 
 export type DriverEntry = { id: string; guest: string; pickup: string; pax: number };
-export type DriverBatch = { id: string; shift: string; screenshots: number; footerTotal: number; entries: DriverEntry[] };
+export type DriverBatch = {
+  id: string;
+  shift: string;
+  screenshots: number;
+  footerTotal: number;
+  entries: DriverEntry[];
+};
 export type Driver = { id: string; name: string; vehicle: string; batches: DriverBatch[] };
 
 const e = (id: string, guest: string, pickup: string, pax: number): DriverEntry => ({ id, guest, pickup, pax });
@@ -230,7 +243,17 @@ export const driversSeed: Driver[] = [
 // ---------- Double bookings ----------
 
 export type Severity = "high" | "medium" | "low";
-export type Booking = { agency: string; ref: string; guest: string; date: string; time: string; service: string; hotel: string; pax: number; flag?: string };
+export type Booking = {
+  agency: string;
+  ref: string;
+  guest: string;
+  date: string;
+  time: string;
+  service: string;
+  hotel: string;
+  pax: number;
+  flag?: string;
+};
 export type DoubleBooking = {
   id: string;
   severity: Severity;
@@ -252,10 +275,29 @@ export const doublesSeed: DoubleBooking[] = [
     title: "Alex Rivera",
     summary: "Same guest, same service and date, booked by two agencies at different hotels.",
     bookings: [
-      { agency: "Agency North", ref: "AN-2041", guest: "Alex Rivera", date: "Sat 14 Jun", time: "07:15", service: "Rafting day", hotel: "Hotel Marlowe", pax: 2 },
-      { agency: "Agency South", ref: "AS-7780", guest: "Alex Rivera", date: "Sat 14 Jun", time: "07:15", service: "Rafting day", hotel: "Seaview Residence", pax: 2 },
+      {
+        agency: "Agency North",
+        ref: "AN-2041",
+        guest: "Alex Rivera",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Rafting day",
+        hotel: "Hotel Marlowe",
+        pax: 2,
+      },
+      {
+        agency: "Agency South",
+        ref: "AS-7780",
+        guest: "Alex Rivera",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Rafting day",
+        hotel: "Seaview Residence",
+        pax: 2,
+      },
     ],
-    action: "Keep the Agency North booking (created first, hotel matches the last confirmation) and ask Agency South to cancel AS-7780 before the list is exported.",
+    action:
+      "Keep the Agency North booking (created first, hotel matches the last confirmation) and ask Agency South to cancel AS-7780 before the list is exported.",
     resolveLabel: "Keep Agency North",
   },
   {
@@ -266,10 +308,29 @@ export const doublesSeed: DoubleBooking[] = [
     title: "Priya Nair",
     summary: "Two different services start at 07:30 on the same day. One guest cannot join both.",
     bookings: [
-      { agency: "Agency North", ref: "AN-2057", guest: "Priya Nair", date: "Sat 14 Jun", time: "07:30", service: "Canyon trek", hotel: "Seaview Residence", pax: 4 },
-      { agency: "Agency South", ref: "AS-7792", guest: "Priya Nair", date: "Sat 14 Jun", time: "07:30", service: "City tour", hotel: "Seaview Residence", pax: 4 },
+      {
+        agency: "Agency North",
+        ref: "AN-2057",
+        guest: "Priya Nair",
+        date: "Sat 14 Jun",
+        time: "07:30",
+        service: "Canyon trek",
+        hotel: "Seaview Residence",
+        pax: 4,
+      },
+      {
+        agency: "Agency South",
+        ref: "AS-7792",
+        guest: "Priya Nair",
+        date: "Sat 14 Jun",
+        time: "07:30",
+        service: "City tour",
+        hotel: "Seaview Residence",
+        pax: 4,
+      },
     ],
-    action: "Call the guest to confirm which service they want, then release the other seats. Both bookings hold four seats today.",
+    action:
+      "Call the guest to confirm which service they want, then release the other seats. Both bookings hold four seats today.",
     resolveLabel: "Mark confirmed",
   },
   {
@@ -280,8 +341,26 @@ export const doublesSeed: DoubleBooking[] = [
     title: "Jonas Weber",
     summary: "Agency South sent the same service twice with different passenger counts. Looks like an amended booking.",
     bookings: [
-      { agency: "Agency South", ref: "AS-7731", guest: "Jonas Weber", date: "Sat 14 Jun", time: "07:15", service: "Rafting day", hotel: "Palm Court Inn", pax: 3 },
-      { agency: "Agency South", ref: "AS-7759", guest: "Jonas Weber", date: "Sat 14 Jun", time: "07:15", service: "Rafting day", hotel: "Palm Court Inn", pax: 2 },
+      {
+        agency: "Agency South",
+        ref: "AS-7731",
+        guest: "Jonas Weber",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Rafting day",
+        hotel: "Palm Court Inn",
+        pax: 3,
+      },
+      {
+        agency: "Agency South",
+        ref: "AS-7759",
+        guest: "Jonas Weber",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Rafting day",
+        hotel: "Palm Court Inn",
+        pax: 2,
+      },
     ],
     action: "Merge into the later booking (AS-7759, 2 pax) and confirm with Agency South that one guest dropped out.",
     resolveLabel: "Merge into latest",
@@ -294,10 +373,29 @@ export const doublesSeed: DoubleBooking[] = [
     title: "Mei Tanaka / Tanaka Mei",
     summary: "Same hotel, service and date under two spellings of the name.",
     bookings: [
-      { agency: "Agency North", ref: "AN-2063", guest: "Mei Tanaka", date: "Sat 14 Jun", time: "07:15", service: "Canyon trek", hotel: "Hotel Marlowe", pax: 2 },
-      { agency: "Agency North", ref: "AN-2071", guest: "Tanaka Mei", date: "Sat 14 Jun", time: "07:15", service: "Canyon trek", hotel: "Hotel Marlowe", pax: 3 },
+      {
+        agency: "Agency North",
+        ref: "AN-2063",
+        guest: "Mei Tanaka",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Canyon trek",
+        hotel: "Hotel Marlowe",
+        pax: 2,
+      },
+      {
+        agency: "Agency North",
+        ref: "AN-2071",
+        guest: "Tanaka Mei",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Canyon trek",
+        hotel: "Hotel Marlowe",
+        pax: 3,
+      },
     ],
-    action: "Treat as one party of three if the agency confirms. Otherwise keep both and flag the name order for the next import.",
+    action:
+      "Treat as one party of three if the agency confirms. Otherwise keep both and flag the name order for the next import.",
     resolveLabel: "Treat as one party",
   },
   {
@@ -308,8 +406,28 @@ export const doublesSeed: DoubleBooking[] = [
     title: "Reference AN-2093 used twice",
     summary: "One agency reference is attached to two different guests.",
     bookings: [
-      { agency: "Agency North", ref: "AN-2093", guest: "Sofia Costa", date: "Sat 14 Jun", time: "07:15", service: "Canyon trek", hotel: "Harbor Lights Hotel", pax: 2, flag: "Reference collision" },
-      { agency: "Agency North", ref: "AN-2093", guest: "Liam Hughes", date: "Sun 15 Jun", time: "09:00", service: "City tour", hotel: "Blue Heron Suites", pax: 2, flag: "Reference collision" },
+      {
+        agency: "Agency North",
+        ref: "AN-2093",
+        guest: "Sofia Costa",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Canyon trek",
+        hotel: "Harbor Lights Hotel",
+        pax: 2,
+        flag: "Reference collision",
+      },
+      {
+        agency: "Agency North",
+        ref: "AN-2093",
+        guest: "Liam Hughes",
+        date: "Sun 15 Jun",
+        time: "09:00",
+        service: "City tour",
+        hotel: "Blue Heron Suites",
+        pax: 2,
+        flag: "Reference collision",
+      },
     ],
     action: "Likely a typo in one reference. Ask Agency North for the correct one; neither booking needs to move.",
     resolveLabel: "Dismiss",
@@ -322,9 +440,20 @@ export const doublesSeed: DoubleBooking[] = [
     title: "Omar Haddad",
     summary: "Passenger count is 0 and the hotel is missing on this row.",
     bookings: [
-      { agency: "Agency South", ref: "AS-7804", guest: "Omar Haddad", date: "Sat 14 Jun", time: "07:15", service: "Canyon trek", hotel: "", pax: 0, flag: "Missing hotel, 0 pax" },
+      {
+        agency: "Agency South",
+        ref: "AS-7804",
+        guest: "Omar Haddad",
+        date: "Sat 14 Jun",
+        time: "07:15",
+        service: "Canyon trek",
+        hotel: "",
+        pax: 0,
+        flag: "Missing hotel, 0 pax",
+      },
     ],
-    action: "Open the source row and fill in the hotel and passenger count. The manifest shows 1 pax at Cedar Grove Lodge.",
+    action:
+      "Open the source row and fill in the hotel and passenger count. The manifest shows 1 pax at Cedar Grove Lodge.",
     resolveLabel: "Dismiss",
   },
 ];

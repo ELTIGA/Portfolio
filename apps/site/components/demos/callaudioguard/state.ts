@@ -46,7 +46,8 @@ export const initialState: GuardState = {
   seq: 1,
 };
 
-export const stamp = () => new Date().toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+export const stamp = () =>
+  new Date().toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
 function push(s: GuardState, at: string, text: string, tone: LogEntry["tone"] = "info"): GuardState {
   return { ...s, seq: s.seq + 1, log: [{ id: s.seq, at, text, tone }, ...s.log].slice(0, 8) };
@@ -58,22 +59,37 @@ function enforce(s: GuardState, at: string, reason: string): GuardState {
   if (s.current.input === s.selected.input && s.current.output === s.selected.output) {
     return push(s, at, `${reason}: devices already correct (${s.selected.output} + ${s.selected.input})`);
   }
-  return push({ ...s, current: s.selected }, at, `${reason}: restored ${s.selected.output} for output and ${s.selected.input} for input`, "restore");
+  return push(
+    { ...s, current: s.selected },
+    at,
+    `${reason}: restored ${s.selected.output} for output and ${s.selected.input} for input`,
+    "restore",
+  );
 }
 
 export function reducer(s: GuardState, a: Action): GuardState {
   switch (a.type) {
     case "start":
       if (s.callActive) return s;
-      return enforce(push({ ...s, callActive: true }, a.at, "Call detected: a video call app opened its audio session"), a.at, "Call start");
+      return enforce(
+        push({ ...s, callActive: true }, a.at, "Call detected: a video call app opened its audio session"),
+        a.at,
+        "Call start",
+      );
     case "end":
       if (!s.callActive) return s;
       return push({ ...s, callActive: false }, a.at, "Call ended: guard standing by");
     case "plug": {
       if (s.headphones) return s;
-      const next = push({ ...s, headphones: true, current: { input: HEADPHONES, output: HEADPHONES } }, a.at, `${HEADPHONES} connected: macOS switched input and output to them`);
+      const next = push(
+        { ...s, headphones: true, current: { input: HEADPHONES, output: HEADPHONES } },
+        a.at,
+        `${HEADPHONES} connected: macOS switched input and output to them`,
+      );
       if (next.guard && next.callActive) return enforce(next, a.at, "Headphones plugged in during a call");
-      return next.guard ? push(next, a.at, "No active call: left the system's choice alone") : push(next, a.at, "Keep is off: nothing restored");
+      return next.guard
+        ? push(next, a.at, "No active call: left the system's choice alone")
+        : push(next, a.at, "Keep is off: nothing restored");
     }
     case "unplug": {
       if (!s.headphones) return s;
@@ -85,10 +101,18 @@ export function reducer(s: GuardState, a: Action): GuardState {
         input: s.current.input === HEADPHONES ? selected.input : s.current.input,
         output: s.current.output === HEADPHONES ? selected.output : s.current.output,
       };
-      return push({ ...s, headphones: false, selected, current }, a.at, `${HEADPHONES} disconnected: back to ${current.output}`);
+      return push(
+        { ...s, headphones: false, selected, current },
+        a.at,
+        `${HEADPHONES} disconnected: back to ${current.output}`,
+      );
     }
     case "toggleGuard": {
-      const next = push({ ...s, guard: !s.guard }, a.at, s.guard ? "Keep on selected device: off" : "Keep on selected device: on");
+      const next = push(
+        { ...s, guard: !s.guard },
+        a.at,
+        s.guard ? "Keep on selected device: off" : "Keep on selected device: on",
+      );
       // Turning Keep on mid-call restores the chosen devices right away.
       return next.guard ? enforce(next, a.at, "Keep turned on") : next;
     }

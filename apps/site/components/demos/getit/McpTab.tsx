@@ -13,7 +13,10 @@ const URL_ = "https://gofile.example.test/d/Xk29aP";
 
 const SCRIPT: Ev[] = [
   { t: "system", text: "MCP client connected to `getit` over stdio. Loaded prompt: download_workflow" },
-  { t: "user", text: `Download the shared folder at ${URL_} into ./datasets, three at a time, and tell me when it is verified.` },
+  {
+    t: "user",
+    text: `Download the shared folder at ${URL_} into ./datasets, three at a time, and tell me when it is verified.`,
+  },
   { t: "assistant", text: "I'll list the folder first so I know what is in it." },
   { t: "call", id: "c1", kind: "tool", name: "list_files", args: { url: URL_ } },
   {
@@ -30,7 +33,13 @@ const SCRIPT: Ev[] = [
     },
   },
   { t: "assistant", text: "Three files, 415 MB in total. Starting the download with 3 connections." },
-  { t: "call", id: "c2", kind: "tool", name: "download", args: { url: URL_, output_dir: "./datasets", concurrency: 3 } },
+  {
+    t: "call",
+    id: "c2",
+    kind: "tool",
+    name: "download",
+    args: { url: URL_, output_dir: "./datasets", concurrency: 3 },
+  },
   { t: "result", id: "c2", data: { download_id: "dl_7f3a21", status: "started", files: 3 } },
   { t: "assistant", text: "Started. Let me check what is currently active." },
   { t: "call", id: "c3", kind: "resource", name: "active-downloads://list" },
@@ -42,9 +51,16 @@ const SCRIPT: Ev[] = [
   {
     t: "result",
     id: "c5",
-    data: { status: "completed", verified: { algorithm: "sha256", ok: 3, failed: 0 }, saved_to: "./datasets/dataset-2024" },
+    data: {
+      status: "completed",
+      verified: { algorithm: "sha256", ok: 3, failed: 0 },
+      saved_to: "./datasets/dataset-2024",
+    },
   },
-  { t: "assistant", text: "Done. All 3 files were downloaded and their sha256 checksums verified. They are in ./datasets/dataset-2024." },
+  {
+    t: "assistant",
+    text: "Done. All 3 files were downloaded and their sha256 checksums verified. They are in ./datasets/dataset-2024.",
+  },
 ];
 
 const TOOLS = ["download", "list_files", "get_download_status", "cancel_download"];
@@ -58,14 +74,39 @@ function Json({ data }: { data: unknown }) {
   let k = 0;
   while ((m = re.exec(text))) {
     if (m.index > last) parts.push(text.slice(last, m.index));
-    if (m[1] && m[2]) parts.push(<span key={k++} className="text-[#6cb6ff]">{m[1]}</span>, m[2]);
-    else if (m[1]) parts.push(<span key={k++} className="text-accent">{m[1]}</span>);
-    else if (m[3]) parts.push(<span key={k++} className="text-[#f5c542]">{m[3]}</span>);
-    else parts.push(<span key={k++} className="text-[#d2a8ff]">{m[4]}</span>);
+    if (m[1] && m[2])
+      parts.push(
+        <span key={k++} className="text-[#6cb6ff]">
+          {m[1]}
+        </span>,
+        m[2],
+      );
+    else if (m[1])
+      parts.push(
+        <span key={k++} className="text-accent">
+          {m[1]}
+        </span>,
+      );
+    else if (m[3])
+      parts.push(
+        <span key={k++} className="text-[#f5c542]">
+          {m[3]}
+        </span>,
+      );
+    else
+      parts.push(
+        <span key={k++} className="text-[#d2a8ff]">
+          {m[4]}
+        </span>,
+      );
     last = m.index + m[0].length;
   }
   parts.push(text.slice(last));
-  return <pre className="overflow-x-auto whitespace-pre-wrap break-words text-[12px] leading-relaxed text-fg/90">{parts}</pre>;
+  return (
+    <pre className="overflow-x-auto whitespace-pre-wrap break-words text-[12px] leading-relaxed text-fg/90">
+      {parts}
+    </pre>
+  );
 }
 
 /** Mounted the first time the tab is opened, so the conversation starts when the visitor arrives. */
@@ -100,14 +141,23 @@ export const McpTab = memo(function McpTab({ reduced }: { reduced: boolean }) {
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-b border-line px-3 py-2 text-[12px]">
         <span className="text-muted">getit MCP server</span>
         {TOOLS.map((t) => (
-          <span key={t} className={`rounded border px-1.5 py-0.5 ${usedTools.has(t) ? "border-accent/60 text-accent" : "border-line text-muted"}`}>
+          <span
+            key={t}
+            className={`rounded border px-1.5 py-0.5 ${usedTools.has(t) ? "border-accent/60 text-accent" : "border-line text-muted"}`}
+          >
             {t}
           </span>
         ))}
-        <span className={`rounded border px-1.5 py-0.5 ${usedTools.has("active-downloads://list") ? "border-[#6cb6ff]/60 text-[#6cb6ff]" : "border-line text-muted"}`}>
+        <span
+          className={`rounded border px-1.5 py-0.5 ${usedTools.has("active-downloads://list") ? "border-[#6cb6ff]/60 text-[#6cb6ff]" : "border-line text-muted"}`}
+        >
           resource active-downloads://list
         </span>
-        <span className={`rounded border px-1.5 py-0.5 ${step > 0 ? "border-[#d2a8ff]/60 text-[#d2a8ff]" : "border-line text-muted"}`}>prompt download_workflow</span>
+        <span
+          className={`rounded border px-1.5 py-0.5 ${step > 0 ? "border-[#d2a8ff]/60 text-[#d2a8ff]" : "border-line text-muted"}`}
+        >
+          prompt download_workflow
+        </span>
         <span className="ml-auto flex gap-1.5">
           <button
             type="button"
@@ -143,7 +193,10 @@ export const McpTab = memo(function McpTab({ reduced }: { reduced: boolean }) {
             }
             if (e.t === "user") {
               return (
-                <div key={i} className="ml-auto max-w-[90%] rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-[13px] text-fg">
+                <div
+                  key={i}
+                  className="ml-auto max-w-[90%] rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-[13px] text-fg"
+                >
                   <div className="mb-0.5 text-[11px] uppercase tracking-wider text-accent">you</div>
                   <span className="break-words">{e.text}</span>
                 </div>
@@ -151,7 +204,10 @@ export const McpTab = memo(function McpTab({ reduced }: { reduced: boolean }) {
             }
             if (e.t === "assistant") {
               return (
-                <div key={i} className="max-w-[90%] rounded-lg border border-line bg-surface px-3 py-2 text-[13px] text-fg">
+                <div
+                  key={i}
+                  className="max-w-[90%] rounded-lg border border-line bg-surface px-3 py-2 text-[13px] text-fg"
+                >
                   <div className="mb-0.5 text-[11px] uppercase tracking-wider text-muted">assistant</div>
                   {e.text}
                 </div>
@@ -186,7 +242,9 @@ export const McpTab = memo(function McpTab({ reduced }: { reduced: boolean }) {
               <span className="inline-block motion-safe:animate-pulse">▍</span>
             </p>
           )}
-          {finished && <p className="text-center text-[11px] text-muted">— end of simulated session. Nothing was downloaded. —</p>}
+          {finished && (
+            <p className="text-center text-[11px] text-muted">— end of simulated session. Nothing was downloaded. —</p>
+          )}
         </div>
       </div>
     </div>

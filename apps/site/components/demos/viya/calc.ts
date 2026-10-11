@@ -1,4 +1,13 @@
-import type { ExtractProvider, ParseProvider, Passenger, RawRow, Attempt, Extraction, Stop, VehicleSeed } from "./types";
+import type {
+  ExtractProvider,
+  ParseProvider,
+  Passenger,
+  RawRow,
+  Attempt,
+  Extraction,
+  Stop,
+  VehicleSeed,
+} from "./types";
 
 /* ---------------- routing math ---------------- */
 
@@ -84,11 +93,36 @@ export interface ProviderMeta {
 }
 
 export const PROVIDERS: Record<ExtractProvider, ProviderMeta> = {
-  deepseek_chat: { label: "DeepSeek Chat", blurb: "Default route, lowest cost", confidence: 96, ms: 1840, flagEvery: 6 },
+  deepseek_chat: {
+    label: "DeepSeek Chat",
+    blurb: "Default route, lowest cost",
+    confidence: 96,
+    ms: 1840,
+    flagEvery: 6,
+  },
   openai_gpt_4_1_mini: { label: "GPT-4.1 mini", blurb: "Strong on messy PDFs", confidence: 98, ms: 2210, flagEvery: 9 },
-  gemini_2_5_flash_lite: { label: "Gemini 2.5 Flash-Lite", blurb: "Fastest, lighter checks", confidence: 93, ms: 1190, flagEvery: 5 },
-  minimax_m2_5_highspeed: { label: "MiniMax M2.5 HS", blurb: "High speed, rate-limited", confidence: 95, ms: 1420, flagEvery: 7, flaky: true },
-  zai_glm: { label: "Z.ai GLM", blurb: "Alternate route for multilingual sheets", confidence: 91, ms: 1650, flagEvery: 4 },
+  gemini_2_5_flash_lite: {
+    label: "Gemini 2.5 Flash-Lite",
+    blurb: "Fastest, lighter checks",
+    confidence: 93,
+    ms: 1190,
+    flagEvery: 5,
+  },
+  minimax_m2_5_highspeed: {
+    label: "MiniMax M2.5 HS",
+    blurb: "High speed, rate-limited",
+    confidence: 95,
+    ms: 1420,
+    flagEvery: 7,
+    flaky: true,
+  },
+  zai_glm: {
+    label: "Z.ai GLM",
+    blurb: "Alternate route for multilingual sheets",
+    confidence: 91,
+    ms: 1650,
+    flagEvery: 4,
+  },
 };
 
 export const PROVIDER_ORDER = Object.keys(PROVIDERS) as ExtractProvider[];
@@ -109,7 +143,11 @@ export function chainFor(provider: ExtractProvider): ExtractProvider[] {
 }
 
 /** Deterministic canned extraction: same input and provider always give the same result. */
-export function runExtraction(manifestId: string, raw: RawRow[], requested: ExtractProvider): { passengers: Passenger[]; extraction: Extraction } {
+export function runExtraction(
+  manifestId: string,
+  raw: RawRow[],
+  requested: ExtractProvider,
+): { passengers: Passenger[]; extraction: Extraction } {
   const chain = chainFor(requested);
   const meta0 = PROVIDERS[requested];
   const winner = meta0.flaky ? chain[1] : chain[0];

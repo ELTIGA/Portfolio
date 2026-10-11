@@ -67,17 +67,30 @@ export default function Demo() {
   const switchRole = (next: Role) => {
     if (next === role) return;
     setRole(next);
-    push(next === "guide" ? "Viewing as Guide. Only Customer Lists is available." : "Viewing as Operator. All sections are available.");
+    push(
+      next === "guide"
+        ? "Viewing as Guide. Only Customer Lists is available."
+        : "Viewing as Operator. All sections are available.",
+    );
   };
 
   const touch = role === "guide";
 
   return (
     <LayoutContext.Provider value={{ bp, contentW }}>
-      <div ref={rootRef} className="eo relative flex h-full min-h-0 flex-col overflow-hidden" tabIndex={-1} data-bp={bp} style={{ colorScheme: "dark" }}>
+      <div
+        ref={rootRef}
+        className="eo relative flex h-full min-h-0 flex-col overflow-hidden"
+        tabIndex={-1}
+        data-bp={bp}
+        style={{ colorScheme: "dark" }}
+      >
         <style>{css}</style>
 
-        <header className="flex shrink-0 items-center justify-between gap-2 border-b px-3" style={{ borderColor: "var(--line)", background: "var(--side)", minHeight: touch ? 52 : 46 }}>
+        <header
+          className="flex shrink-0 items-center justify-between gap-2 border-b px-3"
+          style={{ borderColor: "var(--line)", background: "var(--side)", minHeight: touch ? 52 : 46 }}
+        >
           {bp === "narrow" ? (
             <Brand />
           ) : (
@@ -86,7 +99,11 @@ export default function Demo() {
             </p>
           )}
           <div className="flex shrink-0 items-center gap-2">
-            {bp === "wide" && <Chip tone="brand" dot={false}>Sample data</Chip>}
+            {bp === "wide" && (
+              <Chip tone="brand" dot={false}>
+                Sample data
+              </Chip>
+            )}
             <div className="eo-seg" role="group" aria-label="View as role">
               {(["operator", "guide"] as Role[]).map((r) => (
                 <button key={r} type="button" aria-pressed={role === r} onClick={() => switchRole(r)}>
@@ -98,14 +115,27 @@ export default function Demo() {
         </header>
 
         {bp === "narrow" && (
-          <nav aria-label="Sections" className="shrink-0 border-b" style={{ borderColor: "var(--line)", background: "var(--side)" }}>
+          <nav
+            aria-label="Sections"
+            className="shrink-0 border-b"
+            style={{ borderColor: "var(--line)", background: "var(--side)" }}
+          >
             <ul className="grid" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0,1fr))` }}>
               {items.map((n) => (
                 <li key={n.id}>
                   <button
                     type="button"
                     className="eo-navbtn flex-col"
-                    style={{ gap: 2, minHeight: 48, justifyContent: "center", borderRadius: 0, fontSize: 11.5, paddingInline: 2, borderWidth: 0, borderBottom: "2px solid " + (n.id === screen ? "var(--brand)" : "transparent") }}
+                    style={{
+                      gap: 2,
+                      minHeight: 48,
+                      justifyContent: "center",
+                      borderRadius: 0,
+                      fontSize: 11.5,
+                      paddingInline: 2,
+                      borderWidth: 0,
+                      borderBottom: "2px solid " + (n.id === screen ? "var(--brand)" : "transparent"),
+                    }}
                     aria-current={n.id === screen ? "page" : undefined}
                     onClick={() => setActive(n.id)}
                   >
@@ -120,7 +150,10 @@ export default function Demo() {
 
         <div className="flex min-h-0 flex-1">
           {bp !== "narrow" && (
-            <aside className="flex shrink-0 flex-col justify-between border-r" style={{ width: SIDEBAR_W[bp], borderColor: "var(--line)", background: "var(--side)" }}>
+            <aside
+              className="flex shrink-0 flex-col justify-between border-r"
+              style={{ width: SIDEBAR_W[bp], borderColor: "var(--line)", background: "var(--side)" }}
+            >
               <div className="p-2">
                 <div className={bp === "wide" ? "px-1.5 py-2" : "grid place-items-center py-2"}>
                   <Brand label={bp === "wide"} />
@@ -150,7 +183,9 @@ export default function Demo() {
                 <div className="border-t p-3 text-[12px]" style={{ borderColor: "var(--line)" }}>
                   <p className="font-medium">{role === "operator" ? "Sample Operator" : "Sample Guide"}</p>
                   <p className="eo-muted">
-                    {role === "operator" ? "Operator: all sections" : `Guide: ${NAV.length - items.length} sections hidden`}
+                    {role === "operator"
+                      ? "Operator: all sections"
+                      : `Guide: ${NAV.length - items.length} sections hidden`}
                   </p>
                 </div>
               )}
@@ -159,8 +194,19 @@ export default function Demo() {
 
           <div role="region" className="eo-scroll min-w-0 flex-1 overflow-y-auto" aria-label={current.label}>
             {screen === "manifest" && <ManifestScreen m={manifest} contentW={contentW} />}
-            {screen === "drivers" && <DriversScreen drivers={drivers} setDrivers={setDrivers} open={openBatches} setOpen={setOpenBatches} push={push} compact={contentW < 560} />}
-            {screen === "doubles" && <DoublesScreen resolved={resolved} setResolved={setResolved} push={push} compact={contentW < 600} />}
+            {screen === "drivers" && (
+              <DriversScreen
+                drivers={drivers}
+                setDrivers={setDrivers}
+                open={openBatches}
+                setOpen={setOpenBatches}
+                push={push}
+                compact={contentW < 560}
+              />
+            )}
+            {screen === "doubles" && (
+              <DoublesScreen resolved={resolved} setResolved={setResolved} push={push} compact={contentW < 600} />
+            )}
             {screen === "customers" && <CustomersScreen role={role} boarded={boarded} setBoarded={setBoarded} />}
           </div>
         </div>
@@ -174,12 +220,29 @@ export default function Demo() {
 function Brand({ label = true }: { label?: boolean }) {
   return (
     <span className="flex items-center gap-2">
-      <span className="grid place-items-center rounded-md" style={{ width: 24, height: 24, background: "var(--brand)", color: "#17140f" }} aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+      <span
+        className="grid place-items-center rounded-md"
+        style={{ width: 24, height: 24, background: "var(--brand)", color: "#17140f" }}
+        aria-hidden="true"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M5 12h9M10 6l6 6-6 6M19 5v14" />
         </svg>
       </span>
-      {label ? <span className="text-[13.5px] font-semibold tracking-tight">Express Ops</span> : <span className="sr-only">Express Ops</span>}
+      {label ? (
+        <span className="text-[13.5px] font-semibold tracking-tight">Express Ops</span>
+      ) : (
+        <span className="sr-only">Express Ops</span>
+      )}
     </span>
   );
 }

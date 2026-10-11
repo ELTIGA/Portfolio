@@ -46,7 +46,8 @@ export function Cursor() {
       targetScale = text === null ? 1 : text ? 3.2 : 1.8;
       r.dataset.active = String(text !== null);
       if (label.current) label.current.textContent = text ?? "";
-      if (coords.current) coords.current.textContent = `${String(Math.round(x)).padStart(4, "0")}·${String(Math.round(y)).padStart(4, "0")}`;
+      if (coords.current)
+        coords.current.textContent = `${String(Math.round(x)).padStart(4, "0")}·${String(Math.round(y)).padStart(4, "0")}`;
     };
     const onLeave = () => {
       shown = false;
@@ -105,8 +106,14 @@ export function Cursor() {
         <span className="absolute bottom-0 left-1/2 h-1.5 w-px -translate-x-1/2 bg-accent" />
         <span className="absolute left-0 top-1/2 h-px w-1.5 -translate-y-1/2 bg-accent" />
         <span className="absolute right-0 top-1/2 h-px w-1.5 -translate-y-1/2 bg-accent" />
-        <span ref={label} className="relative font-mono text-[4px] font-semibold uppercase tracking-[0.2em] text-accent" />
-        <span ref={coords} className="absolute left-full top-full ml-1 mt-1 whitespace-nowrap font-mono text-[9px] text-muted group-data-[active=true]:hidden" />
+        <span
+          ref={label}
+          className="relative font-mono text-[4px] font-semibold uppercase tracking-[0.2em] text-accent"
+        />
+        <span
+          ref={coords}
+          className="absolute left-full top-full ml-1 mt-1 whitespace-nowrap font-mono text-[9px] text-muted group-data-[active=true]:hidden"
+        />
       </div>
     </div>
   );

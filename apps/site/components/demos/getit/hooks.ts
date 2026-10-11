@@ -42,5 +42,9 @@ function subscribeVisibility(cb: () => void) {
 
 /** False while the tab is in the background. */
 export function usePageVisible(): boolean {
-  return useSyncExternalStore(subscribeVisibility, () => !document.hidden, () => true);
+  return useSyncExternalStore(
+    subscribeVisibility,
+    () => !document.hidden,
+    () => true,
+  );
 }

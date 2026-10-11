@@ -35,7 +35,12 @@ export function Counter({ value, className = "" }: { value: string; className?: 
       <span className="sr-only">{value}</span>
       <span aria-hidden="true" className="inline-flex items-baseline">
         {Array.from(value).map((ch, i) => {
-          if (!/\d/.test(ch)) return <span key={i} className="whitespace-pre">{ch}</span>;
+          if (!/\d/.test(ch))
+            return (
+              <span key={i} className="whitespace-pre">
+                {ch}
+              </span>
+            );
           const d = Number(ch);
           const order = digitIndex++;
           const offset = phase === "reset" ? 0 : (d + 10) * 5;
@@ -45,11 +50,14 @@ export function Counter({ value, className = "" }: { value: string; className?: 
                 className="flex flex-col"
                 style={{
                   transform: `translateY(-${offset}%)`,
-                  transition: phase === "roll" ? `transform ${1.6 + order * 0.25}s cubic-bezier(0.16, 1, 0.3, 1)` : "none",
+                  transition:
+                    phase === "roll" ? `transform ${1.6 + order * 0.25}s cubic-bezier(0.16, 1, 0.3, 1)` : "none",
                 }}
               >
                 {DIGITS.map((n, k) => (
-                  <span key={k} className="block h-[1em] leading-none">{n}</span>
+                  <span key={k} className="block h-[1em] leading-none">
+                    {n}
+                  </span>
                 ))}
               </span>
             </span>

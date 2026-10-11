@@ -71,7 +71,13 @@ export interface AnswerResult {
 }
 
 /** Pure scoring step so the UI can show exactly what changed. */
-export function applyAnswer(p: Progress, q: Question, correct: boolean, confidence: Confidence | null, mode: Mode): AnswerResult {
+export function applyAnswer(
+  p: Progress,
+  q: Question,
+  correct: boolean,
+  confidence: Confidence | null,
+  mode: Mode,
+): AnswerResult {
   const events: string[] = [];
   const base = mode === "challenge" ? 7 : 5;
   // Once today's target is met, the x1.5 bonus applies to every further correct answer.

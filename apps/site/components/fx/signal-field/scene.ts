@@ -196,7 +196,12 @@ function budgetDpr(w: number, h: number, megapixels: number) {
 }
 
 export function createSignalScene({ canvas, data, quality, initial, onSample }: Options): SignalScene {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: false,
+    alpha: false,
+    powerPreference: "high-performance",
+  });
   renderer.setClearColor(0x05070a, 1);
 
   const scene = new THREE.Scene();
@@ -379,10 +384,11 @@ export function createSignalScene({ canvas, data, quality, initial, onSample }: 
    * page pipeline 120 times a second on a ProMotion display.
    */
   const schedule = (delay: number) => {
-    if (delay > 4) timer = window.setTimeout(() => {
-      timer = 0;
-      raf = requestAnimationFrame(frame);
-    }, delay);
+    if (delay > 4)
+      timer = window.setTimeout(() => {
+        timer = 0;
+        raf = requestAnimationFrame(frame);
+      }, delay);
     else raf = requestAnimationFrame(frame);
   };
 

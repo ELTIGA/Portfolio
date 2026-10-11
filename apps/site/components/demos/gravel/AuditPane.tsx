@@ -30,12 +30,25 @@ export const AuditPane = memo(function AuditPane({ audit, wide }: { audit: Audit
   const last = audit[n - 1];
   const shown = n > VISIBLE ? audit.slice(-VISIBLE) : audit;
   return (
-    <Pane id="gravel-audit" title="Audit log" right={<span className="text-[11px] text-muted">append-only · {n} entries · chain {last?.hash.slice(0, 6)}</span>}>
+    <Pane
+      id="gravel-audit"
+      title="Audit log"
+      right={
+        <span className="text-[11px] text-muted">
+          append-only · {n} entries · chain {last?.hash.slice(0, 6)}
+        </span>
+      }
+    >
       <div ref={ref} role="log" aria-label="Audit log" className="max-h-60 min-h-32 flex-1 overflow-auto text-[12px]">
-        {n > VISIBLE && <p className="px-3 py-1 text-[11px] text-muted">… {n - VISIBLE} earlier entries (chain intact)</p>}
+        {n > VISIBLE && (
+          <p className="px-3 py-1 text-[11px] text-muted">… {n - VISIBLE} earlier entries (chain intact)</p>
+        )}
         {shown.map((e) =>
           wide ? (
-            <div key={e.seq} className="grid grid-cols-[3rem_4.25rem_5.5rem_8rem_10rem_minmax(0,1fr)_3.5rem] items-baseline gap-x-2 border-b border-line/40 px-3 py-1">
+            <div
+              key={e.seq}
+              className="grid grid-cols-[3rem_4.25rem_5.5rem_8rem_10rem_minmax(0,1fr)_3.5rem] items-baseline gap-x-2 border-b border-line/40 px-3 py-1"
+            >
               <span className="text-muted">#{String(e.seq).padStart(4, "0")}</span>
               <span className="text-muted">{e.time}</span>
               <Badge color={COLOR[e.decision]}>{e.decision}</Badge>

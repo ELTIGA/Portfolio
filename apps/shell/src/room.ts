@@ -53,7 +53,10 @@ function std(color: number, roughness = 0.75, metalness = 0, extra: THREE.MeshSt
 }
 
 function rbox(w: number, h: number, d: number, r: number, mat: THREE.Material, seg = 3) {
-  const m = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2 - 0.1, h / 2 - 0.1, d / 2 - 0.1)), mat);
+  const m = new THREE.Mesh(
+    new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2 - 0.1, h / 2 - 0.1, d / 2 - 0.1)),
+    mat,
+  );
   m.castShadow = true;
   m.receiveShadow = true;
   return m;
@@ -116,7 +119,10 @@ export function buildRoom(): Room {
   rug.scale.set(1.2, 1, 1);
   rug.receiveShadow = true;
   group.add(rug);
-  const rugRing = new THREE.Mesh(new THREE.RingGeometry(1160, 1190, 64), std(COLORS.accent, 0.8, 0, { emissive: COLORS.accent, emissiveIntensity: 0.07 }));
+  const rugRing = new THREE.Mesh(
+    new THREE.RingGeometry(1160, 1190, 64),
+    std(COLORS.accent, 0.8, 0, { emissive: COLORS.accent, emissiveIntensity: 0.07 }),
+  );
   rugRing.rotation.x = -Math.PI / 2;
   rugRing.position.set(-50, 3, 330);
   rugRing.scale.set(1.2, 1, 1);
@@ -302,11 +308,17 @@ export function buildRoom(): Room {
   const headPivot = new THREE.Group();
   headPivot.position.copy(head);
   headPivot.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), beam);
-  const shade = new THREE.Mesh(new THREE.ConeGeometry(78, 120, 32, 1, true), std(0x242b32, 0.4, 0.6, { side: THREE.DoubleSide }));
+  const shade = new THREE.Mesh(
+    new THREE.ConeGeometry(78, 120, 32, 1, true),
+    std(0x242b32, 0.4, 0.6, { side: THREE.DoubleSide }),
+  );
   shade.position.y = -40;
   shade.castShadow = false;
   headPivot.add(shade);
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(28, 16, 12), new THREE.MeshBasicMaterial({ color: COLORS.warm }));
+  const bulb = new THREE.Mesh(
+    new THREE.SphereGeometry(28, 16, 12),
+    new THREE.MeshBasicMaterial({ color: COLORS.warm }),
+  );
   bulb.position.y = -72;
   headPivot.add(bulb);
   group.add(headPivot);
@@ -336,7 +348,10 @@ export function buildRoom(): Room {
       const tilt = new THREE.Group();
       tilt.rotation.z = 0.12 + rand() * 0.75;
       const len = 150 + rand() * 170;
-      const leaf = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), std(rand() > 0.5 ? COLORS.leaf : COLORS.leafDark, 0.65));
+      const leaf = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 14, 10),
+        std(rand() > 0.5 ? COLORS.leaf : COLORS.leafDark, 0.65),
+      );
       leaf.scale.set(26 + rand() * 12, len / 2, 6);
       leaf.position.y = len / 2;
       leaf.rotation.y = rand() * 0.6;
@@ -403,7 +418,10 @@ export function buildRoom(): Room {
     if (bx > -1020) break;
   }
   // small cube + sphere ornaments on the shelf
-  const orb = new THREE.Mesh(new THREE.IcosahedronGeometry(52, 1), std(COLORS.accent, 0.35, 0.2, { emissive: COLORS.accent, emissiveIntensity: 0.18, flatShading: true }));
+  const orb = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(52, 1),
+    std(COLORS.accent, 0.35, 0.2, { emissive: COLORS.accent, emissiveIntensity: 0.18, flatShading: true }),
+  );
   orb.position.set(-640, 1665 + 52, -575);
   orb.castShadow = true;
   group.add(orb);
@@ -411,13 +429,24 @@ export function buildRoom(): Room {
   const photo = new THREE.Group();
   photo.position.set(-780, 1665 + 80, -620);
   photo.add(rbox(150, 190, 14, 3, frameMat));
-  photo.add(at(new THREE.Mesh(new THREE.PlaneGeometry(120, 160), new THREE.MeshBasicMaterial({ color: 0x1a3a30 })), 0, 0, 8));
+  photo.add(
+    at(new THREE.Mesh(new THREE.PlaneGeometry(120, 160), new THREE.MeshBasicMaterial({ color: 0x1a3a30 })), 0, 0, 8),
+  );
   photo.rotation.z = 0.04;
   group.add(photo);
 
   // Wall art: a Porsche 911 GT3 RS print right of the monitor, three album sleeves above it.
   const covers: Promise<void>[] = [];
-  function hang(x: number, y: number, frameW: number, frameH: number, artW: number, artH: number, url: string, label: string) {
+  function hang(
+    x: number,
+    y: number,
+    frameW: number,
+    frameH: number,
+    artW: number,
+    artH: number,
+    url: string,
+    label: string,
+  ) {
     const art = new THREE.Group();
     art.position.set(x, y, -692);
     art.add(rbox(frameW, frameH, 18, 4, frameMat));

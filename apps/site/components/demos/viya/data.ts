@@ -11,7 +11,16 @@ function rows(text: string): RawRow[] {
     });
 }
 
-const stop = (id: string, hotel: string, lead: string, adults: number, children: number, infants: number, x: number, y: number): Stop => ({
+const stop = (
+  id: string,
+  hotel: string,
+  lead: string,
+  adults: number,
+  children: number,
+  infants: number,
+  x: number,
+  y: number,
+): Stop => ({
   id,
   hotel,
   lead,

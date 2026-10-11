@@ -46,7 +46,10 @@ function Surface() {
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[radial-gradient(ellipse_at_top,#16202b,#05070a_70%)]">
-      <div aria-hidden="true" className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]"
+      />
       <MenuBar />
       <main aria-label="Desktop">
         {wins.map((w) => (
@@ -83,8 +86,15 @@ export function Desktop() {
         <div>
           <p className="font-mono text-xs uppercase tracking-widest text-accent">desktop experience</p>
           <h1 className="mt-2 text-2xl font-semibold">Best on a larger screen</h1>
-          <p className="mt-2 max-w-sm text-sm text-muted">The windowed desktop needs room. The full portfolio works on any device.</p>
-          <Link href="/" className="mt-5 inline-flex rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-accent-ink">Go to the portfolio</Link>
+          <p className="mt-2 max-w-sm text-sm text-muted">
+            The windowed desktop needs room. The full portfolio works on any device.
+          </p>
+          <Link
+            href="/"
+            className="mt-5 inline-flex rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-accent-ink"
+          >
+            Go to the portfolio
+          </Link>
         </div>
       </main>
     );

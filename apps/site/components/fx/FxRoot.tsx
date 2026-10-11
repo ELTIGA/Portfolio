@@ -154,7 +154,13 @@ export function FxRoot() {
             start: "top 88%",
             once: true,
             onEnter: (batch) =>
-              gsap.to(batch, { ...to[kind], duration: kind === "wipe" ? 1.1 : 0.9, ease: "expo.out", stagger: 0.08, overwrite: true }),
+              gsap.to(batch, {
+                ...to[kind],
+                duration: kind === "wipe" ? 1.1 : 0.9,
+                ease: "expo.out",
+                stagger: 0.08,
+                overwrite: true,
+              }),
           });
         }
 
@@ -171,7 +177,11 @@ export function FxRoot() {
           gsap.fromTo(
             spine,
             { scaleY: 0 },
-            { scaleY: 1, ease: "none", scrollTrigger: { trigger: spine.parentElement, start: "top 70%", end: "bottom 55%", scrub: true } },
+            {
+              scaleY: 1,
+              ease: "none",
+              scrollTrigger: { trigger: spine.parentElement, start: "top 70%", end: "bottom 55%", scrub: true },
+            },
           );
         }
 

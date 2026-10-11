@@ -27,7 +27,10 @@ export function useElementWidth(ref: RefObject<HTMLElement | null>, fallback = 9
 
 export type ToastAction = { label: string; run: () => void };
 export type Toast = { id: number; message: string; tone: "neutral" | "ok" | "warn"; action?: ToastAction };
-export type PushToast = (message: string, opts?: { tone?: Toast["tone"]; action?: ToastAction; ttl?: number }) => number;
+export type PushToast = (
+  message: string,
+  opts?: { tone?: Toast["tone"]; action?: ToastAction; ttl?: number },
+) => number;
 
 export function useToasts() {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -45,7 +48,10 @@ export function useToasts() {
     (message, opts = {}) => {
       const id = nextId.current++;
       setToasts((list) => [...list.slice(-1), { id, message, tone: opts.tone ?? "neutral", action: opts.action }]);
-      timers.current.set(id, setTimeout(() => dismiss(id), opts.ttl ?? (opts.action ? 9000 : 5000)));
+      timers.current.set(
+        id,
+        setTimeout(() => dismiss(id), opts.ttl ?? (opts.action ? 9000 : 5000)),
+      );
       return id;
     },
     [dismiss],

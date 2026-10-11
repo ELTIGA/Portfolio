@@ -13,7 +13,12 @@ const CHANNELS: { id: Channel; label: string; hint: string }[] = [
 ];
 
 const STEPS: DispatchStatus[] = ["queued", "sent", "delivered"];
-const STATUS_TONE: Record<DispatchStatus, Tone> = { idle: "neutral", queued: "neutral", sent: "primary", delivered: "ok" };
+const STATUS_TONE: Record<DispatchStatus, Tone> = {
+  idle: "neutral",
+  queued: "neutral",
+  sent: "primary",
+  delivered: "ok",
+};
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
 interface Built {
@@ -39,8 +44,25 @@ function build(seed: TenantSeed, v: VehicleSeed, order: string[]): Built {
   };
 }
 
-function Preview({ channel, msg, vehicle, canReply, onQuick }: { channel: Channel; msg: Built; vehicle: VehicleSeed; canReply: boolean; onQuick: (text: string) => void }) {
-  const handle = channel === "whatsapp" ? vehicle.driver.whatsapp : channel === "telegram" ? vehicle.driver.telegram : vehicle.driver.slack;
+function Preview({
+  channel,
+  msg,
+  vehicle,
+  canReply,
+  onQuick,
+}: {
+  channel: Channel;
+  msg: Built;
+  vehicle: VehicleSeed;
+  canReply: boolean;
+  onQuick: (text: string) => void;
+}) {
+  const handle =
+    channel === "whatsapp"
+      ? vehicle.driver.whatsapp
+      : channel === "telegram"
+        ? vehicle.driver.telegram
+        : vehicle.driver.slack;
   const body = (
     <>
       <p className="font-semibold">{msg.greeting}</p>
@@ -61,7 +83,9 @@ function Preview({ channel, msg, vehicle, canReply, onQuick }: { channel: Channe
   );
   const reply = (
     <p className="mt-2 border-t border-black/10 pt-2 text-xs">
-      Reply <code className="rounded bg-black/5 px-1 font-mono">1</code> confirm · <code className="rounded bg-black/5 px-1 font-mono">2</code> issue · <code className="rounded bg-black/5 px-1 font-mono">3 N</code> no-show of N pax
+      Reply <code className="rounded bg-black/5 px-1 font-mono">1</code> confirm ·{" "}
+      <code className="rounded bg-black/5 px-1 font-mono">2</code> issue ·{" "}
+      <code className="rounded bg-black/5 px-1 font-mono">3 N</code> no-show of N pax
     </p>
   );
 
@@ -69,7 +93,10 @@ function Preview({ channel, msg, vehicle, canReply, onQuick }: { channel: Channe
     return (
       <div className="rounded-xl border border-(--v-line) bg-white p-3 text-[13px] leading-snug">
         <div className="mb-2 flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-(--v-primary) text-xs font-bold text-white" aria-hidden="true">
+          <span
+            className="grid h-7 w-7 place-items-center rounded-md bg-(--v-primary) text-xs font-bold text-white"
+            aria-hidden="true"
+          >
             V
           </span>
           <span className="text-xs">
@@ -89,7 +116,9 @@ function Preview({ channel, msg, vehicle, canReply, onQuick }: { channel: Channe
             No-show (1)
           </Btn>
         </div>
-        <p className="mt-1.5 text-xs text-(--v-muted)">Buttons activate once the message is delivered. Typed replies like 1, 2 or 3 N also work.</p>
+        <p className="mt-1.5 text-xs text-(--v-muted)">
+          Buttons activate once the message is delivered. Typed replies like 1, 2 or 3 N also work.
+        </p>
       </div>
     );
   }
@@ -99,7 +128,10 @@ function Preview({ channel, msg, vehicle, canReply, onQuick }: { channel: Channe
       <p className="mb-2 text-center text-[11px] font-semibold text-(--v-muted)">
         {wa ? "WhatsApp" : "Telegram"} · {handle}
       </p>
-      <div className="max-w-[92%] rounded-xl rounded-tl-sm p-3 text-[13px] leading-snug text-(--v-fg) shadow-sm" style={{ background: wa ? "#DDF3CF" : "#FFFFFF" }}>
+      <div
+        className="max-w-[92%] rounded-xl rounded-tl-sm p-3 text-[13px] leading-snug text-(--v-fg) shadow-sm"
+        style={{ background: wa ? "#DDF3CF" : "#FFFFFF" }}
+      >
         {body}
         {reply}
       </div>
@@ -116,12 +148,21 @@ function Stepper({ run }: { run: DriverRun }) {
           <span
             className={cx(
               "grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[10px] font-bold",
-              i <= reached ? (s === "delivered" ? "bg-(--v-ok) text-white" : "bg-(--v-primary) text-white") : "bg-(--v-soft) text-(--v-muted)",
+              i <= reached
+                ? s === "delivered"
+                  ? "bg-(--v-ok) text-white"
+                  : "bg-(--v-primary) text-white"
+                : "bg-(--v-soft) text-(--v-muted)",
             )}
           >
             {cap(s)}
           </span>
-          {i < STEPS.length - 1 && <span className={cx("h-0.5 w-3 rounded", i < reached ? "bg-(--v-primary)" : "bg-(--v-line)")} aria-hidden="true" />}
+          {i < STEPS.length - 1 && (
+            <span
+              className={cx("h-0.5 w-3 rounded", i < reached ? "bg-(--v-primary)" : "bg-(--v-line)")}
+              aria-hidden="true"
+            />
+          )}
         </li>
       ))}
     </ol>
@@ -193,7 +234,9 @@ export function DispatchScreen({ store }: { store: Store }) {
                   Reset
                 </Btn>
               )}
-              <span className="text-xs text-(--v-muted) tabular-nums">{delivered}/{seed.vehicles.length} delivered</span>
+              <span className="text-xs text-(--v-muted) tabular-nums">
+                {delivered}/{seed.vehicles.length} delivered
+              </span>
             </div>
           </Card>
 
@@ -207,22 +250,33 @@ export function DispatchScreen({ store }: { store: Store }) {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold">
-                        <span className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-baseline" style={{ background: v.color }} aria-hidden="true" />
+                        <span
+                          className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-baseline"
+                          style={{ background: v.color }}
+                          aria-hidden="true"
+                        />
                         {v.driver.name}
                       </p>
                       <p className="truncate text-xs text-(--v-muted)">
-                        {v.label} · {pax - (r?.kind === "no_show" ? (r.n ?? 0) : 0)} pax{r?.kind === "no_show" ? ` (was ${pax})` : ""}
+                        {v.label} · {pax - (r?.kind === "no_show" ? (r.n ?? 0) : 0)} pax
+                        {r?.kind === "no_show" ? ` (was ${pax})` : ""}
                       </p>
                     </div>
                     <span aria-live="off">
-                      <Chip tone={STATUS_TONE[run.status]}>{run.status === "idle" ? "Not dispatched" : cap(run.status)}</Chip>
+                      <Chip tone={STATUS_TONE[run.status]}>
+                        {run.status === "idle" ? "Not dispatched" : cap(run.status)}
+                      </Chip>
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     {run.status !== "idle" && <Stepper run={run} />}
                     {r && (
                       <Chip tone={r.kind === "confirm" ? "ok" : r.kind === "issue" ? "bad" : "warn"}>
-                        {r.kind === "confirm" ? "Confirmed" : r.kind === "issue" ? "Issue reported" : `No-show × ${r.n}`}
+                        {r.kind === "confirm"
+                          ? "Confirmed"
+                          : r.kind === "issue"
+                            ? "Issue reported"
+                            : `No-show × ${r.n}`}
                       </Chip>
                     )}
                   </div>
@@ -240,7 +294,12 @@ export function DispatchScreen({ store }: { store: Store }) {
                 <label htmlFor={`${uid}-pv`} className="text-xs text-(--v-muted)">
                   Driver
                 </label>
-                <select id={`${uid}-pv`} value={previewId} onChange={(e) => setPreviewId(e.target.value)} className="h-8 rounded-lg border border-(--v-line) bg-white px-2 text-sm">
+                <select
+                  id={`${uid}-pv`}
+                  value={previewId}
+                  onChange={(e) => setPreviewId(e.target.value)}
+                  className="h-8 rounded-lg border border-(--v-line) bg-white px-2 text-sm"
+                >
                   {seed.vehicles.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.driver.name} ({v.label})
@@ -250,15 +309,23 @@ export function DispatchScreen({ store }: { store: Store }) {
               </div>
             </div>
             <div className="mt-2">
-              <Preview channel={d.channel} msg={msg} vehicle={vehicle} canReply={d.runs[vehicle.id].status === "delivered"} onQuick={(t) => send(vehicle.id, t)} />
+              <Preview
+                channel={d.channel}
+                msg={msg}
+                vehicle={vehicle}
+                canReply={d.runs[vehicle.id].status === "delivered"}
+                onQuick={(t) => send(vehicle.id, t)}
+              />
             </div>
           </Card>
 
           <Card className="p-3">
             <h3 className="text-sm font-bold">Simulate a driver reply</h3>
             <p className="mt-0.5 text-xs text-(--v-muted)">
-              Type <code className="rounded bg-(--v-soft) px-1 font-mono">1</code> to confirm, <code className="rounded bg-(--v-soft) px-1 font-mono">2</code> for an issue, or{" "}
-              <code className="rounded bg-(--v-soft) px-1 font-mono">3 N</code> for N no-shows. Replies work after delivery.
+              Type <code className="rounded bg-(--v-soft) px-1 font-mono">1</code> to confirm,{" "}
+              <code className="rounded bg-(--v-soft) px-1 font-mono">2</code> for an issue, or{" "}
+              <code className="rounded bg-(--v-soft) px-1 font-mono">3 N</code> for N no-shows. Replies work after
+              delivery.
             </p>
             <form
               className="mt-2 flex flex-wrap items-end gap-2"
@@ -271,10 +338,15 @@ export function DispatchScreen({ store }: { store: Store }) {
                 <label htmlFor={`${uid}-rd`} className={labelCls}>
                   From
                 </label>
-                <select id={`${uid}-rd`} value={replyVid} onChange={(e) => {
+                <select
+                  id={`${uid}-rd`}
+                  value={replyVid}
+                  onChange={(e) => {
                     setReplyVid(e.target.value);
                     setFeedback(null);
-                  }} className="mt-1 block h-9 rounded-lg border border-(--v-line) bg-white px-2 text-sm">
+                  }}
+                  className="mt-1 block h-9 rounded-lg border border-(--v-line) bg-white px-2 text-sm"
+                >
                   {seed.vehicles.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.driver.name}
@@ -315,8 +387,18 @@ export function DispatchScreen({ store }: { store: Store }) {
                 </button>
               ))}
             </div>
-            <p role="status" className={cx("mt-2 min-h-5 text-xs font-semibold", feedback ? (feedback.ok ? "text-(--v-ok)" : "text-(--v-bad)") : "text-(--v-muted)")}>
-              {feedback ? feedback.message : replyRun.status === "delivered" ? "Ready for a reply." : "Dispatch first, then reply once the message is delivered."}
+            <p
+              role="status"
+              className={cx(
+                "mt-2 min-h-5 text-xs font-semibold",
+                feedback ? (feedback.ok ? "text-(--v-ok)" : "text-(--v-bad)") : "text-(--v-muted)",
+              )}
+            >
+              {feedback
+                ? feedback.message
+                : replyRun.status === "delivered"
+                  ? "Ready for a reply."
+                  : "Dispatch first, then reply once the message is delivered."}
             </p>
           </Card>
 
@@ -325,14 +407,30 @@ export function DispatchScreen({ store }: { store: Store }) {
             {d.log.length === 0 ? (
               <p className="mt-1 text-xs text-(--v-muted)">Nothing yet. Press Dispatch to queue messages.</p>
             ) : (
-              <ul className="mt-2 max-h-56 space-y-1 overflow-auto font-mono text-xs" aria-label="Dispatch event log, newest first">
+              <ul
+                className="mt-2 max-h-56 space-y-1 overflow-auto font-mono text-xs"
+                aria-label="Dispatch event log, newest first"
+              >
                 {[...d.log].reverse().map((l) => (
                   <li key={l.id} className="flex gap-2">
                     <span className="shrink-0 text-(--v-muted) tabular-nums">{l.at}</span>
-                    <span role="img" className={cx("w-4 shrink-0 text-center font-bold", l.dir === "in" ? "text-(--v-primary-ink)" : "text-(--v-muted)")} aria-label={l.dir === "in" ? "inbound" : l.dir === "out" ? "outbound" : "system"}>
+                    <span
+                      role="img"
+                      className={cx(
+                        "w-4 shrink-0 text-center font-bold",
+                        l.dir === "in" ? "text-(--v-primary-ink)" : "text-(--v-muted)",
+                      )}
+                      aria-label={l.dir === "in" ? "inbound" : l.dir === "out" ? "outbound" : "system"}
+                    >
                       {l.dir === "in" ? "←" : l.dir === "out" ? "→" : "·"}
                     </span>
-                    <span className={cx("min-w-0 break-words", l.ok === false && "text-(--v-bad)", l.ok === true && "text-(--v-ok)")}>
+                    <span
+                      className={cx(
+                        "min-w-0 break-words",
+                        l.ok === false && "text-(--v-bad)",
+                        l.ok === true && "text-(--v-ok)",
+                      )}
+                    >
                       {l.dir === "in" ? `"${l.text}"` : l.text}
                       {l.note && l.dir === "in" ? <span className="text-(--v-muted)"> from {l.note}</span> : null}
                       {l.note && l.dir === "sys" && l.ok === false ? <span> ({l.note})</span> : null}

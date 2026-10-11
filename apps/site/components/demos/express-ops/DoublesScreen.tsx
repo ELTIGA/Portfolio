@@ -11,7 +11,12 @@ const SEV_TONE: Record<Severity, "bad" | "warn" | "info"> = { high: "bad", mediu
 const SEV_LABEL: Record<Severity, string> = { high: "High", medium: "Medium", low: "Low" };
 const FILTERS: Array<Severity | "all"> = ["all", "high", "medium", "low"];
 
-type Props = { resolved: Set<string>; setResolved: Dispatch<SetStateAction<Set<string>>>; push: PushToast; compact: boolean };
+type Props = {
+  resolved: Set<string>;
+  setResolved: Dispatch<SetStateAction<Set<string>>>;
+  push: PushToast;
+  compact: boolean;
+};
 
 export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
   const [openId, setOpenId] = useState<string | null>("db1");
@@ -30,7 +35,10 @@ export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
       return next;
     });
     if (done) {
-      push(`${d.title}: ${label.toLowerCase()} recorded.`, { tone: "ok", action: { label: "Undo", run: () => setDone(d, false) } });
+      push(`${d.title}: ${label.toLowerCase()} recorded.`, {
+        tone: "ok",
+        action: { label: "Undo", run: () => setDone(d, false) },
+      });
     }
   };
 
@@ -46,7 +54,14 @@ export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
 
       <div className="mb-3 flex flex-wrap gap-1.5" role="group" aria-label="Filter by severity">
         {FILTERS.map((f) => (
-          <button key={f} type="button" className="eo-btn" aria-pressed={filter === f} onClick={() => setFilter(f)} style={filter === f ? { background: "var(--fg)", color: "#17140f", borderColor: "var(--fg)" } : undefined}>
+          <button
+            key={f}
+            type="button"
+            className="eo-btn"
+            aria-pressed={filter === f}
+            onClick={() => setFilter(f)}
+            style={filter === f ? { background: "var(--fg)", color: "#17140f", borderColor: "var(--fg)" } : undefined}
+          >
             {f === "all" ? "All" : SEV_LABEL[f]}
           </button>
         ))}
@@ -72,7 +87,11 @@ export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-[13.5px] font-semibold">{d.title}</span>
-                    {done ? <Chip tone="ok">Resolved</Chip> : <Chip tone={SEV_TONE[d.severity]}>{SEV_LABEL[d.severity]}</Chip>}
+                    {done ? (
+                      <Chip tone="ok">Resolved</Chip>
+                    ) : (
+                      <Chip tone={SEV_TONE[d.severity]}>{SEV_LABEL[d.severity]}</Chip>
+                    )}
                     <span className="eo-muted text-[12px]">{d.kind}</span>
                   </span>
                   <span className="eo-muted mt-1 block text-[12.5px]">{d.summary}</span>
@@ -81,7 +100,10 @@ export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
                   <span className="mono text-[12px]" title="Severity score">
                     {d.score}
                   </span>
-                  <span className="inline-flex transition-transform" style={{ transform: isOpen ? "rotate(90deg)" : undefined, color: "var(--muted)" }}>
+                  <span
+                    className="inline-flex transition-transform"
+                    style={{ transform: isOpen ? "rotate(90deg)" : undefined, color: "var(--muted)" }}
+                  >
                     <Icon name="chevron" size={14} />
                   </span>
                 </span>
@@ -89,12 +111,26 @@ export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
 
               {isOpen && (
                 <div id={`db-${d.id}`} className="border-t px-3 pb-3 pt-3" style={{ borderColor: "var(--line)" }}>
-                  <div className="grid gap-2" style={{ gridTemplateColumns: compact || d.bookings.length === 1 ? "minmax(0,1fr)" : "repeat(2,minmax(0,1fr))" }}>
+                  <div
+                    className="grid gap-2"
+                    style={{
+                      gridTemplateColumns:
+                        compact || d.bookings.length === 1 ? "minmax(0,1fr)" : "repeat(2,minmax(0,1fr))",
+                    }}
+                  >
                     {d.bookings.map((b, i) => (
-                      <BookingCard key={`${b.ref}-${i}`} b={b} label={d.bookings.length > 1 ? `Booking ${String.fromCharCode(65 + i)}` : "Booking"} others={d.bookings.filter((_, j) => j !== i)} />
+                      <BookingCard
+                        key={`${b.ref}-${i}`}
+                        b={b}
+                        label={d.bookings.length > 1 ? `Booking ${String.fromCharCode(65 + i)}` : "Booking"}
+                        others={d.bookings.filter((_, j) => j !== i)}
+                      />
                     ))}
                   </div>
-                  <div className="mt-3 rounded-lg border p-3" style={{ borderColor: "#6d531c", background: "var(--brand-soft)" }}>
+                  <div
+                    className="mt-3 rounded-lg border p-3"
+                    style={{ borderColor: "#6d531c", background: "var(--brand-soft)" }}
+                  >
                     <p className="eo-eyebrow mb-1">Suggested action</p>
                     <p className="text-[12.5px]">{d.action}</p>
                     <div className="mt-2.5 flex flex-wrap gap-2">
@@ -110,11 +146,7 @@ export function DoublesScreen({ resolved, setResolved, push, compact }: Props) {
                             {d.resolveLabel}
                           </button>
                           {d.resolveLabel !== "Dismiss" && (
-                            <button
-                              type="button"
-                              className="eo-btn quiet"
-                              onClick={() => setDone(d, true, "Dismiss")}
-                            >
+                            <button type="button" className="eo-btn quiet" onClick={() => setDone(d, true, "Dismiss")}>
                               Dismiss
                             </button>
                           )}
@@ -161,7 +193,10 @@ function BookingCard({ b, label, others }: { b: Booking; label: string; others: 
           return (
             <div key={k} className="contents">
               <dt className="eo-muted text-[12px]">{k}</dt>
-              <dd className="mono min-w-0 break-words text-[12.5px]" style={differs ? { color: "var(--warn)", fontWeight: 600 } : undefined}>
+              <dd
+                className="mono min-w-0 break-words text-[12.5px]"
+                style={differs ? { color: "var(--warn)", fontWeight: 600 } : undefined}
+              >
                 {v}
                 {differs && <span className="sr-only"> (differs)</span>}
               </dd>

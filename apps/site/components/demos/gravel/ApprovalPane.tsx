@@ -10,14 +10,26 @@ export function ApprovalPane({ state, dispatch }: { state: State; dispatch: Disp
   const isWrite = call?.tool === "write_file";
 
   return (
-    <Pane id="gravel-approval" title="Approval prompt" right={call ? <span className="text-[11px]" style={{ color: AMBER }}>decision required</span> : undefined}>
+    <Pane
+      id="gravel-approval"
+      title="Approval prompt"
+      right={
+        call ? (
+          <span className="text-[11px]" style={{ color: AMBER }}>
+            decision required
+          </span>
+        ) : undefined
+      }
+    >
       {state.estop ? (
         <p className="p-3 text-[12px]" style={{ color: RED }}>
           Emergency stop is engaged. No requests can be approved until the operator resumes.
         </p>
       ) : !call || !check ? (
         <p className="p-3 text-[12px] text-muted">
-          {state.agentRunning ? "No request is waiting. In-scope calls will appear here for your decision; out-of-scope calls are blocked before they reach you." : "Agent is paused."}
+          {state.agentRunning
+            ? "No request is waiting. In-scope calls will appear here for your decision; out-of-scope calls are blocked before they reach you."
+            : "Agent is paused."}
         </p>
       ) : (
         <div className="flex flex-col gap-2.5 p-3">
@@ -47,7 +59,10 @@ export function ApprovalPane({ state, dispatch }: { state: State; dispatch: Disp
               aria-valuenow={Math.ceil(state.pendingLeft)}
               className="h-1.5 overflow-hidden rounded-sm bg-line"
             >
-              <div className="h-full bg-[#f5c542] transition-[width] duration-300 ease-linear" style={{ width: `${(state.pendingLeft / APPROVAL_SECONDS) * 100}%` }} />
+              <div
+                className="h-full bg-[#f5c542] transition-[width] duration-300 ease-linear"
+                style={{ width: `${(state.pendingLeft / APPROVAL_SECONDS) * 100}%` }}
+              />
             </div>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -57,7 +72,14 @@ export function ApprovalPane({ state, dispatch }: { state: State; dispatch: Disp
             <KeyButton k="d" tone="danger" onClick={() => dispatch({ type: "deny" })}>
               Deny
             </KeyButton>
-            <KeyButton k="e" disabled={isWrite} title={isWrite ? "write_file cannot be approved for the whole scope" : "Approve this and future matching calls"} onClick={() => dispatch({ type: "approve", always: true })}>
+            <KeyButton
+              k="e"
+              disabled={isWrite}
+              title={
+                isWrite ? "write_file cannot be approved for the whole scope" : "Approve this and future matching calls"
+              }
+              onClick={() => dispatch({ type: "approve", always: true })}
+            >
               Always for this scope
             </KeyButton>
           </div>

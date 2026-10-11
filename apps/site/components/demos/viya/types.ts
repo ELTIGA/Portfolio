@@ -1,10 +1,6 @@
 export type ParseProvider = "docling" | "native_sheet" | "mistral_ocr" | "llamaparse";
 export type ExtractProvider =
-  | "deepseek_chat"
-  | "openai_gpt_4_1_mini"
-  | "gemini_2_5_flash_lite"
-  | "minimax_m2_5_highspeed"
-  | "zai_glm";
+  "deepseek_chat" | "openai_gpt_4_1_mini" | "gemini_2_5_flash_lite" | "minimax_m2_5_highspeed" | "zai_glm";
 export type Channel = "whatsapp" | "telegram" | "slack";
 export type Screen = "manifests" | "routes" | "dispatch";
 

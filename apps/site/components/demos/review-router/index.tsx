@@ -36,7 +36,10 @@ export default function Demo() {
   return (
     <div className="@container h-full overflow-y-auto bg-bg">
       <div className="mx-auto flex min-h-full max-w-4xl flex-col items-center justify-center gap-4 p-4 @2xl:flex-row @2xl:gap-8">
-        <p className="w-full max-w-[320px] rounded-lg border border-line bg-surface px-3 py-2 font-mono text-xs @2xl:hidden" aria-hidden="true">
+        <p
+          className="w-full max-w-[320px] rounded-lg border border-line bg-surface px-3 py-2 font-mono text-xs @2xl:hidden"
+          aria-hidden="true"
+        >
           review_channel_click: <span className="text-accent">{events.length}</span>
         </p>
         <div className="w-full max-w-[320px] shrink-0">

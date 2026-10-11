@@ -16,10 +16,16 @@ const STATUS: Record<Status, { label: string; cls: string; tone: "accent" | "amb
   cancelled: { label: "cancelled", cls: "text-muted line-through", tone: "muted" },
 };
 
-const TONE: Record<Tone, string> = { info: "text-muted", ok: "text-accent", warn: "text-[#f5c542]", err: "text-[#ff6b6b]" };
+const TONE: Record<Tone, string> = {
+  info: "text-muted",
+  ok: "text-accent",
+  warn: "text-[#f5c542]",
+  err: "text-[#ff6b6b]",
+};
 
 const pctOf = (i: Item) => (i.status === "done" ? 100 : (i.doneMb / i.sizeMb) * 100);
-const etaOf = (i: Item) => (i.status === "downloading" && i.speed > 0 ? fmtEta((i.sizeMb - i.doneMb) / i.speed) : "--:--");
+const etaOf = (i: Item) =>
+  i.status === "downloading" && i.speed > 0 ? fmtEta((i.sizeMb - i.doneMb) / i.speed) : "--:--";
 const speedOf = (i: Item) => (i.status === "downloading" ? `${i.speed.toFixed(1)} MB/s` : "-");
 
 /** Hotkeys for the TUI view. Called from the demo root, so they only fire while the demo has focus. */
@@ -72,14 +78,30 @@ export function handleTuiKey(e: KeyboardEvent, state: State, dispatch: Dispatch<
   }
 }
 
-function PromptLine({ state, dispatch, rootRef }: { state: State; dispatch: Dispatch<Action>; rootRef: RefObject<HTMLDivElement | null> }) {
+function PromptLine({
+  state,
+  dispatch,
+  rootRef,
+}: {
+  state: State;
+  dispatch: Dispatch<Action>;
+  rootRef: RefObject<HTMLDivElement | null>;
+}) {
   const prompt = state.prompt;
   if (!prompt) return null;
   const key = prompt.kind === "password" ? `pw-${prompt.id}` : "add";
   return <PromptForm key={key} state={state} dispatch={dispatch} rootRef={rootRef} />;
 }
 
-function PromptForm({ state, dispatch, rootRef }: { state: State; dispatch: Dispatch<Action>; rootRef: RefObject<HTMLDivElement | null> }) {
+function PromptForm({
+  state,
+  dispatch,
+  rootRef,
+}: {
+  state: State;
+  dispatch: Dispatch<Action>;
+  rootRef: RefObject<HTMLDivElement | null>;
+}) {
   const prompt = state.prompt;
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -109,11 +131,15 @@ function PromptForm({ state, dispatch, rootRef }: { state: State; dispatch: Disp
             <code className="text-accent">{DEMO_PASSWORD}</code>
           </>
         ) : (
-          <>Add URL (one per line in the real app) · try a <code className="text-fg">*.example.test</code> link</>
+          <>
+            Add URL (one per line in the real app) · try a <code className="text-fg">*.example.test</code> link
+          </>
         )}
       </label>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-accent" aria-hidden="true">{isPw ? "🔒" : "+"}</span>
+        <span className="text-accent" aria-hidden="true">
+          {isPw ? "🔒" : "+"}
+        </span>
         <input
           id="getit-prompt"
           ref={inputRef}
@@ -135,7 +161,11 @@ function PromptForm({ state, dispatch, rootRef }: { state: State; dispatch: Disp
         <button type="submit" className="rounded bg-accent px-2.5 py-1 text-[12px] font-semibold text-accent-ink">
           {isPw ? "Unlock" : "Add"}
         </button>
-        <button type="button" onClick={() => dispatch({ type: "closePrompt" })} className="rounded border border-line px-2.5 py-1 text-[12px] text-muted hover:text-fg">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "closePrompt" })}
+          className="rounded border border-line px-2.5 py-1 text-[12px] text-muted hover:text-fg"
+        >
           Esc
         </button>
       </div>
@@ -148,16 +178,34 @@ function PromptForm({ state, dispatch, rootRef }: { state: State; dispatch: Disp
   );
 }
 
-function Row({ item, selected, compact, onSelect }: { item: Item; selected: boolean; compact: boolean; onSelect: () => void }) {
+function Row({
+  item,
+  selected,
+  compact,
+  onSelect,
+}: {
+  item: Item;
+  selected: boolean;
+  compact: boolean;
+  onSelect: () => void;
+}) {
   const st = STATUS[item.status];
   const pct = pctOf(item);
   const marker = selected ? "▸" : " ";
   const bg = selected ? "bg-accent/10" : "hover:bg-surface/70";
   if (compact) {
     return (
-      <div id={`getit-row-${item.id}`} role="option" aria-selected={selected} onClick={onSelect} className={`cursor-pointer border-b border-line/60 px-3 py-1.5 ${bg}`}>
+      <div
+        id={`getit-row-${item.id}`}
+        role="option"
+        aria-selected={selected}
+        onClick={onSelect}
+        className={`cursor-pointer border-b border-line/60 px-3 py-1.5 ${bg}`}
+      >
         <div className="flex items-baseline gap-2">
-          <span className="w-3 text-accent" aria-hidden="true">{marker}</span>
+          <span className="w-3 text-accent" aria-hidden="true">
+            {marker}
+          </span>
           <span className="min-w-0 flex-1 truncate text-fg">{item.name}</span>
           <span className={`shrink-0 text-[12px] ${st.cls}`}>{st.label}</span>
         </div>
@@ -182,7 +230,9 @@ function Row({ item, selected, compact, onSelect }: { item: Item; selected: bool
       onClick={onSelect}
       className={`grid cursor-pointer grid-cols-[1rem_minmax(0,1.5fr)_5.5rem_minmax(5rem,1.2fr)_2.75rem_5.5rem_3.25rem_7.5rem] items-center gap-x-2 border-b border-line/60 px-3 py-1.5 ${bg}`}
     >
-      <span className="text-accent" aria-hidden="true">{marker}</span>
+      <span className="text-accent" aria-hidden="true">
+        {marker}
+      </span>
       <span className="truncate text-fg">{item.name}</span>
       <span className="truncate text-muted">{item.host}</span>
       <Bar pct={pct} label={`${item.name} progress`} tone={st.tone} />
@@ -194,7 +244,17 @@ function Row({ item, selected, compact, onSelect }: { item: Item; selected: bool
   );
 }
 
-export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; dispatch: Dispatch<Action>; compact: boolean; rootRef: RefObject<HTMLDivElement | null> }) {
+export function TuiTab({
+  state,
+  dispatch,
+  compact,
+  rootRef,
+}: {
+  state: State;
+  dispatch: Dispatch<Action>;
+  compact: boolean;
+  rootRef: RefObject<HTMLDivElement | null>;
+}) {
   const logRef = useRef<HTMLDivElement>(null);
   const sel = state.items.find((i) => i.id === state.selectedId);
   const active = state.items.filter((i) => i.status === "downloading");
@@ -213,7 +273,9 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
         <p className="text-muted">
           <span className="text-accent">$</span> getit
         </p>
-        <p className="mt-1 text-fg">Session closed. {done} of {state.items.length} downloads were verified. Partial files are kept for resume.</p>
+        <p className="mt-1 text-fg">
+          Session closed. {done} of {state.items.length} downloads were verified. Partial files are kept for resume.
+        </p>
         <button
           type="button"
           onClick={() => dispatch({ type: "restart" })}
@@ -232,23 +294,50 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
     <div className="flex min-h-full flex-col">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-line bg-surface/50 px-3 py-1.5 text-[12px]">
         <span className="font-semibold text-accent">getit</span>
-        <span className="text-muted">↓ <span className="text-fg">{total.toFixed(1)} MB/s</span>{state.limit ? ` (cap ${state.limit})` : ""}</span>
-        <span className="text-muted">active <span className="text-fg">{active.length}/{state.concurrency}</span></span>
-        <span className="text-muted">queued <span className="text-fg">{queued}</span></span>
-        <span className="text-muted">verified <span className="text-fg">{done}/{state.items.length}</span></span>
+        <span className="text-muted">
+          ↓ <span className="text-fg">{total.toFixed(1)} MB/s</span>
+          {state.limit ? ` (cap ${state.limit})` : ""}
+        </span>
+        <span className="text-muted">
+          active{" "}
+          <span className="text-fg">
+            {active.length}/{state.concurrency}
+          </span>
+        </span>
+        <span className="text-muted">
+          queued <span className="text-fg">{queued}</span>
+        </span>
+        <span className="text-muted">
+          verified{" "}
+          <span className="text-fg">
+            {done}/{state.items.length}
+          </span>
+        </span>
       </div>
 
       <div className="flex flex-wrap gap-1.5 border-b border-line px-3 py-2" role="toolbar" aria-label="Queue actions">
-        <KeyButton k="a" onClick={() => dispatch({ type: "openAdd" })}>Add</KeyButton>
-        <KeyButton k="b" onClick={() => dispatch({ type: "batch" })}>Batch</KeyButton>
+        <KeyButton k="a" onClick={() => dispatch({ type: "openAdd" })}>
+          Add
+        </KeyButton>
+        <KeyButton k="b" onClick={() => dispatch({ type: "batch" })}>
+          Batch
+        </KeyButton>
         <KeyButton k="p" disabled={!canPause} onClick={() => dispatch({ type: "pause" })}>
           {sel?.status === "paused" ? "Resume" : "Pause"}
         </KeyButton>
-        <KeyButton k="c" disabled={!canCancel} onClick={() => dispatch({ type: "cancel" })}>Cancel</KeyButton>
-        <KeyButton k="s" aria-expanded={state.settingsOpen} onClick={() => dispatch({ type: "toggleSettings" })}>Settings</KeyButton>
-        <KeyButton k="q" onClick={() => dispatch({ type: "quit" })}>Quit</KeyButton>
+        <KeyButton k="c" disabled={!canCancel} onClick={() => dispatch({ type: "cancel" })}>
+          Cancel
+        </KeyButton>
+        <KeyButton k="s" aria-expanded={state.settingsOpen} onClick={() => dispatch({ type: "toggleSettings" })}>
+          Settings
+        </KeyButton>
+        <KeyButton k="q" onClick={() => dispatch({ type: "quit" })}>
+          Quit
+        </KeyButton>
         {sel?.status === "locked" && (
-          <KeyButton k="↵" onClick={() => dispatch({ type: "openPassword" })}>Password</KeyButton>
+          <KeyButton k="↵" onClick={() => dispatch({ type: "openPassword" })}>
+            Password
+          </KeyButton>
         )}
       </div>
 
@@ -256,20 +345,47 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-line bg-surface/70 px-3 py-2 text-[12px]">
           <span className="text-muted">Settings</span>
           <span className="flex items-center gap-1.5">
-            <span className="text-muted" id="getit-conc-label">Concurrent downloads</span>
-            <button type="button" aria-label="Decrease concurrency" onClick={() => dispatch({ type: "concurrency", delta: -1 })} className="h-6 w-6 rounded border border-line hover:border-accent/60">-</button>
-            <span aria-labelledby="getit-conc-label" className="w-4 text-center text-fg">{state.concurrency}</span>
-            <button type="button" aria-label="Increase concurrency" onClick={() => dispatch({ type: "concurrency", delta: 1 })} className="h-6 w-6 rounded border border-line hover:border-accent/60">+</button>
+            <span className="text-muted" id="getit-conc-label">
+              Concurrent downloads
+            </span>
+            <button
+              type="button"
+              aria-label="Decrease concurrency"
+              onClick={() => dispatch({ type: "concurrency", delta: -1 })}
+              className="h-6 w-6 rounded border border-line hover:border-accent/60"
+            >
+              -
+            </button>
+            <span aria-labelledby="getit-conc-label" className="w-4 text-center text-fg">
+              {state.concurrency}
+            </span>
+            <button
+              type="button"
+              aria-label="Increase concurrency"
+              onClick={() => dispatch({ type: "concurrency", delta: 1 })}
+              className="h-6 w-6 rounded border border-line hover:border-accent/60"
+            >
+              +
+            </button>
           </span>
-          <button type="button" onClick={() => dispatch({ type: "cycleLimit" })} className="rounded border border-line px-2 py-1 hover:border-accent/60">
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "cycleLimit" })}
+            className="rounded border border-line px-2 py-1 hover:border-accent/60"
+          >
             Speed limit: <span className="text-accent">{state.limit ? `${state.limit} MB/s` : "off"}</span>
           </button>
-          <span className="text-muted">Resume: <span className="text-fg">on</span> · Verify: <span className="text-fg">sha256</span></span>
+          <span className="text-muted">
+            Resume: <span className="text-fg">on</span> · Verify: <span className="text-fg">sha256</span>
+          </span>
         </div>
       )}
 
       {!compact && (
-        <div className="grid grid-cols-[1rem_minmax(0,1.5fr)_5.5rem_minmax(5rem,1.2fr)_2.75rem_5.5rem_3.25rem_7.5rem] gap-x-2 border-b border-line px-3 py-1 text-[11px] uppercase tracking-wider text-muted" aria-hidden="true">
+        <div
+          className="grid grid-cols-[1rem_minmax(0,1.5fr)_5.5rem_minmax(5rem,1.2fr)_2.75rem_5.5rem_3.25rem_7.5rem] gap-x-2 border-b border-line px-3 py-1 text-[11px] uppercase tracking-wider text-muted"
+          aria-hidden="true"
+        >
           <span />
           <span>File</span>
           <span>Host</span>
@@ -288,7 +404,13 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
         className="focus-visible:outline-offset-[-2px]"
       >
         {state.items.map((it) => (
-          <Row key={it.id} item={it} selected={it.id === state.selectedId} compact={compact} onSelect={() => dispatch({ type: "select", id: it.id })} />
+          <Row
+            key={it.id}
+            item={it}
+            selected={it.id === state.selectedId}
+            compact={compact}
+            onSelect={() => dispatch({ type: "select", id: it.id })}
+          />
         ))}
       </div>
 
@@ -303,13 +425,20 @@ export function TuiTab({ state, dispatch, compact, rootRef }: { state: State; di
             {sel.encrypted ? " · AES-CTR decrypt" : ""}
           </dd>
           <dt className="text-muted">sha256</dt>
-          <dd className="break-all text-fg">{sel.hash ? <span className="text-accent">{sel.hash} ✓</span> : <span className="text-muted">pending</span>}</dd>
+          <dd className="break-all text-fg">
+            {sel.hash ? <span className="text-accent">{sel.hash} ✓</span> : <span className="text-muted">pending</span>}
+          </dd>
         </dl>
       )}
 
       <PromptLine state={state} dispatch={dispatch} rootRef={rootRef} />
 
-      <div ref={logRef} role="log" aria-label="getit event log" className="max-h-24 min-h-14 overflow-auto px-3 py-2 text-[12px]">
+      <div
+        ref={logRef}
+        role="log"
+        aria-label="getit event log"
+        className="max-h-24 min-h-14 overflow-auto px-3 py-2 text-[12px]"
+      >
         {state.log.slice(-6).map((l) => (
           <div key={l.id} className={TONE[l.tone]}>
             <span className="text-muted">+{l.at.toFixed(0).padStart(3, "0")}s </span>

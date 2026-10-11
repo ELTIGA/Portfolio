@@ -21,17 +21,25 @@ export function CustomersScreen({ role, boarded, setBoarded }: Props) {
     <div className="p-3 sm:p-4">
       <header className="mb-3">
         <p className="eo-eyebrow">Customer Lists</p>
-        <h1 className="text-[17px] font-semibold leading-tight">{guide ? "Your lists for today" : "Lists shared with guides"}</h1>
-        <p className="eo-muted mt-0.5 text-[12.5px]">Who is on each vehicle and where to collect them. Tap a guest to mark them on board.</p>
+        <h1 className="text-[17px] font-semibold leading-tight">
+          {guide ? "Your lists for today" : "Lists shared with guides"}
+        </h1>
+        <p className="eo-muted mt-0.5 text-[12.5px]">
+          Who is on each vehicle and where to collect them. Tap a guest to mark them on board.
+        </p>
       </header>
 
       {guide && (
-        <div className="eo-card mb-3 flex items-start gap-2 p-3 text-[12.5px]" style={{ borderColor: "var(--info-line)", background: "var(--info-soft)" }}>
+        <div
+          className="eo-card mb-3 flex items-start gap-2 p-3 text-[12.5px]"
+          style={{ borderColor: "var(--info-line)", background: "var(--info-soft)" }}
+        >
           <span style={{ color: "var(--info)" }} className="mt-0.5">
             <Icon name="customers" size={15} />
           </span>
           <p>
-            Signed in as a <strong>Guide</strong>. Manifest, Driver&apos;s List and Double bookings are hidden for this role; Customer Lists is the only section available.
+            Signed in as a <strong>Guide</strong>. Manifest, Driver&apos;s List and Double bookings are hidden for this
+            role; Customer Lists is the only section available.
           </p>
         </div>
       )}
@@ -42,7 +50,10 @@ export function CustomersScreen({ role, boarded, setBoarded }: Props) {
           const count = l.guests.filter((g) => boarded.has(g.id)).reduce((n, g) => n + g.pax, 0);
           return (
             <section key={l.id} className="eo-card overflow-hidden" aria-label={`${l.vehicle} at ${l.departure}`}>
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2.5" style={{ borderColor: "var(--line)" }}>
+              <div
+                className="flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2.5"
+                style={{ borderColor: "var(--line)" }}
+              >
                 <div>
                   <h2 className="text-[13.5px] font-semibold">
                     {l.vehicle}, {l.departure}
@@ -64,11 +75,22 @@ export function CustomersScreen({ role, boarded, setBoarded }: Props) {
                         aria-checked={on}
                         onClick={() => toggle(g.id)}
                         className="flex w-full items-center gap-3 px-3 text-left"
-                        style={{ background: on ? "var(--ok-soft)" : "transparent", border: 0, cursor: "pointer", minHeight: guide ? 56 : 48, paddingBlock: 8 }}
+                        style={{
+                          background: on ? "var(--ok-soft)" : "transparent",
+                          border: 0,
+                          cursor: "pointer",
+                          minHeight: guide ? 56 : 48,
+                          paddingBlock: 8,
+                        }}
                       >
                         <span
                           className="grid shrink-0 place-items-center rounded-md border"
-                          style={{ width: 22, height: 22, borderColor: on ? "var(--ok)" : "var(--line2)", color: "var(--ok)" }}
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderColor: on ? "var(--ok)" : "var(--line2)",
+                            color: "var(--ok)",
+                          }}
                           aria-hidden="true"
                         >
                           {on && <Icon name="check" size={14} />}

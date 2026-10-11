@@ -30,18 +30,40 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     description: project.tagline,
     alternates: { canonical: `/work/${project.slug}` },
     // Child openGraph/twitter objects replace the root ones, so set every field.
-    openGraph: { title, description: project.tagline, url: `/work/${project.slug}`, type: "article", siteName: profile.name },
+    openGraph: {
+      title,
+      description: project.tagline,
+      url: `/work/${project.slug}`,
+      type: "article",
+      siteName: profile.name,
+    },
     twitter: { card: "summary_large_image", title, description: project.tagline },
   };
 }
 
-function Block({ id, n, title, note, children }: { id: string; n: number; title: string; note?: string; children: ReactNode }) {
+function Block({
+  id,
+  n,
+  title,
+  note,
+  children,
+}: {
+  id: string;
+  n: number;
+  title: string;
+  note?: string;
+  children: ReactNode;
+}) {
   return (
     <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-28 border-t border-line pt-6">
       <p data-reveal="wipe" className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
         § {String(n).padStart(2, "0")}
       </p>
-      <h2 id={`${id}-h`} data-scramble className="font-display mt-3 text-4xl font-extrabold uppercase leading-[0.9] sm:text-5xl">
+      <h2
+        id={`${id}-h`}
+        data-scramble
+        className="font-display mt-3 text-4xl font-extrabold uppercase leading-[0.9] sm:text-5xl"
+      >
         {title}
       </h2>
       {note && <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">{note}</p>}
@@ -88,7 +110,10 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
             <span className="text-accent">.</span>
           </Link>
           <nav aria-label="Primary" className="flex items-center gap-7">
-            <Link href="/#work" className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-fg">
+            <Link
+              href="/#work"
+              className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-fg"
+            >
               ← All work
             </Link>
             <Magnetic>
@@ -108,14 +133,23 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
         <h1
           className="hero-in font-display mt-6 font-black uppercase leading-[0.82] tracking-tight"
           // Size to the name so one long word (CallAudioGuard) still fits the column: ~0.46em per glyph.
-          style={{ animationDelay: "120ms", fontSize: `min(11rem, 26vw, calc((min(100vw, 72rem) - 4rem) / ${(project.name.length * 0.46).toFixed(2)}))` }}
+          style={{
+            animationDelay: "120ms",
+            fontSize: `min(11rem, 26vw, calc((min(100vw, 72rem) - 4rem) / ${(project.name.length * 0.46).toFixed(2)}))`,
+          }}
         >
           {project.name}
         </h1>
-        <p className="hero-in mt-8 max-w-3xl text-xl leading-snug text-fg/90 sm:text-2xl" style={{ animationDelay: "240ms" }}>
+        <p
+          className="hero-in mt-8 max-w-3xl text-xl leading-snug text-fg/90 sm:text-2xl"
+          style={{ animationDelay: "240ms" }}
+        >
           {project.tagline}
         </p>
-        <dl className="hero-in mt-12 grid gap-px border border-line bg-line sm:grid-cols-[1fr_1fr_2fr]" style={{ animationDelay: "360ms" }}>
+        <dl
+          className="hero-in mt-12 grid gap-px border border-line bg-line sm:grid-cols-[1fr_1fr_2fr]"
+          style={{ animationDelay: "360ms" }}
+        >
           {[
             { k: "Role", v: project.role },
             { k: "Stack", v: `${project.stack.length} components` },
@@ -124,7 +158,9 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
             <div key={r.k} className="bg-bg/90 p-5">
               <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted">{r.k}</dt>
               <dd className="mt-2 flex items-start gap-2 text-sm leading-relaxed">
-                {r.k === "Status" && <span aria-hidden="true" className="blink mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal" />}
+                {r.k === "Status" && (
+                  <span aria-hidden="true" className="blink mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal" />
+                )}
                 {r.v}
               </dd>
             </div>
@@ -168,14 +204,24 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
               </ol>
             </Block>
 
-            <Block id="preview" n={num("preview")} title={`Run ${project.name}`} note="A working replica of the real interface, on made-up sample data">
+            <Block
+              id="preview"
+              n={num("preview")}
+              title={`Run ${project.name}`}
+              note="A working replica of the real interface, on made-up sample data"
+            >
               <div className="brackets p-2 sm:p-3 xl:-mr-8">
                 <DemoSlot slug={project.slug} name={project.name} kind={project.preview} />
               </div>
             </Block>
 
             {Diagram && (
-              <Block id="architecture" n={num("architecture")} title="Architecture" note="Drawn from the project's own documentation">
+              <Block
+                id="architecture"
+                n={num("architecture")}
+                title="Architecture"
+                note="Drawn from the project's own documentation"
+              >
                 <Diagram />
               </Block>
             )}
@@ -184,7 +230,11 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
               <Block id="decisions" n={num("decisions")} title="Engineering decisions">
                 <ol className="space-y-0">
                   {project.decisions.map((d, i) => (
-                    <li key={d} data-reveal="up" className="grid grid-cols-[3.5rem_1fr] gap-4 border-b border-line py-6 first:pt-0">
+                    <li
+                      key={d}
+                      data-reveal="up"
+                      className="grid grid-cols-[3.5rem_1fr] gap-4 border-b border-line py-6 first:pt-0"
+                    >
                       <span className="font-mono text-xs text-accent">D-{String(i + 1).padStart(2, "0")}</span>
                       <p className="leading-relaxed text-fg/85">{d}</p>
                     </li>
@@ -227,12 +277,20 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
         </div>
 
         <section aria-labelledby="cta" className="brackets relative mt-32 overflow-hidden p-8 sm:p-14">
-          <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_100%_100%,rgb(255_181_71/0.14),transparent_60%)]" />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_100%_100%,rgb(255_181_71/0.14),transparent_60%)]"
+          />
           <p className="relative font-mono text-[11px] uppercase tracking-[0.2em] text-accent">open channel</p>
-          <h2 id="cta" className="font-display relative mt-4 max-w-3xl text-5xl font-extrabold uppercase leading-[0.88] sm:text-7xl">
+          <h2
+            id="cta"
+            className="font-display relative mt-4 max-w-3xl text-5xl font-extrabold uppercase leading-[0.88] sm:text-7xl"
+          >
             Have a problem shaped like this one?
           </h2>
-          <p className="relative mt-5 max-w-xl text-muted">Tell me what your team is stuck on and what you need built.</p>
+          <p className="relative mt-5 max-w-xl text-muted">
+            Tell me what your team is stuck on and what you need built.
+          </p>
           <div className="relative mt-8">
             <Magnetic>
               <EmailCta surface="case-study" />

@@ -58,14 +58,20 @@ export default function Demo() {
   const pendingCount = state.pendingId !== null ? 1 : 0;
 
   const stopButton = estop ? (
-    <KeyButton k="r" tone="accent" className="min-h-11 px-4 text-[13px] font-semibold" onClick={() => dispatch({ type: "resume" })}>
+    <KeyButton
+      k="r"
+      tone="accent"
+      className="min-h-11 px-4 text-[13px] font-semibold"
+      onClick={() => dispatch({ type: "resume" })}
+    >
       Resume agent
     </KeyButton>
   ) : (
     <button
       type="button"
       onClick={() => dispatch({ type: "estop" })}
-      aria-keyshortcuts="Control+X" className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded border-2 border-[#ff6b6b] bg-[#ff6b6b] px-4 text-[13px] font-bold uppercase tracking-wider text-[#1a0505] transition hover:bg-[#ff8585]"
+      aria-keyshortcuts="Control+X"
+      className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded border-2 border-[#ff6b6b] bg-[#ff6b6b] px-4 text-[13px] font-bold uppercase tracking-wider text-[#1a0505] transition hover:bg-[#ff8585]"
     >
       <span aria-hidden="true">■</span> Emergency stop
       <kbd className="hidden rounded bg-[#1a0505]/20 px-1 font-mono text-[11px] normal-case sm:inline">Ctrl+X</kbd>
@@ -95,7 +101,11 @@ export default function Demo() {
             </div>
           </div>
           <div className={`flex items-center gap-2 ${wide ? "" : "w-full [&>*:last-child]:flex-1"}`}>
-            <button type="button" onClick={() => dispatch({ type: "reset" })} className="min-h-9 rounded border border-line px-2.5 text-[12px] text-muted hover:border-accent/60 hover:text-fg">
+            <button
+              type="button"
+              onClick={() => dispatch({ type: "reset" })}
+              className="min-h-9 rounded border border-line px-2.5 text-[12px] text-muted hover:border-accent/60 hover:text-fg"
+            >
               Reset demo
             </button>
             {stopButton}
@@ -103,8 +113,12 @@ export default function Demo() {
         </header>
 
         {estop && (
-          <div role="alert" className="border-b border-[#ff6b6b]/50 bg-[#ff6b6b]/15 px-3 py-2 text-[13px] font-semibold text-[#ff6b6b]">
-            EMERGENCY STOP ENGAGED: agent frozen, tool dispatch disabled, pending requests rejected. Everything was logged.
+          <div
+            role="alert"
+            className="border-b border-[#ff6b6b]/50 bg-[#ff6b6b]/15 px-3 py-2 text-[13px] font-semibold text-[#ff6b6b]"
+          >
+            EMERGENCY STOP ENGAGED: agent frozen, tool dispatch disabled, pending requests rejected. Everything was
+            logged.
           </div>
         )}
 
@@ -126,7 +140,10 @@ export default function Demo() {
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 border-t border-line bg-surface px-3 py-1 text-[11px] text-muted">
         <span className="flex items-center gap-1.5">
-          <span aria-hidden="true" className={`inline-block h-1.5 w-1.5 rounded-full ${focused ? "bg-accent" : "bg-muted/50"}`} />
+          <span
+            aria-hidden="true"
+            className={`inline-block h-1.5 w-1.5 rounded-full ${focused ? "bg-accent" : "bg-muted/50"}`}
+          />
           {focused ? "hotkeys active" : "click inside to enable hotkeys"}
         </span>
         <span>a approve · d deny · e always · g pause agent · n next call · Ctrl+X stop · r resume</span>

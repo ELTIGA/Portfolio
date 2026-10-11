@@ -16,7 +16,9 @@ const STATUS: Record<CallStatus, { label: string; color: string }> = {
 const CallRow = memo(function CallRow({ c }: { c: Call }) {
   const st = STATUS[c.status];
   return (
-    <li className={`border-b border-line/60 px-3 py-2 ${c.status === "blocked" || c.status === "rejected" ? "bg-[#ff6b6b]/5" : ""}`}>
+    <li
+      className={`border-b border-line/60 px-3 py-2 ${c.status === "blocked" || c.status === "rejected" ? "bg-[#ff6b6b]/5" : ""}`}
+    >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className="text-[11px] text-muted">#{String(c.id).padStart(3, "0")}</span>
         <code className="min-w-0 break-all text-[13px] text-fg">
@@ -52,7 +54,13 @@ export function TimelinePane({ state, dispatch }: { state: State; dispatch: Disp
   const ref = useStickToBottom<HTMLDivElement>(`${count}:${lastStatus}`);
 
   const blockedByStop = state.estop;
-  const stateLabel = blockedByStop ? "frozen" : state.pendingId !== null ? "waiting for operator" : state.agentRunning ? "running" : "paused";
+  const stateLabel = blockedByStop
+    ? "frozen"
+    : state.pendingId !== null
+      ? "waiting for operator"
+      : state.agentRunning
+        ? "running"
+        : "paused";
   return (
     <Pane
       id="gravel-timeline"
@@ -60,12 +68,24 @@ export function TimelinePane({ state, dispatch }: { state: State; dispatch: Disp
       right={
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[11px] text-muted">
-            agent: <span className={blockedByStop ? "text-[#ff6b6b]" : state.agentRunning ? "text-accent" : "text-[#f5c542]"}>{stateLabel}</span>
+            agent:{" "}
+            <span className={blockedByStop ? "text-[#ff6b6b]" : state.agentRunning ? "text-accent" : "text-[#f5c542]"}>
+              {stateLabel}
+            </span>
           </span>
-          <KeyButton k="g" disabled={blockedByStop} onClick={() => dispatch({ type: "toggleAgent" })} aria-pressed={!state.agentRunning}>
+          <KeyButton
+            k="g"
+            disabled={blockedByStop}
+            onClick={() => dispatch({ type: "toggleAgent" })}
+            aria-pressed={!state.agentRunning}
+          >
             {state.agentRunning ? "Pause agent" : "Run agent"}
           </KeyButton>
-          <KeyButton k="n" disabled={blockedByStop || state.pendingId !== null} onClick={() => dispatch({ type: "step" })}>
+          <KeyButton
+            k="n"
+            disabled={blockedByStop || state.pendingId !== null}
+            onClick={() => dispatch({ type: "step" })}
+          >
             Next call
           </KeyButton>
         </div>

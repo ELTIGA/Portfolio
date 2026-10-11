@@ -15,7 +15,8 @@ let loading: Promise<{ gsap: Gsap; ScrollTrigger: ScrollTriggerStatic }> | null 
  */
 function registerWithoutKeepAlive(register: () => void) {
   // Only where it was measured (Chromium); other engines keep GSAP's default.
-  const brands = (navigator as Navigator & { userAgentData?: { brands?: { brand: string }[] } }).userAgentData?.brands ?? [];
+  const brands =
+    (navigator as Navigator & { userAgentData?: { brands?: { brand: string }[] } }).userAgentData?.brands ?? [];
   if (!brands.some((b) => b.brand === "Chromium")) return register();
   const raf = window.requestAnimationFrame;
   window.requestAnimationFrame = () => 0;

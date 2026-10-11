@@ -1,6 +1,6 @@
 name: CI
 
-# Gates (audit, lint, typecheck, build, E2E) -> Vercel deploy -> post-deploy verification.
+# Gates (audit, format, lint, typecheck, build, E2E) -> Vercel deploy -> post-deploy verification.
 # Vercel's Git integration is off (apps/site/vercel.json), so this workflow is the only
 # path to a deployment: previews for same-repo PRs, production for pushes to main.
 
@@ -31,6 +31,7 @@ jobs:
           persist-credentials: false
       - uses: ./.github/actions/setup
       - run: npm run audit:ci
+      - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck
       # Builds the 3D intro (apps/shell -> apps/site/public/experience), then the site.

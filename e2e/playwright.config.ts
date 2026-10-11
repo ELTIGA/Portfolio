@@ -4,7 +4,7 @@ import { defineConfig, devices } from "@playwright/test";
 // BASE_URL unset -> start the already-built site locally with `next start`.
 const baseURL = process.env.BASE_URL ?? "http://localhost:3000";
 const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-// Optional local override, e.g. a preinstalled Chromium in a sandbox.
+// Optional override for a preinstalled Chromium, e.g. in a container without Playwright's browsers.
 const executablePath = process.env.PW_CHROMIUM_PATH || undefined;
 
 export default defineConfig({
