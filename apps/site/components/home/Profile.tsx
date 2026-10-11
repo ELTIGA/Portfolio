@@ -33,7 +33,7 @@ export function ProfileBlock() {
         <span className="h-px flex-1 bg-line" />
         <span>events attended</span>
       </h3>
-      <ul className="mt-8 grid gap-6 sm:grid-cols-2">
+      <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:max-lg:[&>li:last-child:nth-child(odd)]:col-span-2">
         {profile.events.map((e) => (
           <li key={e.name} data-reveal="wipe">
             <div className="duotone">
@@ -47,7 +47,7 @@ export function ProfileBlock() {
                 className="h-72 w-full object-cover object-top"
               />
             </div>
-            <p className="mt-4 flex items-baseline justify-between gap-4">
+            <p className="mt-4 flex flex-col gap-2">
               <span className="font-display text-3xl font-bold uppercase leading-none">{e.name}</span>
               <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
                 {e.role} · {e.year}
