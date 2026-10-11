@@ -1,9 +1,9 @@
 import { profile } from "@portfolio/content";
 
-/** Skill groups as three columns of tools, numbered like a loaded-modules readout. */
+/** Skill groups as columns of tools, numbered like a loaded-modules readout. */
 export function Loadout() {
   return (
-    <div className="grid gap-12 md:grid-cols-3 md:gap-8">
+    <div className="grid gap-12 md:grid-cols-2 md:gap-8 xl:grid-cols-4">
       {profile.skills.map((g) => (
         <div key={g.group}>
           <p className="flex items-baseline justify-between border-b border-line pb-3">

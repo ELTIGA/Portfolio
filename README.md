@@ -18,7 +18,7 @@ Source code for **[ahmedeltigani.com](https://www.ahmedeltigani.com)**, my perso
 
 ## Highlights
 
-- **Interactive case studies.** Each project page (`/work/[slug]`) covers the problem, the build, an interactive preview that runs entirely in the browser on sample data, an architecture diagram, the main engineering decisions and how the project is secured and shipped.
+- **Interactive case studies.** Each project page (`/work/[slug]`) covers the problem, the build, an interactive preview that runs entirely in the browser on sample data (or a link to the live site), an architecture diagram, the main engineering decisions and how the project is secured and shipped.
 - **A desktop in the browser.** `/desktop` has draggable, resizable windows, a dock, a terminal, mail and notes, and every project opens as its own window.
 - **Optional 3D intro.** A procedural three.js office whose monitor shows the live desktop. It only appears on capable desktop browsers, can always be skipped, and the regular page stays underneath.
 - **Printable résumé.** `/resume` is an ATS-friendly résumé generated from the same content as the rest of the site.
@@ -88,6 +88,8 @@ All copy lives in `packages/content` as typed data: `profile.ts` for the bio, ex
 ### Interactive previews
 
 Each preview lives in `apps/site/components/demos/<slug>/` and follows the contract in `registry.tsx`: client-only, lazy-loaded and self-contained, with no network calls and only sample data. On case-study pages nothing loads until the visitor launches the preview.
+
+Projects that are live in production set `live` in `projects.ts` instead. They get a self-hosted screenshot that opens the real site in a new tab (`LivePreview.tsx`), since those sites refuse to be framed.
 
 ### Motion and effects
 

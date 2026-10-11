@@ -81,6 +81,15 @@ export const profile: Profile = {
       alt: "Ahmed Eltigani wearing an attendee badge in front of the AWS Cloud and AI Day Türkiye backdrop",
     },
     {
+      name: "Google for Developers Day: Istanbul",
+      role: "Participant",
+      year: "2026",
+      image: "/images/event-google-devday-2026.webp",
+      width: 900,
+      height: 690,
+      alt: "Ahmed Eltigani on stage in front of a Google for Developers Day: Istanbul screen showing the Bosphorus Bridge",
+    },
+    {
       name: "TEKNOFEST",
       role: "Participant",
       year: "2023",
@@ -94,6 +103,7 @@ export const profile: Profile = {
     "I graduated in Software Engineering from Nişantaşı University in 2026. Before that I spent a year as a UI/UX and front-end developer at Fyluim, a web3 and trading-bot company.",
     "Since July 2026 I've been the only developer on Express Ops for a tour operator. I wrote the first schema and I run the CI pipeline that deploys it. Most of my time goes to the parts users never see: audit gates, tenant isolation, observability and safe defaults.",
     "I'm a Certified Ethical Hacker (EC-Council, 2026). I also build guardrails for AI agents: scope checks, human approvals and an emergency stop.",
+    "Networking is part of my toolkit too: subnetting, routing, switching and VLANs. At home I run a lab with a DNS server, a NAS and Jellyfin. I'm comfortable on the Linux command line, manage hypervisors in Proxmox and VMware Workstation Pro, have worked with KVM, and I'm currently learning SIEM work in Splunk.",
   ],
   resumeSummary:
     "Software engineering graduate (B.Sc., 2026) working across DevSecOps and AI-enabled full-stack development. Sole developer of Express Ops, an operations platform a tour operator's team uses every day, with CI/CD, dependency auditing and role-based access built in. Certified Ethical Hacker (EC-Council, 2026).",
@@ -116,6 +126,21 @@ export const profile: Profile = {
     {
       group: "AI & automation",
       items: ["LLM extraction pipelines", "OCR (Mistral, Docling, LlamaParse)", "MCP servers", "Agent guardrails"],
+    },
+    {
+      group: "Infrastructure",
+      items: [
+        "TCP/IP, IPv4/IPv6 subnetting",
+        "Routing (static, OSPF)",
+        "Switching (VLANs, STP, EtherChannel)",
+        "ACLs, NAT, DHCP, DNS",
+        "Linux CLI",
+        "Proxmox VE",
+        "VMware Workstation Pro",
+        "KVM",
+        "Home lab: DNS server, NAS, Jellyfin",
+        "Splunk / SIEM (learning)",
+      ],
     },
   ],
   metrics: [

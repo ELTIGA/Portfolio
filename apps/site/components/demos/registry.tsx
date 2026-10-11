@@ -21,7 +21,6 @@ export const demos: Record<string, ComponentType> = {
   gravel: lazy(() => import("./gravel")),
   getit: lazy(() => import("./getit")),
   "amc-prep": lazy(() => import("./amc-prep")),
-  "review-router": lazy(() => import("./review-router")),
   callaudioguard: lazy(() => import("./callaudioguard")),
   novaread: lazy(() => import("./novaread")),
 };
