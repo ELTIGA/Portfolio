@@ -4,10 +4,13 @@ import type { ReactNode } from "react";
 export function DemoFrame({
   title,
   host = "demo.local",
+  badge = "sample data",
   children,
 }: {
   title: string;
   host?: string;
+  /** Small tag on the right of the address bar. */
+  badge?: string;
   children: ReactNode;
 }) {
   return (
@@ -24,7 +27,7 @@ export function DemoFrame({
           <span className="truncate text-fg/70">· {title}</span>
         </div>
         <span className="hidden rounded border border-accent/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent sm:inline">
-          sample data
+          {badge}
         </span>
       </div>
       <div className="min-h-0 flex-1 overflow-auto">{children}</div>

@@ -3,7 +3,9 @@ import { projects } from "@portfolio/content";
 import { expect, test } from "@playwright/test";
 
 const featured = projects.find((p) => p.featured) ?? projects[0];
-const pages = ["/", `/work/${featured.slug}`, "/resume", "/desktop"];
+// One live-site case study covers LivePreview, which replaces the sample-data demo.
+const live = projects.find((p) => p.live);
+const pages = ["/", `/work/${featured.slug}`, ...(live ? [`/work/${live.slug}`] : []), "/resume", "/desktop"];
 
 test.describe("accessibility", () => {
   for (const path of pages) {

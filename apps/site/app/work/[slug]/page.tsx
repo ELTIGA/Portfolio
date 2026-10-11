@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { getProject, profile, projects } from "@portfolio/content";
 import { DemoSlot } from "@/components/demos/DemoSlot";
+import { LivePreview } from "@/components/demos/LivePreview";
 import { diagrams } from "@/components/diagrams/registry";
 import { EmailCta } from "@/components/EmailCta";
 import { Cursor } from "@/components/fx/Cursor";
@@ -85,7 +86,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
     project.problem && { id: "problem", label: "Problem" },
     { id: "build", label: project.problem ? "The build" : "Overview" },
     { id: "capabilities", label: "What it does" },
-    { id: "preview", label: "Run it" },
+    { id: "preview", label: project.live ? "Live site" : "Run it" },
     Diagram && { id: "architecture", label: "Architecture" },
     project.decisions?.length && { id: "decisions", label: "Decisions" },
     project.security.length && { id: "security", label: "Secured & shipped" },
@@ -207,11 +208,19 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
             <Block
               id="preview"
               n={num("preview")}
-              title={`Run ${project.name}`}
-              note="A working replica of the real interface, on made-up sample data"
+              title={project.live ? `Visit ${project.name}` : `Run ${project.name}`}
+              note={
+                project.live
+                  ? "The production site, live. Opens in a new tab"
+                  : "A working replica of the real interface, on made-up sample data"
+              }
             >
               <div className="brackets p-2 sm:p-3 xl:-mr-8">
-                <DemoSlot slug={project.slug} name={project.name} kind={project.preview} />
+                {project.live ? (
+                  <LivePreview slug={project.slug} name={project.name} live={project.live} height={560} />
+                ) : (
+                  <DemoSlot slug={project.slug} name={project.name} kind={project.preview} />
+                )}
               </div>
             </Block>
 
@@ -272,6 +281,23 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
             <div data-reveal="up">
               <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted">stack</p>
               <p className="mt-3 font-mono text-sm leading-relaxed text-fg/85">{project.stack.join("  /  ")}</p>
+              {project.links.length > 0 && (
+                <ul className="mt-6 flex flex-wrap gap-3">
+                  {project.links.map((l) => (
+                    <li key={l.href}>
+                      <a
+                        href={l.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 border border-line px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:border-accent/60 hover:text-accent"
+                      >
+                        {l.label} <span aria-hidden="true">↗</span>
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

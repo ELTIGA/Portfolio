@@ -33,6 +33,12 @@ export interface Project {
   /** Bullets for the "How it's secured & shipped" section. */
   security: string[];
   preview: PreviewKind;
+  /**
+   * Public production deployment. When set, the case study and the desktop window show a
+   * screenshot that opens the real site instead of an in-browser replica. The live sites
+   * refuse to be framed, so the poster is a self-hosted image.
+   */
+  live?: { url: string; poster: { src: string; alt: string; width: number; height: number } };
   /** Public links only. Most repos are private, so this is usually empty. */
   links: { label: string; href: string }[];
 }

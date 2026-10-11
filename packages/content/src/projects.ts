@@ -221,21 +221,31 @@ export const projects: Project[] = [
     order: 6,
     featured: false,
     role: "Developer",
-    status: "Built for one-click Vercel deployment",
+    status: "Live on Vercel",
     summary:
-      "Customers scan a QR code at the end of a tour and reach Google, GetYourGuide, Viator or Booking.com in one tap, with channel-click analytics to prove the friction is low.",
+      "Customers scan a QR code at the end of a rafting tour and pick where they booked. Google, GetYourGuide and TripAdvisor open their review pages in one tap; Viator and Booking.com only accept reviews from their own post-trip email, so those cards say so instead of sending people to a dead end.",
     resume: [
-      "Mobile-first Next.js page that sends customers from a QR code to Google, GetYourGuide, Viator or Booking.com in one tap.",
-      "Per-channel click events for conversion visibility; channels configured in one file; built for one-click Vercel deployment.",
+      "Mobile-first Next.js page on Vercel that sends tour customers from a QR code to the review site where they booked, in eight languages (including right-to-left), with per-channel click analytics.",
     ],
     highlights: [
+      "One-tap review links for Google, GetYourGuide and TripAdvisor (GetYourGuide checks the booking first); honest email hints for Viator and Booking.com.",
+      "Eight languages, picked from a saved choice or the browser's Accept-Language header, with right-to-left layouts for Arabic and Persian.",
       "Mobile-first Next.js page; channels configured in one file.",
       "Per-channel click events for conversion visibility.",
     ],
     stack: ["Next.js", "Tailwind CSS", "Vercel Analytics"],
     security: [],
     preview: "web",
-    links: [],
+    live: {
+      url: "https://express-take-reviews.vercel.app",
+      poster: {
+        src: "/images/work/review-router.webp",
+        alt: "The review page on a phone: “Loved your adventure?” above review buttons for Google, GetYourGuide, TripAdvisor, Viator and Booking.com",
+        width: 600,
+        height: 1231,
+      },
+    },
+    links: [{ label: "Live site", href: "https://express-take-reviews.vercel.app" }],
   },
   {
     slug: "callaudioguard",
