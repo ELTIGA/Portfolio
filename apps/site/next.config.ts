@@ -23,6 +23,15 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ["@portfolio/content"],
+  // Sitemap paths left behind by the domain's previous WordPress site, still requested by
+  // crawlers, point at the current sitemap instead of a 404.
+  async redirects() {
+    return ["/sitemap_index.xml", "/wp-sitemap.xml", "/page-sitemap.xml", "/post-sitemap.xml"].map((source) => ({
+      source,
+      destination: "/sitemap.xml",
+      permanent: true,
+    }));
+  },
   async headers() {
     return [
       {

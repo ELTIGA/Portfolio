@@ -24,7 +24,8 @@ test.describe("seo @smoke", () => {
 
   test("home page has canonical and social metadata", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`^${profile.siteUrl}/?$`));
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
+    expect(canonical?.replace(/\/$/, "")).toBe(profile.siteUrl);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /opengraph-image/);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /.{50,}/);
   });

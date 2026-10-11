@@ -28,6 +28,13 @@ export const metadata: Metadata = {
   openGraph: { title, description, type: "website", url: "/", siteName: profile.name },
   twitter: { card: "summary_large_image", title, description },
   alternates: { canonical: "/" },
+  // Ownership tokens from each webmaster console, set as Vercel production env vars.
+  // Unset ones render nothing.
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.YANDEX_VERIFICATION,
+    other: process.env.BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION } : undefined,
+  },
 };
 
 export const viewport: Viewport = { themeColor: "#05070a", colorScheme: "dark" };
