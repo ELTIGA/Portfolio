@@ -247,3 +247,16 @@ jobs:
           name: playwright-report-production
           path: playwright-report
           retention-days: 7
+
+  # Asks IndexNow engines (Bing, Yandex, ...) to recrawl the sitemap. Google reads the
+  # sitemap from robots.txt instead. Best effort: a hiccup here never fails a deploy.
+  notify-search-engines:
+    needs: verify-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: node scripts/indexnow.mjs
