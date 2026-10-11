@@ -13,7 +13,7 @@ export const profile: Profile = {
   github: "https://github.com/ELTIGA",
   linkedin: "https://www.linkedin.com/in/ahmed-eltigani/",
   languages: ["English", "Arabic", "Turkish"],
-  siteUrl: "https://ahmedeltigani.com",
+  siteUrl: "https://www.ahmedeltigani.com",
   portrait: {
     src: "/images/ahmed-portrait.webp",
     alt: "Ahmed Eltigani, in a dark linen blazer and white shirt, standing against a plain wall",

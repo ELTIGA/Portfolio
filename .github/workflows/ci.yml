@@ -195,7 +195,7 @@ jobs:
     timeout-minutes: 15
     environment:
       name: production
-      url: https://ahmedeltigani.com
+      url: https://www.ahmedeltigani.com
     # Never cancel a production deploy halfway; queue the next one instead.
     concurrency:
       group: production
