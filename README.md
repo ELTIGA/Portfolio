@@ -83,7 +83,7 @@ docs/          Deployment guide and README images
 
 ### Content
 
-All copy lives in `packages/content` as typed data: `profile.ts` for the bio, experience, credentials and metrics, and `projects.ts` with one entry per project. Pages, the desktop, the résumé, the sitemap and the social cards all read from it, so a project added there appears everywhere. Every claim is first-hand or documented in the project's own repository.
+All copy lives in `packages/content` as typed data: `profile.ts` for the bio, experience, credentials and metrics, and `projects.ts` with one entry per project. Pages, the desktop, the résumé, the sitemap, the social cards, the JSON-LD and the agent-readable Markdown (`/llms.txt`, `/llms-full.txt` and a `.md` twin of each page, built in `apps/site/lib/markdown.ts`) all read from it, so a project added there appears everywhere. Every claim is first-hand or documented in the project's own repository.
 
 ### Interactive previews
 

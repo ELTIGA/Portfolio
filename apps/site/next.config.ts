@@ -32,8 +32,20 @@ const nextConfig: NextConfig = {
       permanent: true,
     }));
   },
+  // Case-study Markdown lives at /md/work/[slug]; a dynamic segment can't end in ".md".
+  async rewrites() {
+    return { beforeFiles: [{ source: "/work/:slug.md", destination: "/md/work/:slug" }], afterFiles: [], fallback: [] };
+  },
   async headers() {
+    // Points agents at each page's Markdown twin (see lib/markdown.ts).
+    const markdown = (source: string, target: string) => ({
+      source,
+      headers: [{ key: "Link", value: `<${target}>; rel="alternate"; type="text/markdown"` }],
+    });
     return [
+      markdown("/", "/index.md"),
+      markdown("/resume", "/resume.md"),
+      markdown("/work/:slug([a-z0-9-]+)", "/work/:slug.md"),
       {
         source: "/:path*",
         headers: [

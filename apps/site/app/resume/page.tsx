@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { profile, projects } from "@portfolio/content";
+import { isTraining, markdownPath } from "@/lib/markdown";
+import { jsonLdHtml, resumeJsonLd } from "@/lib/structured-data";
 import { PrintButton } from "./PrintButton";
 import "./resume.css";
 
@@ -9,7 +11,7 @@ const description = `${profile.name}: résumé. Experience, projects, skills, ed
 export const metadata: Metadata = {
   title: "Résumé",
   description,
-  alternates: { canonical: "/resume" },
+  alternates: { canonical: "/resume", types: { "text/markdown": markdownPath("/resume") } },
   openGraph: {
     title: `Résumé · ${profile.name}`,
     description,
@@ -21,7 +23,6 @@ export const metadata: Metadata = {
 };
 
 const sorted = [...projects].sort((a, b) => a.order - b.order);
-const isTraining = (status: string) => status.includes("not an AWS certification");
 const bare = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 export default function Resume() {
@@ -30,6 +31,7 @@ export default function Resume() {
 
   return (
     <div className="px-3 py-6 sm:px-6 sm:py-10 print:p-0">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(resumeJsonLd())} />
       <nav
         aria-label="Résumé tools"
         className="mx-auto mb-5 flex max-w-[210mm] flex-wrap items-center justify-between gap-3 print:hidden"
