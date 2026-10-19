@@ -12,6 +12,8 @@ import { FxRoot } from "@/components/fx/FxRoot";
 import { Magnetic } from "@/components/fx/Magnetic";
 import { TrackView } from "@/components/TrackView";
 import { Toc } from "@/components/work/Toc";
+import { markdownPath } from "@/lib/markdown";
+import { jsonLdHtml, projectJsonLd } from "@/lib/structured-data";
 
 type Params = { slug: string };
 
@@ -29,7 +31,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title: project.name,
     description: project.tagline,
-    alternates: { canonical: `/work/${project.slug}` },
+    alternates: {
+      canonical: `/work/${project.slug}`,
+      types: { "text/markdown": markdownPath(`/work/${project.slug}`) },
+    },
     // Child openGraph/twitter objects replace the root ones, so set every field.
     openGraph: {
       title,
@@ -96,6 +101,7 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(projectJsonLd(project))} />
       <FxRoot />
       <Cursor />
       <div aria-hidden="true" className="atmosphere" />

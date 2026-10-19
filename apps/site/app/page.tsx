@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { profile, projects } from "@portfolio/content";
 import { EmailCta } from "@/components/EmailCta";
 import { Cursor } from "@/components/fx/Cursor";
@@ -16,30 +17,17 @@ import { Transmit } from "@/components/home/Transmit";
 import { WorkPanel } from "@/components/home/WorkReel";
 import { Intro3D, OfficeButton } from "@/components/Intro3D";
 import { Section } from "@/components/Section";
+import { markdownPath } from "@/lib/markdown";
+import { homeJsonLd, jsonLdHtml } from "@/lib/structured-data";
+
+// Alternates replace the layout's, so the canonical is restated next to the Markdown twin.
+export const metadata: Metadata = {
+  alternates: { canonical: "/", types: { "text/markdown": markdownPath("/") } },
+};
 
 const sorted = [...projects].sort((a, b) => a.order - b.order);
 const featured = sorted.filter((p) => p.featured);
 const more = sorted.filter((p) => !p.featured);
-
-const personLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: profile.name,
-  url: profile.siteUrl,
-  image: `${profile.siteUrl}${profile.portrait.src}`,
-  email: `mailto:${profile.email}`,
-  jobTitle: "DevSecOps & AI-enabled full-stack engineer",
-  knowsLanguage: profile.languages,
-  alumniOf: { "@type": "CollegeOrUniversity", name: profile.education.school },
-  hasCredential: profile.credentials
-    .filter((c) => !c.status.includes("not an AWS certification"))
-    .map((c) => ({
-      "@type": "EducationalOccupationalCredential",
-      name: c.name,
-      recognizedBy: { "@type": "Organization", name: c.issuer },
-    })),
-  sameAs: [profile.github, profile.linkedin],
-};
 
 // Express Ops' release path, as its README describes it.
 const stages = [
@@ -67,10 +55,7 @@ const navLink = "relative font-mono text-[11px] uppercase tracking-[0.2em] text-
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(homeJsonLd())} />
       <Intro3D />
       <FxRoot />
       <SignalField word={profile.handle} heroId="hero" radarId="contact" frostIds={["work", "record"]} />
