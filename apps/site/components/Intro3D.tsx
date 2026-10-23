@@ -6,39 +6,22 @@ import { scrollToY } from "@/components/fx/lenis";
 import { track } from "@/lib/track";
 
 /**
- * Optional 3D intro. The plain page is always rendered underneath; this only adds a
- * full-screen overlay (an iframe to the static 3D app in /experience) for capable
- * desktop clients, after idle, with a persistent "Skip to portfolio" button.
+ * Optional 3D desk. The plain page is always what loads; this only adds a full-screen
+ * overlay (an iframe to the static 3D app in /experience) when a visitor on a capable
+ * desktop client asks for it with <OfficeButton>, with a persistent "Skip to portfolio"
+ * button. It never opens on its own, and every visitor, human or crawler, gets the same page.
  */
 
-const SKIP_KEY = "intro3d:skipped";
 const SHELL_URL = "/experience/index.html";
 const READY_TIMEOUT_MS = 12000;
 // Matches the overlay's fade; the page underneath is frozen only once it is fully covered.
 const COVER_MS = 320;
-const BOT_UA = /bot|crawl|spider|slurp|lighthouse|pagespeed|prerender|gtmetrix/i;
 const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|microsoft basic render/i;
-/** Dispatched by <OfficeButton> to reopen the 3D desk after it was skipped. */
+/** Dispatched by <OfficeButton> to open the 3D desk. */
 const OPEN_REQUEST = "intro3d:request";
 
 type NetworkInfo = { saveData?: boolean; effectiveType?: string };
 type NavigatorExtras = Navigator & { connection?: NetworkInfo; deviceMemory?: number };
-
-function alreadySkipped() {
-  try {
-    return window.sessionStorage.getItem(SKIP_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function rememberSkip() {
-  try {
-    window.sessionStorage.setItem(SKIP_KEY, "1");
-  } catch {
-    /* private mode: the overlay simply may show again on reload */
-  }
-}
 
 let webgl2: boolean | undefined;
 
@@ -63,16 +46,11 @@ function probeWebGL2() {
   }
 }
 
-/**
- * Every condition must hold; anything else gets the plain page only. An explicit
- * request (the "Back to the office" button) ignores an earlier skip.
- */
-function isCapable({ requested = false } = {}) {
+/** Every condition must hold; anything else gets the plain page only. */
+function isCapable() {
   if (typeof window === "undefined") return false;
   // Never nest the intro (e.g. when the monitor iframe navigates to "/").
   if (window.self !== window.top) return false;
-  if (BOT_UA.test(navigator.userAgent)) return false;
-  if (!requested && alreadySkipped()) return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   if (!window.matchMedia("(pointer: fine)").matches) return false;
   if (window.innerWidth < 1024 || window.innerHeight < 600) return false;
@@ -104,50 +82,10 @@ export function Intro3D() {
   const entered = useRef(false);
   const returnHash = useRef("");
 
-  // Decide after the page is idle so the 3D never competes with the first paint.
-  // Never interrupt a visitor who has already started reading or clicking.
-  useEffect(() => {
-    let cancelled = false;
-    let engaged = false;
-    let idleId: number | undefined;
-    let timerId: number | undefined;
-
-    const engage = () => {
-      engaged = true;
-    };
-    const engageEvents = ["scroll", "pointerdown", "keydown", "touchstart"] as const;
-    for (const type of engageEvents) window.addEventListener(type, engage, { once: true, passive: true });
-
-    const schedule = () => {
-      const show = async () => {
-        if (cancelled || engaged || !isCapable()) return;
-        if (!(await shellAvailable()) || cancelled || engaged) return;
-        returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-        setOpen(true);
-      };
-      if (typeof window.requestIdleCallback === "function") {
-        idleId = window.requestIdleCallback(() => void show(), { timeout: 4000 });
-      } else {
-        timerId = window.setTimeout(() => void show(), 2000);
-      }
-    };
-
-    if (document.readyState === "complete") schedule();
-    else window.addEventListener("load", schedule, { once: true });
-
-    return () => {
-      cancelled = true;
-      for (const type of engageEvents) window.removeEventListener(type, engage);
-      window.removeEventListener("load", schedule);
-      if (idleId !== undefined && typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
-      if (timerId !== undefined) window.clearTimeout(timerId);
-    };
-  }, []);
-
-  // "Back to the office": reopen on request, even after a skip or once the visitor is reading.
+  // Opens only on an explicit click of <OfficeButton>.
   useEffect(() => {
     const onRequest = () => {
-      if (!isCapable({ requested: true })) return;
+      if (!isCapable()) return;
       returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setOpen(true);
     };
@@ -156,7 +94,6 @@ export function Intro3D() {
   }, []);
 
   const close = useCallback((reason: "skip" | "failed", hash = "") => {
-    rememberSkip();
     returnHash.current = /^#[\w-]+$/.test(hash) ? hash : "";
     if (reason === "skip") track("skip_3d");
     setVisible(false);
@@ -269,13 +206,13 @@ export function Intro3D() {
   );
 }
 
-/** Header control that reopens the 3D desk. Renders only where the desk can run. */
+/** Header control that opens the 3D desk. Renders only where the desk can run. */
 export function OfficeButton({ className = "" }: { className?: string }) {
   const [available, setAvailable] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    if (isCapable({ requested: true })) {
+    if (isCapable()) {
       void shellAvailable().then((ok) => {
         if (!cancelled) setAvailable(ok);
       });
@@ -288,7 +225,7 @@ export function OfficeButton({ className = "" }: { className?: string }) {
   if (!available) return null;
   return (
     <button type="button" className={className} onClick={() => window.dispatchEvent(new Event(OPEN_REQUEST))}>
-      Back to the office
+      3D office
     </button>
   );
 }

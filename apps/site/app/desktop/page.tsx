@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Desktop",
   description,
   alternates: { canonical: "/desktop" },
+  robots: { index: false, follow: true },
   openGraph: { title, description, url: "/desktop", type: "website", siteName: profile.name },
   twitter: { card: "summary_large_image", title, description },
 };

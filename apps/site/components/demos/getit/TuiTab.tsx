@@ -152,10 +152,10 @@ function PromptForm({
           }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          type={isPw ? "password" : "text"}
+          type="text"
           autoComplete="off"
           spellCheck={false}
-          placeholder={isPw ? "password" : "https://gofile.example.test/d/AbC123"}
+          placeholder={isPw ? DEMO_PASSWORD : "https://gofile.example.test/d/AbC123"}
           className="min-w-0 flex-1 rounded border border-line bg-bg px-2 py-1 text-[13px] text-fg placeholder:text-muted/60 focus:border-accent focus:outline-none"
         />
         <button type="submit" className="rounded bg-accent px-2.5 py-1 text-[12px] font-semibold text-accent-ink">
