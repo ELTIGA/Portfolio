@@ -10,6 +10,7 @@ import { EmailCta } from "@/components/EmailCta";
 import { Cursor } from "@/components/fx/Cursor";
 import { FxRoot } from "@/components/fx/FxRoot";
 import { Magnetic } from "@/components/fx/Magnetic";
+import { ResumeCta } from "@/components/ResumeCta";
 import { TrackView } from "@/components/TrackView";
 import { Toc } from "@/components/work/Toc";
 import { markdownPath } from "@/lib/markdown";
@@ -116,16 +117,19 @@ export default async function CaseStudy({ params }: { params: Promise<Params> })
             {profile.handle}
             <span className="text-accent">.</span>
           </Link>
-          <nav aria-label="Primary" className="flex items-center gap-7">
+          <nav aria-label="Primary" className="flex items-center gap-4 sm:gap-7">
             <Link
               href="/#work"
-              className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-fg"
+              className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-fg sm:inline"
             >
               ← All work
             </Link>
-            <Magnetic>
-              <EmailCta className="!px-4 !py-2.5" label="Email" surface="case-study-header" />
-            </Magnetic>
+            <div className="flex items-center gap-2">
+              <ResumeCta surface="case-study-header" />
+              <Magnetic>
+                <EmailCta className="!px-4 !py-2.5" label="Email" surface="case-study-header" />
+              </Magnetic>
+            </div>
           </nav>
         </div>
       </header>
