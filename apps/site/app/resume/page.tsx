@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { profile, projects } from "@portfolio/content";
-import { isTraining, markdownPath } from "@/lib/markdown";
+import { profile } from "@portfolio/content";
+import { isTraining, markdownPath, resumeProjects } from "@/lib/markdown";
 import { jsonLdHtml, resumeJsonLd } from "@/lib/structured-data";
 import { PrintButton } from "./PrintButton";
 import "./resume.css";
@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: `Résumé · ${profile.name}`, description },
 };
 
-const sorted = [...projects].sort((a, b) => a.order - b.order);
 const bare = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 export default function Resume() {
@@ -88,7 +87,7 @@ export default function Resume() {
 
           <section aria-labelledby="r-projects">
             <h2 id="r-projects">Projects</h2>
-            {sorted.map((p) => (
+            {resumeProjects.map((p) => (
               <div key={p.slug} className="resume-entry">
                 <div className="resume-row">
                   <h3>{p.name}</h3>
@@ -103,7 +102,7 @@ export default function Resume() {
               </div>
             ))}
             <p className="resume-meta mt-2">
-              Source code for most projects is private; case studies at {bare(profile.siteUrl)}/work.
+              More projects and case studies at {bare(profile.siteUrl)}/work. Most source code is private.
             </p>
           </section>
 

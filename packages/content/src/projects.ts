@@ -29,11 +29,7 @@ export const projects: Project[] = [
       "Gate production on CI: main is the sole production branch, and the commit that passed audit, lint, tests, typecheck and build is the one deployed over SSH, followed by a sign-in check.",
       "Invite-only, role-based access (admin, operator, guide) with no public sign-up; guides see only the Customer Lists surface.",
     ],
-    resume: [
-      "Sole developer of an operations platform used daily by a tour operator's team; I estimate it saves roughly 3–5 hours a day.",
-      "Built a manifest pipeline (Mistral OCR) that reconciles extracted rows against printed footer totals and routes mismatches to an editable review queue; exports styled XLSX driver lists and DOCX customer lists; detects double bookings.",
-      "Own CI/CD and security: dependency-audit gate, lint, tests, typecheck and build before an SSH deploy to Docker Compose; non-root multi-stage image, role-gated navigation and MFA.",
-    ],
+    resume: ["Live in production for a tour operator; I own it end to end, from database design to deployment."],
     highlights: [
       "Manifest extractor: OCR per image, reconciled against the footer totals; failures and mismatches go to an editable review queue with undo.",
       "Driver's List: batches of per-shift screenshots become one styled XLSX with per-driver subtotals and a grand total.",
@@ -85,9 +81,7 @@ export const projects: Project[] = [
       "Team invites and role-based privileges for organization members.",
     ],
     resume: [
-      "Builder of an early-MVP multi-tenant SaaS for tour agencies: manifest ingestion with four parse providers and LLM extraction routed across five providers.",
-      "Route generation on Google Maps or MapLibre with OSRM; driver dispatch over WhatsApp, Telegram and Slack with inbound status replies; Python FastAPI parsing service.",
-      "Tenant isolation with Clerk and Convex ownership guards; Sentry across browser, server, edge and Python runtimes; separate local, staging and production stacks.",
+      "Early-stage SaaS that takes tour agencies from a messy booking manifest to dispatched drivers over WhatsApp, Telegram or Slack.",
     ],
     highlights: [
       "Four parse providers (Docling, native sheet, Mistral OCR, LlamaParse) and five LLM extraction providers behind one routing layer.",
@@ -132,8 +126,7 @@ export const projects: Project[] = [
       "Keep scheduling as pure functions over integer calendar days, so time zones and daylight-saving shifts never move a card by a day.",
     ],
     resume: [
-      "Author of Lietner (lietner.app), an open-source, offline-first Leitner flashcard PWA on a three.js desk; local-first sync to Supabase Postgres with row-level security and trigger-enforced last-write-wins.",
-      "Tested in CI with Vitest, pgTAP and Playwright (desktop, iPhone, iPad, no-WebGL); telemetry scrubs card text.",
+      "Open-source flashcard app (lietner.app) that works fully offline and syncs safely across devices; tested on desktop, iPhone and iPad.",
     ],
     highlights: [
       "Classic Leitner schedule: boxes come due every 1, 2, 4, 8 and 16 days, with a mastered tray.",
@@ -189,9 +182,7 @@ export const projects: Project[] = [
       "Use one typed command contract (UiIntent) and typed orchestrator events between the UI and the runtime, instead of parsing strings.",
     ],
     resume: [
-      "Author of a five-crate Rust workspace that mediates AI agent tool calls: scope validation, operator approval via signed tokens, emergency stop and an audit log.",
-      "Built the MCP client and interceptor layer (stdio and HTTP transports) and a ratatui terminal UI with session resume.",
-      "CI runs tests, clippy and rustfmt; cargo-dist produces release builds for macOS, Linux and Windows.",
+      "Safety layer for AI agents, in Rust: agents can't act outside their scope without human approval, and one switch stops them.",
     ],
     highlights: [
       "Shared domain layer for sessions, tool requests and configuration.",
@@ -231,8 +222,7 @@ export const projects: Project[] = [
     ],
     nextSteps: ["A download-history view; the SQLite task registry was built to support it."],
     resume: [
-      "Author of an async Python downloader for seven file hosts with a Textual TUI, a scripting CLI and an MCP server; published on PyPI (getit-cli) with a Homebrew tap.",
-      "Concurrent downloads with resume and speed limits, MD5/SHA256 verification and client-side Mega.nz AES-CTR decryption.",
+      "Published download tool (PyPI, Homebrew) for seven file hosts, usable by people, scripts and AI agents, with built-in integrity checks.",
     ],
     highlights: [
       "Concurrent downloads with smart resume, speed limits and recursive folder support.",
@@ -259,10 +249,7 @@ export const projects: Project[] = [
     status: "Product spec and web app",
     summary:
       "A question bank framed as virtual hospital rotations: topic, challenge and exam-simulation modes, layered explanations, streaks and quests, and a weakness model that decides what to practise next.",
-    resume: [
-      "Builder of a gamified, AI-coached exam-preparation app for medical graduates (Next.js, Convex, Clerk, TypeScript).",
-      "Weakness analysis combining accuracy, confidence and recency drives practice sessions; includes the Clinical Poker pattern-recognition mini-game.",
-    ],
+    resume: ["AI-coached exam prep for medical graduates that finds each student's weak spots and drills them."],
     highlights: [
       "Weakness analysis combining accuracy, confidence and recency to drive challenge sessions.",
       "Clinical Poker pattern-recognition mini-game.",
@@ -283,9 +270,7 @@ export const projects: Project[] = [
     status: "Live on Vercel",
     summary:
       "Customers scan a QR code at the end of a rafting tour and pick where they booked. Google, GetYourGuide and TripAdvisor open their review pages in one tap; Viator and Booking.com only accept reviews from their own post-trip email, so those cards say so instead of sending people to a dead end.",
-    resume: [
-      "Mobile-first Next.js page on Vercel that sends tour customers from a QR code to the review site where they booked, in eight languages (including right-to-left), with per-channel click analytics.",
-    ],
+    resume: ["QR-code page that sends tour customers straight to the right review site, in eight languages."],
     highlights: [
       "One-tap review links for Google, GetYourGuide and TripAdvisor (GetYourGuide checks the booking first); honest email hints for Viator and Booking.com.",
       "Eight languages, picked from a saved choice or the browser's Accept-Language header, with right-to-left layouts for Arabic and Persian.",
@@ -316,10 +301,7 @@ export const projects: Project[] = [
     status: "Native Swift app with Homebrew cask packaging",
     summary:
       "A small native app that watches for active calls and manages audio devices so a call never lands on the wrong output.",
-    resume: [
-      "Native Swift macOS menu-bar app that detects active calls and manages audio devices.",
-      "Distributed with a Makefile and a Homebrew cask.",
-    ],
+    resume: ["macOS menu-bar app that detects active calls and manages audio devices; shipped through Homebrew."],
     highlights: [
       "Active call detection and audio device management.",
       "Menu-bar UI; Makefile and Homebrew cask for distribution.",
@@ -339,10 +321,7 @@ export const projects: Project[] = [
     status: "Team graduation project",
     summary:
       "A library platform where users upload and read books, save quotes to a memory section, and ask an AI to explain or simplify what they are reading by text or voice. I worked on the React front end and the AI integration with Gemini and the OpenAI Realtime API.",
-    resume: [
-      "Co-developer on a team graduation project, working on the React front end and the AI integration (Gemini API and OpenAI Realtime API).",
-      "Reading screen with in-context AI explanations and simplifications by text or voice, and a memory screen for saved quotes.",
-    ],
+    resume: ["Team graduation project: built the React front end and the AI reading assistant (text and voice)."],
     highlights: [
       "Reading screen with real-time AI explanations and simplifications.",
       "Memory screen for saving quotes and highlights.",

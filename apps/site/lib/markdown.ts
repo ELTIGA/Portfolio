@@ -8,6 +8,8 @@ export const jobTitle = "DevSecOps & AI-enabled full-stack engineer";
 
 const site = profile.siteUrl;
 const sorted = [...projects].sort((a, b) => a.order - b.order);
+// The résumé keeps to the strongest few so a skim lands on them; the full list lives at /work.
+export const resumeProjects = sorted.slice(0, 5);
 /** AWS Skill Builder is training, not a certification: never list it as a credential. */
 export const isTraining = (status: string) => status.includes("not an AWS certification");
 
@@ -95,7 +97,7 @@ export function resumeMarkdown() {
     ),
     section(
       "Projects",
-      sorted
+      resumeProjects
         .map(
           (p) =>
             `### ${p.name} (${p.role})\n\n${list(p.resume ?? p.highlights.slice(0, 2))}\n\nStack: ${p.stack.join(", ")}`,

@@ -16,6 +16,7 @@ import { ReelPin } from "@/components/home/ReelPin";
 import { Transmit } from "@/components/home/Transmit";
 import { WorkPanel } from "@/components/home/WorkReel";
 import { Intro3D, OfficeButton } from "@/components/Intro3D";
+import { ResumeCta } from "@/components/ResumeCta";
 import { Section } from "@/components/Section";
 import { markdownPath } from "@/lib/markdown";
 import { homeJsonLd, jsonLdHtml } from "@/lib/structured-data";
@@ -75,7 +76,7 @@ export default function Home() {
             {profile.handle}
             <span className="text-accent">.</span>
           </a>
-          <nav aria-label="Primary" className="flex items-center gap-7">
+          <nav aria-label="Primary" className="flex items-center gap-4 sm:gap-7">
             <a className={`${navLink} hidden sm:inline`} href="#work">
               Work
             </a>
@@ -86,9 +87,12 @@ export default function Home() {
               About
             </a>
             <OfficeButton className={navLink} />
-            <Magnetic>
-              <EmailCta className="!px-4 !py-2.5" label="Email" surface="header" />
-            </Magnetic>
+            <div className="flex items-center gap-2">
+              <ResumeCta surface="header" />
+              <Magnetic>
+                <EmailCta className="!px-4 !py-2.5" label="Email" surface="header" />
+              </Magnetic>
+            </div>
           </nav>
         </div>
       </header>
