@@ -43,8 +43,10 @@ export const profile: Profile = {
       summary:
         "Sole developer of Express Ops for a tour operator. Express Ops is used daily by the operations team and saves roughly 3–5 hours a day.",
       bullets: [
-        "Sole developer of Express Ops, an operations platform for a tour operator: schema, role-based UI, OCR pipeline, CI/CD and production deployment.",
-        "Used daily by the operations team; I estimate it saves them roughly 3–5 hours a day.",
+        "Build and run Express Ops alone: the platform the operations team now works in every day.",
+        "Turn photographed manifests into ready-to-send driver and customer lists, so staff stop retyping bookings by hand.",
+        "Catch mistakes before drivers see them: every scan is checked against the manifest totals and double bookings are flagged.",
+        "Keep every release safe: security and quality checks gate each deploy, and staff see only what their role allows.",
       ],
     },
     {
@@ -53,7 +55,11 @@ export const profile: Profile = {
       type: "Employee",
       period: "2023 – 2024",
       summary: "UI/UX design and front-end development at a company building web3 technologies and trading bots.",
-      bullets: ["UI/UX design and front-end development at a company building web3 technologies and trading bots."],
+      bullets: [
+        "Designed and built the dashboards and trading-bot interfaces used by over 1,000 customers.",
+        "Helped design and build the company's landing page.",
+        "Turned customer complaints and reported front-end bugs into fixes, so the product kept getting easier to use.",
+      ],
     },
   ],
   credentials: [
@@ -106,7 +112,7 @@ export const profile: Profile = {
     "Networking is part of my toolkit too: subnetting, routing, switching and VLANs. At home I run a lab with a DNS server, a NAS and Jellyfin. I'm comfortable on the Linux command line, manage hypervisors in Proxmox and VMware Workstation Pro, have worked with KVM, and I'm currently learning SIEM work in Splunk.",
   ],
   resumeSummary:
-    "Software engineering graduate (B.Sc., 2026) working across DevSecOps and AI-enabled full-stack development. Sole developer of Express Ops, an operations platform a tour operator's team uses every day, with CI/CD, dependency auditing and role-based access built in. Certified Ethical Hacker (EC-Council, 2026).",
+    "Certified Ethical Hacker and software engineer who ships software a team relies on every day. Sole developer of Express Ops, the platform a tour operator's operations team runs on, secured from the first commit.",
   skills: [
     {
       group: "Product engineering",
@@ -115,12 +121,26 @@ export const profile: Profile = {
     {
       group: "DevSecOps",
       items: [
-        "GitHub Actions",
+        "CI/CD (GitHub Actions)",
         "Docker / Compose",
         "Dependency auditing",
         "Sentry",
-        "Clerk / RBAC",
-        "Ethical hacking (CEH)",
+        "Role-based access control (RBAC, Clerk)",
+      ],
+    },
+    {
+      group: "Offensive security (CEH)",
+      items: [
+        "Kali Linux: Nmap, Wireshark, Burp Suite, Metasploit, wafw00f",
+        "Reconnaissance & footprinting",
+        "Network scanning & enumeration",
+        "Vulnerability analysis",
+        "System hacking & privilege escalation",
+        "Web app attacks (SQL injection, XSS)",
+        "Sniffing & session hijacking",
+        "Social engineering",
+        "Wireless, IoT & cloud security",
+        "Cryptography",
       ],
     },
     {
